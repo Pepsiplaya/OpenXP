@@ -71,3 +71,17 @@ class QuestEvidenceTests(unittest.TestCase):
         alliance_next = source(GUIDES / "openxp" / "Alliance-40-50.lua")
         self.assertIn("#name 39-40 Desolace\n#next 40-41 Ironforge\n", alliance_start)
         self.assertIn("#name 40-41 Ironforge\n", alliance_next)
+
+    def test_skyborne_herbalism_turnin_stays_in_shendar_village(self):
+        skyborne = source(GUIDES / "forever" / "RestedXP-Skyborne.lua")
+        part_one, part_two = GUIDE.findall(skyborne)[:2]
+        for part in (part_one, part_two):
+            handoffs = [step for step in re.split(r"(?m)^step\b", part)
+                        if re.search(r"(?m)^\s*\.turnin 97968\b", step)]
+            self.assertEqual(len(handoffs), 1)
+            self.assertIn(".isQuestComplete 97968", handoffs[0])
+            self.assertIn(".goto 2521,43.01,43.55", handoffs[0])
+            self.assertIn(".target Halassa Fernbreeze::257021", handoffs[0])
+            self.assertNotIn("<<", handoffs[0], "both factions use the new turn-in")
+        self.assertIn(".subzoneskip 16624,1", handoffs[0])
+        self.assertLess(part_two.index(".turnin 97968"), part_two.index(".goto 2521,49.4,58.76"))

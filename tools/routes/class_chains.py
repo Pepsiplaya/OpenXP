@@ -66,10 +66,10 @@ ALLIANCE = [
          quests=[6681, 96779, 96783, 96786, 96781]),
 
     # Priest: each race's spell
-    dict(cls="Priest", race="Dwarf", name="Fear Ward", why="need", quests=[(5641, 5645, 5647)]),
+    dict(cls="Priest", race="Dwarf", name="Chastise", why="need", quests=[(5641, 5645, 5647)]),
     dict(cls="Priest", race="NightElf", name="Elune's Grace", why="need", quests=[(5672, 5673, 5674, 5675)]),
     dict(cls="Priest", race="Human", name="Arcane Feedback", why="need", quests=[(5676, 5677, 5678)]),
-    dict(cls="Priest", race="Gnome", name="Contingency Plan", why="need", quests=[(94819, 94820)]),
+    dict(cls="Priest", race="Gnome", name="Contingency Plan", why="need", quests=[(94818, 94819, 94820)]),
 
     # Druid
     # Druid: every form (Bear is done by 10 in the 1-20 guide; Aquatic Form

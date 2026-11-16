@@ -592,15 +592,15 @@ step << Warrior
     .target Klannoc Macleod
 step << Warrior
     --oxp-class
-    .goto The Barrens,68.61,48.72
-    >>Kill |cRXP_ENEMY_Big Will|r
-    .complete 1719,1 --The Affray
-    .mob Big Will
+    .goto The Barrens,68.60,48.72
+    >>Walk into the crowd and step on the grate to start the Affray.
+    .complete 1719,2 --The Affray
 step << Warrior
     --oxp-class
-    .goto The Barrens,68.60,48.72
-    >>Step on the grate to begin the Affray
-    .complete 1719,2 --The Affray
+    .goto The Barrens,68.61,48.72
+    >>Defeat the challengers until |cRXP_ENEMY_Big Will|r appears, then kill him. Return to Klannoc before the quest's ten-minute timer expires.
+    .complete 1719,1 --The Affray
+    .mob Big Will
 step << Warrior
     --oxp-class
     .goto The Barrens,68.62,49.16

@@ -7,6 +7,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 import build_route as route
+import class_steps
 
 
 SECTION = {"zone": "Example", "area": 1}
@@ -82,3 +83,14 @@ class QuestLogTests(unittest.TestCase):
                     visit = builder(range(100, 120))
                     actions, _ = simulate(visit, {1: candidate(1)}, terrain)
                     self.assertEqual(actions, [])
+
+
+class ClassObjectiveTests(unittest.TestCase):
+    def test_affray_exploration_precedes_the_kill(self):
+        quest = route.Quest(1719, {
+            1: "The Affray", 9: ["Step on the grate", {17: [[68.60, 48.72]]}],
+            10: [[[123, "Big Will"]]],
+        })
+        db = {"n": {123: {1: "Big Will", 7: {17: [[68.61, 48.72]]}}}, "o": {}, "i": {}}
+        sites = class_steps.objectives(db, quest)
+        self.assertEqual([(index, kind) for index, kind, *_ in sites], [(2, "explore"), (1, "kill")])

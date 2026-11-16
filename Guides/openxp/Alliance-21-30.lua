@@ -530,12 +530,28 @@ step << Rogue
     .accept 2607 >>Accept The Touch of Zanzil
     .target Master Mathias Shaw
 step << Dwarf Priest
-    --oxp-class
+    .xp <20,1
     .goto Ironforge,24.73,8.16
-    >>Talk to |cRXP_FRIENDLY_High Priest Rohan|r
-    .accept 5641 >>Accept A Lack of Fear
-    .turnin 5641 >>Turn in A Lack of Fear
-    .target High Priest Rohan
+    >>Talk to |cRXP_FRIENDLY_High Priest Rohan::11406|r in the Hall of Mysteries to learn Chastise.
+    .accept 5641 >>Accept Chastise
+    .turnin 5641 >>Turn in Chastise
+    .target High Priest Rohan::11406
+step << Gnome Priest
+    .isOnQuest 94819,94820
+    .goto Ironforge,24.59,10.00
+    >>Talk to |cRXP_FRIENDLY_High Priestess Mims::258785|r in the Hall of Mysteries.
+    .turnin -94819 >>Turn in Contingency Plan from Stormwind
+    .turnin -94820 >>Turn in Contingency Plan from Darnassus
+    .target High Priestess Mims::258785
+step << Gnome Priest
+    .xp <20,1
+    .istrained 1277456
+    .isNotOnQuest 94819,94820
+    .goto Ironforge,24.59,10.00
+    >>Talk to |cRXP_FRIENDLY_High Priestess Mims::258785|r in the Hall of Mysteries.
+    .accept 94818 >>Accept Contingency Plan
+    .turnin 94818 >>Turn in Contingency Plan to learn the spell
+    .target High Priestess Mims::258785
 step << Human Priest
     --oxp-class
     .goto Stormwind City,49.53,44.60

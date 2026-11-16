@@ -26,6 +26,7 @@ def validate(body, evidence, *, strict=False):
     minimum, standings = 0, set()
     for number, step in enumerate(steps[1:], 1):
         lines = [line.strip() for line in step.splitlines()]
+        tag = step.partition("\n")[0].strip().removeprefix("<<").strip()
         for line in lines:
             level = re.match(r"^\.xp (\d+)\b", line)
             reputation = re.match(r"^\.reputation (\d+),Honored\s*>>", line)
@@ -44,6 +45,8 @@ def validate(body, evidence, *, strict=False):
                 if strict:
                     yield f"{context}: missing quest evidence"
                 continue
+            if fact.get("tag") and tag != fact["tag"]:
+                yield f"{context}: needs step tag {fact['tag']}"
             npc = fact.get(f"{kind}_npc")
             if npc and not any(line.startswith(".target ") and line.endswith(f"::{npc}") for line in lines):
                 yield f"{context}: {kind} needs NPC {npc}"
@@ -73,6 +76,8 @@ def validate(body, evidence, *, strict=False):
                         yield f"{context}: expected objective order {required}, got {progress}"
                     elif not (required or fact.get("instant") or fact.get("delivery")):
                         yield f"{context}: immediate turn-in needs a verified exception"
+                elif strict and not fact.get("delivery"):
+                    yield f"{context}: turn-in before pickup"
                 turned.add(qid)
     if strict:
         for qid in accepted:

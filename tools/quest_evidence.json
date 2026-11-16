@@ -1,4 +1,19 @@
 {
+  "1719": {
+    "name": "The Affray",
+    "objectives": [2, 1],
+    "ordered": true,
+    "tag": "Warrior",
+    "source": "https://db.icy-veins.com/wow-forever/quests/1719"
+  },
+  "5641": {
+    "name": "Chastise",
+    "instant": true,
+    "tag": "Dwarf Priest",
+    "accept_npc": 11406,
+    "turnin_npc": 11406,
+    "source": "https://db.icy-veins.com/wow-forever/quests/5641"
+  },
   "92743": {
     "name": "A Conqueror's Crown",
     "objectives": [1],
@@ -55,5 +70,35 @@
     "accept_npc": 253177,
     "turnin_npc": 253177,
     "source": "https://www.wowhead.com/forever/quest=93037/outing-outcasts"
+  },
+  "94818": {
+    "name": "Contingency Plan",
+    "instant": true,
+    "tag": "Gnome Priest",
+    "accept_npc": 258785,
+    "turnin_npc": 258785,
+    "source": "https://db.icy-veins.com/wow-forever/quests/94818"
+  },
+  "94819": {
+    "name": "Contingency Plan",
+    "delivery": true,
+    "tag": "Gnome Priest",
+    "turnin_npc": 258785,
+    "source": "https://db.icy-veins.com/wow-forever/quests/94819"
+  },
+  "94820": {
+    "name": "Contingency Plan",
+    "delivery": true,
+    "tag": "Gnome Priest",
+    "turnin_npc": 258785,
+    "source": "https://db.icy-veins.com/wow-forever/quests/94820"
+  },
+  "97968": {
+    "name": "Camping 101: Herbalism",
+    "objectives": [1],
+    "optional_skill": true,
+    "accept_npc": 263664,
+    "turnin_npc": 257021,
+    "source": "https://news.blizzard.com/en-us/article/24315281/wow-forever-hotfixes-november-13-2026"
   }
 }

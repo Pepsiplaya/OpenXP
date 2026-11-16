@@ -2063,6 +2063,7 @@ step
     .goto 2521,41.658,44.784
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Raan Wildwind::263664|r
     .accept 97968 >>Accept Camping 101: Herbalism
+    >>Gather herbs along the route until Herbalism reaches 20. You can hand this in on the next visit to Shen'dar Village.
     .target Raan Wildwind::263664
 step
     .subzoneskip 16624,1 -- Shen'dar Village
@@ -3111,6 +3112,13 @@ step
     .turnin 97971 >>Turn in Camping 101: Skinning
     .target Mendalass Tattermend::257024
 step
+    .train 2366,3 -- Herbalism Trained
+    .isQuestComplete 97968 -- Camping 101: Herbalism
+    .goto 2521,43.01,43.55
+    >>Talk to |cRXP_FRIENDLY_Halassa Fernbreeze::257021|r in Shen'dar Village.
+    .turnin 97968 >>Turn in Camping 101: Herbalism
+    .target Halassa Fernbreeze::257021
+step
     .train 7411,3 -- Enchanting Trained
     .isQuestComplete 98286 -- Camping 101: Enchanting
     .isQuestComplete 92550 -- Havoc in the Highlands
@@ -3302,6 +3310,14 @@ step
     .use 255663 --Windstones
 --here maybe duplicate trainer steps for low silver cases
 
+step
+    .subzoneskip 16624,1 -- Shen'dar Village
+    .train 2366,3 -- Herbalism Trained
+    .isQuestComplete 97968 -- Camping 101: Herbalism
+    .goto 2521,43.01,43.55
+    >>Talk to |cRXP_FRIENDLY_Halassa Fernbreeze::257021|r before leaving Shen'dar Village.
+    .turnin 97968 >>Turn in Camping 101: Herbalism
+    .target Halassa Fernbreeze::257021
 step
     .isQuestAvailable 93948 -- Deliver the Signet
     .isNotOnQuest 93317 -- Crab Season
@@ -3842,13 +3858,6 @@ step << Horde Rogue
     .itemcount 277107,1 --Zephrali Bludgeon
     .equip 16,277107 >>|cRXP_WARN_Equip the|r |T7791298:0|t[Zephrali Bludgeon].
     .use 277107 --Zephrali Bludgeon
-step << Horde
-    .train 2366,3 -- Herbalism Trained
-    .isQuestComplete 97968 -- Camping 101: Herbalism
-    .goto 2521,57.890,75.514
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Syriel Nightrain::254345|r.
-    .target Syriel Nightrain::254345
-    .turnin 97968 >>Turn in Camping 101: Herbalism
 step << Hunter Horde
     .money <0.1345
     .isOnQuest 93735 -- The Broken Construct
@@ -4865,13 +4874,6 @@ step << Alliance Hunter
     .accept 94013 >>Accept Taming the Beast
     .target Quel'ana Quickgale::252389
 step << Alliance Hunter
-    .train 2366,3 -- Herbalism Trained
-    .isQuestComplete 97968 -- Camping 101: Herbalism
-    .goto 2521,57.890,75.514
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Syriel Nightrain::254345|r.
-    .turnin 97968 >>Turn in Camping 101: Herbalism
-    .target Syriel Nightrain::254345
-step << Alliance Hunter
     #optional
     #completewith next
     +|cRXP_WARN_Dismiss your |cRXP_ENEMY_Ornery Galestrider::251707|r by right clicking its unit frame and clicking dismiss, otherwise you'll be unable to tame an|r |cRXP_ENEMY_Vuldren::250874|r
@@ -4954,13 +4956,6 @@ step << Mage
     >>Kill |cRXP_ENEMY_Skyhoppers::251314|r.
     .complete 93949,1 --|8/8 Enchanted Skyhopper Exterminated
     .mob Skyhopper::251314
-step << Alliance !Hunter
-    .train 2366,3 -- Herbalism Trained
-    .isQuestComplete 97968 -- Camping 101: Herbalism
-    .goto 2521,57.890,75.514
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Syriel Nightrain::254345|r.
-    .turnin 97968 >>Turn in Camping 101: Herbalism
-    .target Syriel Nightrain::254345
 step << Alliance !Mage/Alliance !Hunter
     #loop
     .goto 2521,58.85,75.49,30,0

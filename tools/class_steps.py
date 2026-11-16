@@ -160,6 +160,9 @@ DUNGEON_ENTRANCES = {
     717: ("The Stockade", 1519, (40.5, 55.8)),
 }
 
+# The Affray's exploration objective summons the challengers and Big Will.
+OBJECTIVE_ORDER = {1719: (2, 1)}
+
 
 def dungeon_of(entity, idx):
     """(dungeon name, zone, point) when the entity only spawns in a dungeon."""
@@ -296,6 +299,9 @@ def objectives(db, q):
         if z:
             idx += 1
             out.append((idx, "explore", B.li(q.triggerEnd, 1), [], z, p, False))
+    order = OBJECTIVE_ORDER.get(q.id)
+    if order:
+        out.sort(key=lambda site: order.index(site[0]) if site[0] in order else len(order))
     return out
 
 

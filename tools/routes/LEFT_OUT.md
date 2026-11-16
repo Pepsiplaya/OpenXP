@@ -8,7 +8,6 @@ OpenXP 1.3.53, 2026-11-11. These parts of class quest chains are not in the guid
 - **Paladin, Tome of Valor and Verigan's Fist** — The Test of Righteousness (1654): an objective has no known place; also left out after it: The Test of Righteousness (1806)
 - **Warrior, Whirlwind Weapon** — Cyclonian (1712): an objective has no known place; also left out after it: The Summoning (1713), Whirlwind Weapon (1792)
 - **Rogue, Ravenholdt** — The Manor, Ravenholdt (6681): no known pickup place; also left out after it: Syndicate Sabotage (96779), A Way In (96783), The Syndicate Sting (96786), What's the Big Idea? (96781)
-- **Priest, Contingency Plan** — Contingency Plan (94819): no known turn-in place
 - **Mage, Mage's Wand** — Rituals of Power (1951): an objective has no known place; also left out after it: Items of Power (1948), Mage's Wand (1952)
 
 ## Horde
