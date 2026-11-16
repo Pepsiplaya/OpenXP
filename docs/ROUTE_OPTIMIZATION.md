@@ -36,6 +36,16 @@ The travel clock now includes flights, boats, and hub approaches. This gives the
 | Alliance 40 | 21–60 | 457 | 18 | 31.4 h | 56.4 h | 30.6 h | 118.3 h |
 | Horde 40 | 22–60 | 393 | 30 | 27.3 h | 64.7 h | 31.6 h | 123.6 h |
 
+**SIMULATED** using the merged export, with 5,922 quest records and authored static corrections. Both drafts at the Forever cap reached 60 in the model. The 20-slot Alliance control exhausted the planner’s fallback grind budget around level 46.3.
+
+| Draft and cap | Levels reached | Reported turn-ins | Peak quest slots | Travel | Objective and interaction work | Grinding | Total |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Alliance 20 | 21–46.3 | 222 | 15 | 12.8 h | 20.4 h | 21.5 h | 54.7 h |
+| Alliance 40 | 21–60 | 550 | 27 | 32.6 h | 66.5 h | 17.0 h | 116.1 h |
+| Horde 40 | 22–60 | 446 | 32 | 30.7 h | 74.8 h | 19.6 h | 125.1 h |
+
+With fuller quest records, the model replaces some grinding with quests on both factions. Candidate route quality still depends on current objective data, in-game travel and clear times, and the initial character’s actual quest log. These drafts are separate from the playable beta guides.
+
 The reviewed quest evidence validator finds five objective-less turn-ins in upstream OpenXP 1.3.64 and zero in 1.3.65-beta. This comparison covers the recorded quests. It does not estimate the number of issues across the entire guide.
 
 ## Calibration
