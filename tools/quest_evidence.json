@@ -1,4 +1,42 @@
 {
+  "1442": {
+    "name": "Seeking the Kor Gem",
+    "objectives": [1],
+    "accept_npc": 3649,
+    "turnin_npc": 3649,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1442"
+  },
+  "1652": {
+    "name": "The Tome of Valor",
+    "delivery": true,
+    "accept_npc": 6182,
+    "turnin_npc": 6171,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1652"
+  },
+  "1653": {
+    "name": "The Test of Righteousness",
+    "delivery": true,
+    "requires": [1652],
+    "accept_npc": 6171,
+    "turnin_npc": 6181,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1653"
+  },
+  "1654": {
+    "name": "The Test of Righteousness",
+    "objectives": [1, 2, 3, 4],
+    "requires": [1653],
+    "objective_rewards": {"2": 1655, "4": 1442},
+    "accept_npc": 6181,
+    "turnin_npc": 6181,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1654"
+  },
+  "1655": {
+    "name": "Bailor's Ore Shipment",
+    "objectives": [1],
+    "accept_npc": 6241,
+    "turnin_npc": 6241,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1655"
+  },
   "1718": {
     "name": "The Islander",
     "delivery": true,
@@ -15,6 +53,14 @@
     "accept_npc": 6236,
     "turnin_npc": 6236,
     "source": "https://db.icy-veins.com/wow-forever/quests/1719"
+  },
+  "1806": {
+    "name": "The Test of Righteousness",
+    "requires": [1654],
+    "accept_npc": 6181,
+    "turnin_npc": 6181,
+    "wait_for_event": "Wait by the forge while Jordan makes the weapon. Speak with him again for Verigan's Fist.",
+    "source": "https://db.icy-veins.com/wow-forever/quests/1806"
   },
   "1947": {
     "name": "Journey to the Marsh",

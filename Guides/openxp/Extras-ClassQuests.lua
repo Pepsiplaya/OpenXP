@@ -232,3 +232,101 @@ step
     .turnin 79442 >>Deliver the Eye to |cRXP_FRIENDLY_Bath'rah the Windwatcher::6176|r and choose a weapon.
     .target Bath'rah the Windwatcher::6176
 ]])
+
+RXPGuides.RegisterGuide([[
+#forever
+#version 1
+#group OpenXP Extras
+#subgroup Class Quests
+#name Verigan's Fist
+<< Alliance Paladin
+
+step
+    .xp 20 >>Reach level 20.
+step
+    .isQuestAvailable 1652
+    +Finish The Tome of Valor with Duthorian Rall in Stormwind. The Alliance leveling guides cover Daphne's defense in Westfall.
+step
+    .isQuestTurnedIn 1652
+    .goto Stormwind City,50.48,47.49
+    .accept 1653 >>Accept The Test of Righteousness from |cRXP_FRIENDLY_Duthorian Rall::6171|r
+    .target Duthorian Rall::6171
+step
+    .isOnQuest 1653
+    .goto Dun Morogh,52.49,36.92
+    .turnin 1653 >>Turn in The Test of Righteousness to |cRXP_FRIENDLY_Jordan Stilwell::6181|r near the Gates of Ironforge.
+    .target Jordan Stilwell::6181
+step
+    .isQuestTurnedIn 1653
+    .goto Dun Morogh,52.49,36.92
+    .accept 1654 >>Accept The Test of Righteousness and keep Jordan's Weapon Notes for the four materials.
+    .target Jordan Stilwell::6181
+step
+    .isOnQuest 1654
+    .goto Loch Modan,35.95,44.91
+    .accept 1655 >>Accept Bailor's Ore Shipment from |cRXP_FRIENDLY_Bailor Stonehand::6241|r in Thelsamar.
+    .target Bailor Stonehand::6241
+step
+    .isOnQuest 1655
+    .goto Loch Modan,71.60,21.61
+    >>Look among the ogres northeast of the loch for |cRXP_PICK_Bailor's Ore|r and recover the shipment.
+    .complete 1655,1 --Jordan's Ore Shipment
+step
+    .isOnQuest 1655
+    .goto Loch Modan,35.95,44.91
+    .turnin 1655 >>Turn in Bailor's Ore Shipment to receive the refined ore.
+    .complete 1654,2 --Jordan's Refined Ore Shipment
+    .target Bailor Stonehand::6241
+step
+    #completewith next
+    .isOnQuest 1654
+    .goto Westfall,42.60,71.70,35 >>Meet your group at Moonbrook, then take the mine tunnels into the Deadmines.
+step
+    .isOnQuest 1654
+    >>Inside the Deadmines, loot |cRXP_LOOT_Whitestone Oak Lumber|r from a |cRXP_ENEMY_Goblin Woodcarver::641|r.
+    .complete 1654,1 --Whitestone Oak Lumber
+    .mob Goblin Woodcarver::641
+step
+    #completewith next
+    .isOnQuest 1654
+    .goto Silverpine Forest,44.80,67.80,35 >>Meet your group at Shadowfang Keep in Silverpine Forest.
+step
+    .isOnQuest 1654
+    >>Once inside Shadowfang Keep, check the stables off the courtyard and take |cRXP_PICK_Jordan's Hammer|r.
+    .complete 1654,3 --Jordan's Smithing Hammer
+step
+    .isOnQuest 1654
+    .goto Darkshore,37.40,40.13
+    .accept 1442 >>Accept Seeking the Kor Gem from |cRXP_FRIENDLY_Thundris Windweaver::3649|r in Auberdine.
+    .target Thundris Windweaver::3649
+step
+    .isOnQuest 1442
+    .goto Darkshore,31.80,92.44
+    >>Bring help to the Blackfathom Deeps approach. Loot a |cRXP_LOOT_Corrupted Kor Gem|r from the naga around the ruins or inside the dungeon.
+    .complete 1442,1 --Corrupted Kor Gem
+    .mob Blackfathom Oracle::4803
+    .mob Blackfathom Tide Priestess::4802
+    .mob Blackfathom Sea Witch::4805
+step
+    .isOnQuest 1442
+    .goto Darkshore,37.40,40.13
+    .turnin 1442 >>Turn in Seeking the Kor Gem to receive the purified gem.
+    .complete 1654,4 --Purified Kor Gem
+    .target Thundris Windweaver::3649
+step
+    .isOnQuest 1654
+    .goto Dun Morogh,52.49,36.92
+    .turnin 1654 >>Return all four materials to Jordan Stilwell.
+    .target Jordan Stilwell::6181
+step
+    .isQuestTurnedIn 1654
+    .goto Dun Morogh,52.49,36.92
+    .accept 1806 >>Accept the final Test of Righteousness.
+    .target Jordan Stilwell::6181
+step
+    .isOnQuest 1806
+    .goto Dun Morogh,52.49,36.92
+    >>Wait by the forge while Jordan makes the weapon. Speak with him again for Verigan's Fist.
+    .turnin 1806 >>Turn in The Test of Righteousness
+    .target Jordan Stilwell::6181
+]])

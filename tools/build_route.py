@@ -429,6 +429,18 @@ class Quest:
         return "/".join(names)
 
 
+def item_drop_npcs(db, item, *, include_vendors=False):
+    # QuestieDB can list a reward giver in npcDrops as well as recording
+    # the quest in questRewards. Only the actual drop sources are combat.
+    reward_givers = set()
+    for quest_id in as_list(li(item, 6)):
+        finisher = li(db.get("q", {}).get(quest_id), 3)
+        reward_givers.update(as_list(li(finisher, 1)))
+    if include_vendors:
+        reward_givers.difference_update(as_list(li(item, 14)))
+    return [npc for npc in as_list(li(item, 2)) if npc not in reward_givers]
+
+
 def spawns_in(entity, zone, spawn_index):
     sp = li(entity, spawn_index)
     if isinstance(sp, list):
@@ -703,7 +715,7 @@ class Builder:
             item = self.db["i"].get(item_id)
             if not item:
                 return None
-            droppers = [self.npc(nid) for nid in as_list(li(item, 2))]
+            droppers = [self.npc(nid) for nid in item_drop_npcs(self.db, item, include_vendors=True)]
             droppers = [n for n in droppers if n and (li(n, 6) or 0) not in (1, 2, 3)]
             # Questie lists some vendors as droppers (Soothing Spices from
             # Helenia Olden). Those are bought, not killed, and only from

@@ -21,3 +21,10 @@
 - Fixed the Horde Shaman Elemental Aid pickup and added Eyes on the Sky and the Windshaper Call of Air variant. Both Heed My Call variants now explain the Corrupted Totems ritual. The Horde guide requires the Eye before turning in, and an optional Tempest's Weapons chapter covers the four totems and the weapon delivery for Orc, Troll, and Tauren Shamans.
 - Kept the Prompt Potion Runner objective and verified its two Undercity NPCs. Improved the timed delivery instructions. Recorded the export's missing objective and ambiguous Shaman capstone requirements for future audits.
 - Compared the 1.3.65-beta source and this build against the expanded evidence. The Plucky, Heed My Call, and Fillion checks went from nine diagnostics to zero. The full Windows suite passed 270 Smart Start assertions, 34 Python tests, all other Lua tests, and the coordinate, label, and frozen-route checks.
+
+### 1.3.67-beta
+
+- Packaged 1.3.66-beta and verified its archive and Lua load order. The [fork's Linux checks](https://github.com/Pepsiplaya/OpenXP/actions/runs/43953876213) passed.
+- Audited the Verigan's Fist preview. The item export listed Bailor and Thundris as drops for their own quest rewards. Both planners now filter those NPCs out of combat sources. Added regression coverage for genuine drops and recorded vendors.
+- Added the missing 1654 pickup to the Alliance Paladin leveling steps and a complete optional materials chapter. The validator requires the Bailor and Thundris rewards before their parent objectives and a separate forge turn-in. The optional guide uses the dungeon entrance waypoints and keeps the Shadowfang hammer objective inside the instance.
+- The refreshed Alliance preview cleared both invalid combat instructions. The Windows suite passed 270 Smart Start assertions, 36 Python tests, the other Lua tests, and the coordinate, label, and shared-route checks. The merged export audit still has 20 records and guide steps to review, with no remaining single-NPC handoff mismatch.

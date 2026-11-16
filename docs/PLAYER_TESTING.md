@@ -1,11 +1,11 @@
-# Player testing for OpenXP Ultimate 1.3.66-beta
+# Player testing for OpenXP Ultimate 1.3.67-beta
 
 ## Install the test build
 
 1. Close WoW Forever. Use a separate Forever installation or test profile if available.
 2. For a swap in your existing installation, move your existing `OpenXP` addon folder outside `Interface\AddOns`. Back up its `OpenXP.lua` and `OpenXP.lua.bak` files from the account and character `SavedVariables` directories, where present.
 3. Extract the test ZIP. Copy the extracted `OpenXP` folder into `World of Warcraft\_forever_\Interface\AddOns`. The file should be at `AddOns\OpenXP\OpenXP.toc`. Disable RestedXP Guides in the character selection AddOns menu while testing OpenXP.
-4. Log in and run `/oxp news`. Confirm the version is `1.3.66-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
+4. Log in and run `/oxp news`. Confirm the version is `1.3.67-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
 
 ## What to test first
 
@@ -13,6 +13,7 @@
 | --- | --- | --- |
 | Guide card and welcome | Open `/oxp news`. Open the guide card at its normal size, then resize to 200 pixels and try the 20-point font and one-line mode. | The header and step counter remain usable, the counter opens the step list, and the XP line shows the correct level and percentage. Confirm max-level hides the XP line. Expand the card, then check both waypoint directions and the green arrival check. |
 | Mage's Wand | Mage at level 30 or higher. Select OpenXP Extras → Class Quests → Mage's Wand. Try a fresh chain and one with a prior quest in the log. | `/beckon` and speak to Plucky. Gather Jade and the bramble, collect the book in Scarlet Monastery Library, hand in both quests, and wait for Tabetha's ritual. Record dungeon entry and objective tracking if you load the chapter inside. |
+| Verigan's Fist | Alliance Paladin, level 20 or higher, with The Tome of Valor (1652) turned in. Select Verigan's Fist under OpenXP Extras → Class Quests. | Jordan offers 1654. Bailor and Thundris's hand-ins supply the refined ore and gem, the dungeon steps track lumber and hammer, and the last quest rewards the mace after the forge event. Check the stables and whether the gem drops around the Blackfathom entrance. |
 | Horde Warrior | Level 30 or 31. Select The Islander and The Affray in OpenXP Extras → Class Quests. Test from Ratchet and with The Islander already handed in. | The shoreline directions lead to Fray Island. The grate activates the event, Big Will gives credit, and Klannoc hands out the stance and Intercept. Record the level of each offer. |
 | Shaman Call of Air and Heed My Call | Level 30 Windshaper Shaman for 96136. Use an Orc, Troll, or Tauren Shaman with Elemental Aid done to try The Tempest's Weapons in OpenXP Extras. | Alaana starts the Windshaper delivery to Prate. In the weapon chapter each totem increments the correct objective. Corrupted Totems start the ritual, and Rau turns in the Eye before Bath'rah's delivery. Confirm the Alliance ritual also awards the Eye. |
 | Valanaar handoff | Alliance Skyborne with The Missing Scholar Part 2 (92850). | Pick it up at the Shriekling Den. Return to Valanaar with the head, hand it to Fillion (253285), and pick up Fillion's Mission. |

@@ -160,6 +160,19 @@ class BenchmarkTests(unittest.TestCase):
 
 
 class ClassObjectiveTests(unittest.TestCase):
+    def test_reward_givers_are_not_treated_as_monster_drop_sources(self):
+        quest = route.Quest(1654, {1: "The Test of Righteousness", 10: {3: [[6993]]}})
+        item = {1: "Jordan's Refined Ore Shipment", 2: [6241], 6: [1655]}
+        db = {"q": {1655: {3: [[6241]]}}, "n": {6241: {1: "Bailor", 7: {38: [[35.95, 44.91]]}}},
+              "i": {6993: item}, "o": {}}
+        self.assertEqual(class_steps.objectives(db, quest), [])
+        self.assertIsNone(route.Builder(db, (), ()).objective_sites(quest, 38))
+        item[2].append(123)
+        db["n"][123] = {1: "Mob", 7: {38: [[20, 34]]}}
+        self.assertEqual(route.item_drop_npcs(db, item), [123])
+        item[14] = [6241]
+        self.assertEqual(route.item_drop_npcs(db, item, include_vendors=True), [6241, 123])
+
     def test_quest_item_from_dungeon_object_uses_entrance_and_keeps_objective(self):
         quest = route.Quest(1951, {1: "Rituals of Power", 10: {3: [[7274]]}})
         db = {"n": {}, "o": {103664: {1: "Rituals of Power", 4: {796: [[-1, -1]]}}},

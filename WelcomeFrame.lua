@@ -15,6 +15,14 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.67-beta",
+        date = "November 2026",
+        changes = {
+            "Alliance Paladins can follow Verigan's Fist under OpenXP Extras, Class Quests. The guide covers both material hand-ins, the Deadmines, Shadowfang Keep, and Jordan's forge.",
+            "The Alliance leveling guide now picks up the weapon-material quest when you reach Jordan Stilwell.",
+        },
+    },
+    {
         version = "1.3.66-beta",
         date = "November 2026",
         changes = {

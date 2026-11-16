@@ -270,7 +270,8 @@ def objectives(db, q):
             continue
         zones, names, elite = {}, {}, True
         inside_object = None
-        for nid in B.as_list(B.li(item, 2)):
+        droppers = B.item_drop_npcs(db, item)
+        for nid in droppers:
             n = db["n"].get(nid)
             if not n:
                 continue
@@ -296,7 +297,7 @@ def objectives(db, q):
             out.append((idx, "do", text, [], dz, dp, True))
             continue
         if not z:
-            for nid in B.as_list(B.li(item, 2)):
+            for nid in droppers:
                 n = db["n"].get(nid)
                 d = dungeon_of(n, 7) if n else None
                 if d:

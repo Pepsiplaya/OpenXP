@@ -1026,7 +1026,7 @@ step << Human Paladin/Dwarf Paladin
     >>Talk to |cRXP_FRIENDLY_Daphne Stilwell|r
     .turnin 1651 >>Turn in The Tome of Valor
     .accept 1652 >>Accept The Tome of Valor
-    .target Daphne Stilwell
+    .target Daphne Stilwell::6182
 ]])
 
 RXPGuides.RegisterGuide([[
@@ -1158,7 +1158,7 @@ step << Human Paladin/Dwarf Paladin
     >>Talk to |cRXP_FRIENDLY_Duthorian Rall|r
     .turnin 1652 >>Turn in The Tome of Valor
     .accept 1653 >>Accept The Test of Righteousness
-    .target Duthorian Rall
+    .target Duthorian Rall::6171
 step << Human Priest
     --oxp-class
     .goto Stormwind City,49.53,44.60
@@ -1174,14 +1174,16 @@ step << Human Paladin/Dwarf Paladin
     --oxp-class
     .goto Dun Morogh,52.49,36.92
     >>Talk to |cRXP_FRIENDLY_Jordan Stilwell|r
+    >>For the full weapon route, choose Verigan's Fist under OpenXP Extras, Class Quests.
     .turnin 1653 >>Turn in The Test of Righteousness
-    .target Jordan Stilwell
+    .accept 1654 >>Accept the next Test of Righteousness for the weapon materials
+    .target Jordan Stilwell::6181
 step << Human Paladin/Dwarf Paladin
     --oxp-class
     .goto Loch Modan,35.95,44.91
     >>Talk to |cRXP_FRIENDLY_Bailor Stonehand|r
     .accept 1655 >>Accept Bailor's Ore Shipment
-    .target Bailor Stonehand
+    .target Bailor Stonehand::6241
 step << Human Paladin/Dwarf Paladin
     --oxp-class
     .goto Loch Modan,71.60,21.61
@@ -1192,7 +1194,7 @@ step << Human Paladin/Dwarf Paladin
     .goto Loch Modan,35.95,44.91
     >>Talk to |cRXP_FRIENDLY_Bailor Stonehand|r
     .turnin 1655 >>Turn in Bailor's Ore Shipment
-    .target Bailor Stonehand
+    .target Bailor Stonehand::6241
 ]])
 
 RXPGuides.RegisterGuide([[
@@ -1342,7 +1344,7 @@ step << Human Paladin/Dwarf Paladin
     .goto Darkshore,37.40,40.13
     >>Talk to |cRXP_FRIENDLY_Thundris Windweaver|r
     .accept 1442 >>Accept Seeking the Kor Gem
-    .target Thundris Windweaver
+    .target Thundris Windweaver::3649
 step << Human Paladin/Dwarf Paladin
     --oxp-class
     .goto Darkshore,31.80,92.44
@@ -1355,7 +1357,7 @@ step << Human Paladin/Dwarf Paladin
     .goto Darkshore,37.40,40.13
     >>Talk to |cRXP_FRIENDLY_Thundris Windweaver|r
     .turnin 1442 >>Turn in Seeking the Kor Gem
-    .target Thundris Windweaver
+    .target Thundris Windweaver::3649
 step << Rogue
     --oxp-class
     .goto The Barrens,47.81,84.93

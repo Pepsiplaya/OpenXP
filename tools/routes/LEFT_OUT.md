@@ -1,6 +1,6 @@
 # Class quest placement gaps
 
-Updated for the 1.3.66-beta cycle using the pinned merged Forever export. Mage's Wand and the Horde Warrior stance chain have playable options under OpenXP Extras. The class preview now places the Scarlet Monastery book and the Alliance Paladin dungeon objects. The Test of Righteousness route and faction branches still require review before use.
+Updated for the 1.3.67-beta cycle using the pinned merged Forever export. Mage's Wand, the Horde Warrior stance chain, and Alliance Verigan's Fist have playable options under OpenXP Extras. The class generator covers the Paladin prerequisites through the delivery to Jordan. The hand-authored chapter sequences the two reward quests and the dungeon materials.
 
 The remaining compiler gaps below need verified quest givers, item sources, or locations. Add reviewed corrections in `tools/routes/class_chains.py` and rerun `tools/class_steps.py --output-dir` to check a draft.
 

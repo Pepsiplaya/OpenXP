@@ -98,6 +98,18 @@ class QuestEvidenceTests(unittest.TestCase):
         self.assertIn(".target Fillion Flamebreeze::253285", valanaar)
         self.assertIn(".accept 99260", valanaar)
 
+    def test_verigans_fist_gets_the_two_rewards_before_registering_materials(self):
+        paladin, = (body for body in GUIDE.findall(source(CLASS_QUESTS)) if "#name Verigan's Fist" in body)
+        self.assertIn("\n<< Alliance Paladin\n", paladin)
+        self.assertEqual(list(validate(paladin, EVIDENCE, strict=True, faction="Alliance")), [])
+        self.assertLess(paladin.index(".accept 1654"), paladin.index(".accept 1655"))
+        for reward, index in ((1655, 2), (1442, 4)):
+            self.assertLess(paladin.index(f".turnin {reward}"), paladin.index(f".complete 1654,{index}"))
+        self.assertLess(paladin.index(".complete 1654,3"), paladin.index(".turnin 1654"))
+        misplaced = paladin.replace(".complete 1654,2", "").replace(
+            ".accept 1655", ".complete 1654,2\n    .accept 1655")
+        self.assertTrue(any("needs the reward from quest 1655" in error for error in validate(misplaced, EVIDENCE)))
+
     def test_reviewed_quests_in_bundled_guides(self):
         files = [*GUIDES.glob("forever/*.lua"), *GUIDES.glob("openxp/*.lua")]
         for path in files:

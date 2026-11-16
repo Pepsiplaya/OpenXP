@@ -34,8 +34,9 @@ ALLIANCE = [
          quests=[(4487, 4488), 4490]),
 
     # Paladin
-    dict(cls="Paladin", name="Tome of Valor and Verigan's Fist", why="two-hander for levelling",
-         quests=[1650, 1651, 1652, 1653, 1655, 1442, 1654, 1806]),
+    # The Verigan's Fist guide interleaves 1654 with the two item-reward quests.
+    dict(cls="Paladin", name="The Tome of Valor", why="opens The Test of Righteousness",
+         quests=[1650, 1651, 1652, 1653]),
     dict(cls="Paladin", name="Warhorse", why="need (mount)",
          quests=[(4485, 4486, 1661)]),
 

@@ -93,6 +93,9 @@ def validate(body, evidence, *, strict=False, faction=None):
                 use = fact.get("objective_use", {}).get(index)
                 if use and not any(re.match(rf"^\.use {use['item']}\b", row) for row in lines):
                     yield f"{context}: objective {index} needs quest item {use['item']}"
+                reward = fact.get("objective_rewards", {}).get(index)
+                if reward and reward not in turned:
+                    yield f"{context}: objective {index} needs the reward from quest {reward}"
                 if qid in accepted:
                     accepted[qid][1].append(int(index) if index else None)
             else:
