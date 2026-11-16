@@ -8,11 +8,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 GUIDES = ROOT / "Guides"
 sys.path.insert(0, str(ROOT / "tools"))
-from validate_quest_steps import GUIDE, load_evidence, validate
+from validate_quest_steps import GUIDE, STEP, load_evidence, validate
 
 
 EVIDENCE = load_evidence()
 SHENDRALAS = GUIDES / "openxp" / "Extras-Shendralas.lua"
+CLASS_QUESTS = GUIDES / "openxp" / "Extras-ClassQuests.lua"
 
 
 def source(path):
@@ -32,6 +33,49 @@ class QuestEvidenceTests(unittest.TestCase):
         fact = {"source": "unit test"}
         self.assertTrue(list(validate(body, {999999: fact}, strict=True)))
         self.assertFalse(list(validate(body, {999999: {**fact, "instant": True}}, strict=True)))
+
+    def test_event_quest_needs_its_own_turnin_step(self):
+        facts = {999999: {"wait_for_event": "Wait for the ritual."}}
+        accept, turnin = "step\n    .accept 999999\n", "    .turnin 999999\n"
+        self.assertTrue(list(validate(accept + turnin, facts, strict=True)))
+        self.assertFalse(list(validate(accept + "step\n    >>Wait for the ritual.\n" + turnin, facts, strict=True)))
+
+    def test_mage_wand_routes_each_faction_through_both_prerequisites(self):
+        manifest = source(GUIDES / "GuideList-forever.xml")
+        self.assertIn('file="Guides/openxp/Extras-ClassQuests.lua"', manifest)
+        mage, _ = GUIDE.findall(source(CLASS_QUESTS))
+        self.assertIn("\n<< Mage\n", mage)
+        for faction in ("Alliance", "Horde"):
+            self.assertEqual(list(validate(mage, EVIDENCE, strict=True, faction=faction)), [])
+        for phase in (".complete 1948,1", ".complete 1948,2", ".complete 1951,1",
+                      ".turnin -1948", ".turnin -1951"):
+            self.assertLess(mage.index(phase), mage.index(".accept 1952"))
+        steps = STEP.split(mage)
+        library_index, = (i for i, step in enumerate(steps) if ".complete 1951,1" in step)
+        self.assertIn("#completewith next", steps[library_index - 1])
+        self.assertIn(".goto Tirisfal Glades,82.60,33.80,35", steps[library_index - 1])
+        self.assertNotIn(".goto ", steps[library_index])
+        altered = mage.replace("/beckon", "kill the chicken")
+        self.assertTrue(any("/beckon with NPC 6626" in error for error in validate(altered, EVIDENCE)))
+
+    def test_horde_warrior_route_reaches_fray_island_before_arena_targets(self):
+        _, horde = GUIDE.findall(source(CLASS_QUESTS))
+        self.assertIn("\n<< Horde Warrior\n", horde)
+        self.assertEqual(list(validate(horde, EVIDENCE, strict=True, faction="Horde")), [])
+        self.assertLess(horde.index(".subzone 720"), horde.index(".goto The Barrens,68.62,49.16"))
+        self.assertLess(horde.index(".complete 1719,2"), horde.index(".complete 1719,1"))
+        self.assertIn(".mob Big Will::6238", horde)
+
+    def test_skyborne_scholar_moves_from_shriekling_den_to_valanaar(self):
+        text = source(GUIDES / "forever" / "RestedXP-Skyborne.lua")
+        steps = [step for body in GUIDE.findall(text) for step in STEP.split(body)[1:]]
+        cave, = (step for step in steps if ".accept 92850" in step)
+        valanaar, = (step for step in steps if ".turnin 92850" in step)
+        self.assertIn(".goto 2521,52.064,69.396", cave)
+        self.assertIn(".target Fillion Flamebreeze::253284", cave)
+        self.assertIn(".goto 2521,66.21,79.94", valanaar)
+        self.assertIn(".target Fillion Flamebreeze::253285", valanaar)
+        self.assertIn(".accept 99260", valanaar)
 
     def test_reviewed_quests_in_bundled_guides(self):
         files = [*GUIDES.glob("forever/*.lua"), *GUIDES.glob("openxp/*.lua")]

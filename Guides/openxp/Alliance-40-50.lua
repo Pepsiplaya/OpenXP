@@ -34,7 +34,7 @@ step << Dwarf Mage/Gnome Mage
     .goto Ironforge,27.25,8.30
     >>Talk to |cRXP_FRIENDLY_Bink|r
     .accept 1947 >>Accept Journey to the Marsh
-    .target Bink
+    .target Bink::5144
 step
     .goto Ironforge,50.83,5.62
     >>Talk to |cRXP_FRIENDLY_Gerrig Bonegrip|r
@@ -244,32 +244,32 @@ step << Dwarf Mage/Gnome Mage
     .goto Dustwallow Marsh,46.06,57.09
     >>Talk to |cRXP_FRIENDLY_Tabetha|r
     .turnin 1947 >>Turn in Journey to the Marsh
-    .target Tabetha
+    .target Tabetha::6546
 step << Mage
     --oxp-class
     .goto Dustwallow Marsh,46.06,57.09
     >>Talk to |cRXP_FRIENDLY_Tabetha|r
     .accept 1949 >>Accept Hidden Secrets
-    .target Tabetha
+    .target Tabetha::6546
 step << Mage
     --oxp-class
     .goto Thousand Needles,78.29,75.70
     >>Talk to |cRXP_FRIENDLY_Magus Tirth|r
     .turnin 1949 >>Turn in Hidden Secrets
     .accept 1950 >>Accept Get the Scoop
-    .target Magus Tirth
+    .target Magus Tirth::6548
 step << Mage
     --oxp-class
     .goto Thousand Needles,79.61,75.63
-    >>Kill |cRXP_ENEMY_"Plucky" Johnson|r
+    >>Target the chicken |cRXP_FRIENDLY_"Plucky" Johnson::6626|r and type /beckon. Speak to him once he becomes human to learn the phrase.
     .complete 1950,1 --Get the Scoop
-    .mob "Plucky" Johnson
+    .target "Plucky" Johnson::6626
 step << Mage
     --oxp-class
     .goto Thousand Needles,78.29,75.70
     >>Talk to |cRXP_FRIENDLY_Magus Tirth|r
     .turnin 1950 >>Turn in Get the Scoop
-    .target Magus Tirth
+    .target Magus Tirth::6548
 ]])
 
 RXPGuides.RegisterGuide([[

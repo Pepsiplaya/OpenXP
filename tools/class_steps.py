@@ -29,7 +29,7 @@ byte for byte what they were.
 
 Usage:
     python3 tools/class_steps.py --questiedb <QuestieDB> --dump <OpenXP.lua> \
-        --facts facts.pkl [--report report.md] Alliance
+        --facts facts.pkl [--output-dir preview] [--report report.md] Alliance
 """
 import argparse
 import glob
@@ -138,10 +138,14 @@ def load_sections(faction):
     return files, sections
 
 
-def write_files(files):
+def write_files(files, output_dir=None):
     for path, parts in files.items():
         out = "".join(p.render() if isinstance(p, Section) else p for p in parts)
-        open(path, "w", encoding="utf-8").write(out)
+        if output_dir:
+            path = os.path.join(output_dir, os.path.relpath(path, ROOT))
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as file:
+            file.write(out)
 
 
 # ---------------------------------------------------------------------------
@@ -222,14 +226,19 @@ def objectives(db, q):
 
     for entry in B.as_list(B.li(obj, 1)):
         idx += 1
-        n = db["n"].get(B.li(entry, 1))
+        interaction = q.evidence.get("interactions", {}).get(str(idx))
+        nid = interaction["target_npc"] if interaction else B.li(entry, 1)
+        n = db["n"].get(nid)
         if not n:
             continue
         z, p = best(spawn_zones(n, 7))
         if z:
-            out.append((idx, "kill", B.li(n, 1), [B.li(n, 1)], z, p, (B.li(n, 6) or 0) in (1, 2, 3)))
-        elif dungeon_of(n, 7):
-            dn, dz, dp = dungeon_of(n, 7)
+            if interaction:
+                out.append((idx, "interact", interaction["instruction"], [B.li(n, 1)], z, p, False))
+            else:
+                out.append((idx, "kill", B.li(n, 1), [B.li(n, 1)], z, p, (B.li(n, 6) or 0) in (1, 2, 3)))
+        elif not interaction and (dungeon := dungeon_of(n, 7)):
+            dn, dz, dp = dungeon
             out.append((idx, "do", "Kill |cRXP_ENEMY_%s|r in %s (dungeon)" % (B.li(n, 1), dn),
                         [B.li(n, 1)], dz, dp, True))
     for entry in B.as_list(B.li(obj, 2)):
@@ -241,6 +250,10 @@ def objectives(db, q):
         label = B.li(entry, 2) or B.li(o, 1)
         if z:
             out.append((idx, "use", label, [], z, p, False))
+        elif dungeon := dungeon_of(o, 4):
+            dn, dz, dp = dungeon
+            text = "Interact with |cRXP_PICK_%s|r inside %s." % (label, dn)
+            out.append((idx, "do", text, [], dz, dp, True))
     for entry in B.as_list(B.li(obj, 3)):
         idx += 1
         item_id = B.li(entry, 1)
@@ -248,6 +261,7 @@ def objectives(db, q):
         if not item:
             continue
         zones, names, elite = {}, {}, True
+        inside_object = None
         for nid in B.as_list(B.li(item, 2)):
             n = db["n"].get(nid)
             if not n:
@@ -259,10 +273,20 @@ def objectives(db, q):
                 elite = elite and e
         for oid in B.as_list(B.li(item, 3)):
             o = db["o"].get(oid)
-            for z, pts in (spawn_zones(o, 4) if o else {}).items():
+            if not o:
+                continue
+            for z, pts in spawn_zones(o, 4).items():
                 zones.setdefault(z, []).extend(pts)
-                elite = False
+                if pts:
+                    elite = False
+            if inside_object is None and (dungeon := dungeon_of(o, 4)):
+                inside_object = (B.li(o, 1), dungeon)
         z, p = best(zones)
+        if not z and inside_object:
+            object_name, (dn, dz, dp) = inside_object
+            text = "Open |cRXP_PICK_%s|r inside %s and collect |cRXP_LOOT_%s|r." % (object_name, dn, B.li(item, 1))
+            out.append((idx, "do", text, [], dz, dp, True))
+            continue
         if not z:
             for nid in B.as_list(B.li(item, 2)):
                 n = db["n"].get(nid)
@@ -681,7 +705,9 @@ def render_talk(tag, g, acts, sign=1):
     kind, gid, name, area, p = g
     lines = [tag, MARK, "    .goto %s,%.2f,%.2f" % (AREAS[area][0], p[0], p[1])]
     if kind == "npc":
-        lines.append("    >>Talk to |cRXP_FRIENDLY_%s|r" % name)
+        wait = next((q.evidence["wait_for_event"] for verb, q in acts
+                     if verb == "turnin" and q.evidence.get("wait_for_event")), None)
+        lines.append("    >>" + (wait or ("Talk to |cRXP_FRIENDLY_%s::%d|r" % (name, gid))))
     else:
         lines.append("    >>Click the |cRXP_PICK_%s|r" % name)
     for verb, q in acts:
@@ -690,7 +716,7 @@ def render_talk(tag, g, acts, sign=1):
         else:
             lines.append("    .turnin %d >>Turn in %s" % (sign * q.id, q.name))
     if kind == "npc":
-        lines.append("    .target %s" % name)
+        lines.append("    .target %s::%d" % (name, gid))
     return "\n".join(lines) + "\n"
 
 
@@ -708,17 +734,22 @@ def render_obj(tag, q, idx, kind, label, mobs, area, p, hard, sign=1):
     if hard:
         lines.append("    >>|cRXP_WARN_This is an elite or group part: bring help, or skip this step|r")
     lines.append("    .complete %d,%d --%s" % (sign * q.id, idx, q.name))
-    for m in mobs:
-        lines.append("    .mob %s" % m)
+    if kind == "interact":
+        npc = q.evidence["interactions"][str(idx)]["target_npc"]
+        lines.append("    .target %s::%d" % (mobs[0], npc))
+    else:
+        for m in mobs:
+            lines.append("    .mob %s" % m)
     return "\n".join(lines) + "\n"
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--questiedb", required=True)
+    ap.add_argument("--questiedb", required=True, help="QuestieDB checkout or merged Forever export directory")
     ap.add_argument("--dump")
     ap.add_argument("--facts")
     ap.add_argument("--report")
+    ap.add_argument("--output-dir", help="write class guide drafts below this directory")
     ap.add_argument("faction", choices=["Alliance", "Horde"])
     args = ap.parse_args()
     B.GAME, B.FACTION = "Forever", args.faction
@@ -755,7 +786,7 @@ def main():
                 ent[idx] = spawns
     report = build(db, sections, chains, args.faction)
     finalize(sections)
-    write_files(files)
+    write_files(files, args.output_dir)
     lines = []
     for chain, lvl, cursor, added, detours, xp in report:
         end = sections[cursor[0]].name

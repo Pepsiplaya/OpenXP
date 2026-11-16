@@ -160,6 +160,43 @@ class BenchmarkTests(unittest.TestCase):
 
 
 class ClassObjectiveTests(unittest.TestCase):
+    def test_quest_item_from_dungeon_object_uses_entrance_and_keeps_objective(self):
+        quest = route.Quest(1951, {1: "Rituals of Power", 10: {3: [[7274]]}})
+        db = {"n": {}, "o": {103664: {1: "Rituals of Power", 4: {796: [[-1, -1]]}}},
+              "i": {7274: {1: "Rituals of Power", 3: [103664]}}}
+        site, = class_steps.objectives(db, quest)
+        self.assertEqual((site[0], site[3:]), (1, ([], 85, (82.6, 33.8), True)))
+        text = class_steps.render_obj("step << Mage", quest, *site)
+        self.assertIn(".goto Tirisfal Glades,82.60,33.80", text)
+        self.assertIn("inside Scarlet Monastery", text)
+        self.assertIn(".complete 1951,1", text)
+        self.assertNotIn(".mob", text)
+
+        # Keep a real outdoor source when the same item also drops there.
+        db["o"][2] = {1: "Outdoor book", 4: {17: [[23, 45]]}}
+        db["i"][7274][3].append(2)
+        site, = class_steps.objectives(db, quest)
+        self.assertEqual(site[1:], ("loot", "Rituals of Power", [], 17, (23, 45), False))
+
+    def test_direct_dungeon_object_uses_entrance(self):
+        quest = route.Quest(3, {1: "Read a Plaque", 10: {2: [[4]]}})
+        db = {"n": {}, "o": {4: {1: "Plaque", 4: {719: [[-1, -1]]}}}, "i": {}}
+        site, = class_steps.objectives(db, quest)
+        self.assertEqual(site[:2], (1, "do"))
+        self.assertIn("Blackfathom Deeps", site[2])
+        self.assertTrue(site[-1])
+
+    def test_follow_reviewed_plucky_interaction_in_class_preview(self):
+        quest = route.Quest(1950, {1: "Get the Scoop", 10: [[[6626, None, 3]]]})
+        db = {"n": {6626: {1: '"Plucky" Johnson', 7: {400: [[79.61, 75.63]]}}}, "o": {}, "i": {}}
+        site, = class_steps.objectives(db, quest)
+        self.assertEqual(site[:2], (1, "interact"))
+        text = class_steps.render_obj("step << Mage", quest, *site)
+        self.assertIn("/beckon", text)
+        self.assertIn('.target "Plucky" Johnson::6626', text)
+        self.assertNotIn(".mob ", text)
+        self.assertIsNone(route.Builder(db, (), ()).objective_sites(quest, 400))
+
     def test_affray_exploration_precedes_the_kill(self):
         quest = route.Quest(1719, {
             1: "The Affray", 9: ["Step on the grate", {17: [[68.60, 48.72]]}],

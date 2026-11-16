@@ -648,6 +648,9 @@ class Builder:
         mapped into the section zone's frame for routing; place keeps the
         real (map name, x, y) for the .goto, or None for the home zone.
         """
+        # The class guides handle these scripted encounters and delays.
+        if q.evidence.get("interactions") or q.evidence.get("wait_for_event"):
+            return None
         seq = []  # each located objective's spawn points in the home zone
 
         def locate(fn):

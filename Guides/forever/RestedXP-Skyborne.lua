@@ -4615,10 +4615,10 @@ step << Alliance
     #label Turn in The Missing Scholar
     *|cRXP_WARN_Dual-wield the|r |T134520:0|t[|cRXP_LOOT_Trusty Wrench|r] |cRXP_WARN_and|r |T7791298:0|t[|cRXP_LOOT_Flutterfly Swatter|r] |cRXP_WARN_if you don't have the|r |T7791298:0|t[Zephrali Bludgeon].<< Rogue
     .goto 2521,66.21,79.94
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Fillion Flamebreeze::253284|r.
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Fillion Flamebreeze::253285|r in Valanaar.
     .turnin 92850 >>Turn in The Missing Scholar 2
     .accept 99260 >>Accept Fillion's Mission
-    .target Fillion Flamebreeze::253284
+    .target Fillion Flamebreeze::253285
     .use 263313 << Rogue -- Trusty Wrench
     .use 263329 << Rogue -- Flutterfly Swatter
 step << Alliance

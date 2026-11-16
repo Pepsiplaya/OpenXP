@@ -271,13 +271,13 @@ step << Human Warrior
     .goto Stormwind City,80.55,59.87
     >>Talk to |cRXP_FRIENDLY_Wu Shen|r
     .accept 1718 >>Accept The Islander
-    .target Wu Shen
+    .target Wu Shen::5479
 step << Dwarf Warrior/Gnome Warrior/NightElf Warrior/Skyborne Warrior
     --oxp-class
     .goto Ironforge,70.34,90.65
     >>Talk to |cRXP_FRIENDLY_Kelv Sternhammer|r
     .accept 1718 >>Accept The Islander
-    .target Kelv Sternhammer
+    .target Kelv Sternhammer::5113
 ]])
 
 RXPGuides.RegisterGuide([[
@@ -577,19 +577,19 @@ step << Human Warrior
     .goto The Barrens,68.62,49.16
     >>Talk to |cRXP_FRIENDLY_Klannoc Macleod|r
     .turnin 1718 >>Turn in The Islander
-    .target Klannoc Macleod
+    .target Klannoc Macleod::6236
 step << Dwarf Warrior/Gnome Warrior/NightElf Warrior/Skyborne Warrior
     --oxp-class
     .goto The Barrens,68.62,49.16
     >>Talk to |cRXP_FRIENDLY_Klannoc Macleod|r
     .turnin 1718 >>Turn in The Islander
-    .target Klannoc Macleod
+    .target Klannoc Macleod::6236
 step << Warrior
     --oxp-class
     .goto The Barrens,68.62,49.16
     >>Talk to |cRXP_FRIENDLY_Klannoc Macleod|r
     .accept 1719 >>Accept The Affray
-    .target Klannoc Macleod
+    .target Klannoc Macleod::6236
 step << Warrior
     --oxp-class
     .goto The Barrens,68.60,48.72
@@ -607,7 +607,7 @@ step << Warrior
     >>Talk to |cRXP_FRIENDLY_Klannoc Macleod|r
     .turnin 1719 >>Turn in The Affray
     .accept 1791 >>Accept The Windwatcher
-    .target Klannoc Macleod
+    .target Klannoc Macleod::6236
 ]])
 
 RXPGuides.RegisterGuide([[
@@ -1809,7 +1809,7 @@ step << Human Mage/NightElf Mage/Skyborne Mage
     .goto Stormwind City,49.56,85.80
     >>Talk to |cRXP_FRIENDLY_Jennea Cannon|r
     .accept 1947 >>Accept Journey to the Marsh
-    .target Jennea Cannon
+    .target Jennea Cannon::5497
 ]])
 
 RXPGuides.RegisterGuide([[
@@ -2046,7 +2046,7 @@ step << Human Mage/NightElf Mage/Skyborne Mage
     .goto Dustwallow Marsh,46.06,57.09
     >>Talk to |cRXP_FRIENDLY_Tabetha|r
     .turnin 1947 >>Turn in Journey to the Marsh
-    .target Tabetha
+    .target Tabetha::6546
 step
     .goto Dustwallow Marsh,68.21,48.62
     >>Talk to |cRXP_FRIENDLY_Captain Garran Vimes|r

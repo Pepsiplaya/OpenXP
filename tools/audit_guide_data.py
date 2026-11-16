@@ -11,11 +11,10 @@ from pathlib import Path
 from xml.etree import ElementTree
 
 import build_route as route
-from validate_quest_steps import ACTION, GUIDE, STEP, load_evidence
+from validate_quest_steps import ACTION, GUIDE, STEP, TARGET_ID, load_evidence, quest_npcs
 
 
 ROOT = Path(__file__).resolve().parents[1]
-TARGET_ID = re.compile(r"::(\d+)\b")
 GUIDE_NAME = re.compile(r"^#name\s+([^\n]+)", re.M)
 
 
@@ -86,11 +85,13 @@ def review_record(qid, row, fact, npc_ids):
     if missing:
         yield "reviewed_prerequisites_missing", f"Export lacks required prerequisites {sorted(missing)}."
     for kind in ("accept", "turnin"):
-        expected = fact.get(f"{kind}_npc")
-        if expected and expected not in route.as_list(route.li(endpoint(row, kind), 1)):
-            yield "reviewed_endpoint_discrepancy", f"Export omits the reviewed {kind} NPC {expected}."
-        if expected and expected not in npc_ids:
-            yield "reviewed_npc_missing", f"Export has no NPC record for reviewed {kind} NPC {expected}."
+        expected = quest_npcs(fact, kind)
+        missing = expected.difference(route.as_list(route.li(endpoint(row, kind), 1)))
+        if missing:
+            yield "reviewed_endpoint_discrepancy", f"Export omits reviewed {kind} NPCs {sorted(missing)}."
+        missing = expected.difference(npc_ids)
+        if missing:
+            yield "reviewed_npc_missing", f"Export has no NPC records for reviewed {kind} NPCs {sorted(missing)}."
     for kind in ("accept", "turnin"):
         if not endpoint(row, kind):
             yield "endpoint_unrecorded", f"Export does not record a {kind} source."
@@ -112,10 +113,9 @@ def audit(db, guides, evidence, quests=()):
             if row is None:
                 continue
             fact = evidence.get(qid, {})
-            reviewed_npc = fact.get(f"{kind}_npc")
             if kind != "complete":
                 finish = endpoint(row, kind)
-                npcs = {reviewed_npc} if reviewed_npc else set(route.as_list(route.li(finish, 1)))
+                npcs = quest_npcs(fact, kind) or set(route.as_list(route.li(finish, 1)))
                 other_source = route.li(finish, 2) or route.li(finish, 3)
                 if len(targets) == 1 and npcs and not other_source and not targets.intersection(npcs):
                     findings.append(dict(ref, code="step_target_discrepancy", detail=

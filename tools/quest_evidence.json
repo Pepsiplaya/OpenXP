@@ -1,10 +1,78 @@
 {
+  "1718": {
+    "name": "The Islander",
+    "delivery": true,
+    "accept_npcs": [3041, 3354, 4595, 5113, 5479],
+    "turnin_npc": 6236,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1718"
+  },
   "1719": {
     "name": "The Affray",
     "objectives": [2, 1],
     "ordered": true,
     "tag": "Warrior",
+    "requires": [1718],
+    "accept_npc": 6236,
+    "turnin_npc": 6236,
     "source": "https://db.icy-veins.com/wow-forever/quests/1719"
+  },
+  "1947": {
+    "name": "Journey to the Marsh",
+    "delivery": true,
+    "accept_npcs": [3048, 4568, 5144, 5497, 5885],
+    "turnin_npc": 6546,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1947"
+  },
+  "1948": {
+    "name": "Items of Power",
+    "objectives": [1, 2],
+    "requires": [1947],
+    "level": 30,
+    "accept_npc": 6546,
+    "turnin_npc": 6546,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1948"
+  },
+  "1949": {
+    "name": "Hidden Secrets",
+    "delivery": true,
+    "requires": [1947],
+    "accept_npc": 6546,
+    "turnin_npc": 6548,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1949"
+  },
+  "1950": {
+    "name": "Get the Scoop",
+    "objectives": [1],
+    "requires": [1949],
+    "tag": "Mage",
+    "accept_npc": 6548,
+    "turnin_npc": 6548,
+    "interactions": {
+      "1": {
+        "target_npc": 6626,
+        "required_text": "/beckon",
+        "instruction": "Target the chicken |cRXP_FRIENDLY_\"Plucky\" Johnson::6626|r and type /beckon. Speak to him once he becomes human to learn the phrase."
+      }
+    },
+    "source": "https://www.wowhead.com/forever/quest=1950/get-the-scoop"
+  },
+  "1951": {
+    "name": "Rituals of Power",
+    "objectives": [1],
+    "requires": [1950],
+    "level": 30,
+    "accept_npc": 6548,
+    "turnin_npc": 6546,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1951"
+  },
+  "1952": {
+    "name": "Mage's Wand",
+    "requires": [1948, 1951],
+    "level": 30,
+    "accept_npc": 6546,
+    "turnin_npc": 6546,
+    "wait_for_event": "Wait for Tabetha's ritual to finish. Speak with her again to choose your wand.",
+    "source": "https://www.wowhead.com/forever/quest=1952/mages-wand"
   },
   "5064": {
     "name": "Grimtotem Spying",
@@ -49,6 +117,13 @@
     "accept_npc": 253136,
     "turnin_npc": 253136,
     "source": "https://www.wowhead.com/forever/quest=92846/outcast-necromancers"
+  },
+  "92850": {
+    "name": "The Missing Scholar (Part 2)",
+    "objectives": [1],
+    "accept_npc": 253284,
+    "turnin_npc": 253285,
+    "source": "https://db.icy-veins.com/wow-forever/quests/92850"
   },
   "93034": {
     "name": "Valley of Bones",
@@ -105,5 +180,13 @@
     "accept_npc": 263664,
     "turnin_npc": 257021,
     "source": "https://news.blizzard.com/en-us/article/24315281/wow-forever-hotfixes-november-13-2026"
+  },
+  "99260": {
+    "name": "Fillion's Mission",
+    "delivery": true,
+    "requires": [92850],
+    "accept_npc": 253285,
+    "turnin_npc": 252475,
+    "source": "https://db.icy-veins.com/wow-forever/quests/99260"
   }
 }
