@@ -194,13 +194,14 @@ step
 step
     .goto Stonetalon Mountains,71.87,60.00
     >>Talk to |cRXP_FRIENDLY_Piznik|r
+    >>|cRXP_WARN_This is an elite or group part: bring help, or skip this step|r
     .accept 1090 >>Accept Gerenzo's Orders
     .target Piznik
 step
     .goto Stonetalon Mountains,71.87,60.00
-    >>Kill |cRXP_ENEMY_Piznik|r
+    >>Defend |cRXP_FRIENDLY_Piznik|r while he mines: waves of Venture Co. attack him
+    >>|cRXP_WARN_This is an elite or group part: bring help, or skip this step|r
     .complete 1090,1 --Gerenzo's Orders
-    .mob Piznik
 step
     .goto Stonetalon Mountains,71.87,60.00
     >>Talk to |cRXP_FRIENDLY_Piznik|r
