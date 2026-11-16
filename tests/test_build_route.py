@@ -10,6 +10,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 import build_route as route
 import class_steps
+from validate_quest_steps import validate
 
 
 SECTION = {"zone": "Example", "area": 1}
@@ -167,6 +168,24 @@ class ClassObjectiveTests(unittest.TestCase):
         db = {"n": {123: {1: "Big Will", 7: {17: [[68.61, 48.72]]}}}, "o": {}, "i": {}}
         sites = class_steps.objectives(db, quest)
         self.assertEqual([(index, kind) for index, kind, *_ in sites], [(2, "explore"), (1, "kill")])
+
+    def test_preview_keeps_reviewed_race_restriction_at_shared_npc(self):
+        visit = route.Builder({"n": {376: ["Laurena"], 258785: ["Mims"]}}, (), ())
+        both = {
+            1: candidate(1, finish=START),
+            94819: candidate(94819, finish=(1, 0)),
+        }
+        both[1]["q"].classes = route.CLASS_BITS["Priest"]
+        both[1]["start"] = ("npc", 376, START)
+        both[94819]["start"] = ("npc", 376, START)
+        both[94819]["finish"] = ("npc", 258785, (1, 0))
+        actions = [("accept", 1, START), ("accept", 94819, START), ("turnin", 94819, (1, 0))]
+        zone = {"zone": "Ironforge", "name": "20-21 Ironforge"}
+        text = route.render_section(visit, zone, both, actions, "Test", None)
+        self.assertIn("step << Priest\n    .goto Ironforge,0.00,0.00\n    >>Talk", text)
+        self.assertEqual(text.count("step << Gnome Priest"), 2)
+        self.assertIn(".turnin 94819 >>Turn in Contingency Plan\n    .target Mims::258785", text)
+        self.assertEqual(list(validate(text, route.FOREVER_QUEST_EVIDENCE)), [])
 
 
 class QuestDataTests(unittest.TestCase):

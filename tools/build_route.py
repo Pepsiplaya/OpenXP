@@ -41,9 +41,11 @@ from lupa import luajit21 as lupa
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import terrain as TERRAIN  # noqa: E402
 import travel_graph  # noqa: E402
+from validate_quest_steps import load_evidence  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+FOREVER_QUEST_EVIDENCE = load_evidence()
 
 ALLIANCE_RACES = 1 | 4 | 8 | 64  # Human, Dwarf, Night Elf, Gnome
 HORDE_RACES = 2 | 16 | 32 | 128
@@ -392,7 +394,8 @@ def as_list(v):
 class Quest:
     def __init__(self, qid, row):
         self.id = qid
-        self.name = li(row, 1)
+        self.evidence = FOREVER_QUEST_EVIDENCE.get(qid, {}) if GAME == "Forever" else {}
+        self.name = self.evidence.get("name") or li(row, 1)
         self.startedBy = li(row, 2)
         self.finishedBy = li(row, 3)
         self.reqLevel = li(row, 4) or 1
@@ -418,6 +421,8 @@ class Quest:
         return self.races == 0 or (self.races & mask) != 0
 
     def class_tag(self):
+        if self.evidence.get("tag"):
+            return self.evidence["tag"]
         if not self.classes or (self.classes & ALL_CLASSES) == ALL_CLASSES:
             return None
         names = [n for n, b in CLASS_BITS.items() if self.classes & b]
@@ -1574,20 +1579,19 @@ def render_section(builder, section, cands, actions, group, nxt):
             while j < len(actions) and actions[j][0] in ("accept", "turnin") and math.dist(actions[j][2], where) < 0.6:
                 group_actions.append(actions[j])
                 j += 1
-            # one step per NPC so the target name is right
+            # Keep NPC stops separate when their class or race gates differ.
             by_npc = []
             for a in group_actions:
                 qid = a[1]
                 c = cands[qid]
                 who = c["start"] if a[0] == "accept" else c["finish"]
-                if by_npc and by_npc[-1][0] == who[:2]:
+                key = (*who[:2], c["q"].class_tag())
+                if by_npc and by_npc[-1][0] == key:
                     by_npc[-1][1].append(a)
                 else:
-                    by_npc.append((who[:2], [a]))
-            for (wkind, wid), acts in by_npc:
-                classes = set(cands[a[1]]["q"].class_tag() for a in acts)
-                tag = " << " + classes.pop() if len(classes) == 1 and None not in classes else ""
-                lines.append("step" + tag)
+                    by_npc.append((key, [a]))
+            for (wkind, wid, tag), acts in by_npc:
+                lines.append("step" + (" << " + tag if tag else ""))
                 lines.append("    .goto %s" % fmt_coord(zname, acts[0][2]))
                 if wkind == "npc":
                     nm = builder.npc_name(wid)
@@ -1597,8 +1601,6 @@ def render_section(builder, section, cands, actions, group, nxt):
                     lines.append("    >>Click the |cRXP_PICK_%s|r" % nm)
                 for a in acts:
                     q = cands[a[1]]["q"]
-                    ctag = q.class_tag()
-                    suffix = (" << " + ctag) if ctag and not tag else ""
                     verb = "accept" if a[0] == "accept" else "turnin"
                     word = "Accept" if verb == "accept" else "Turn in"
                     qid_txt = q.id
@@ -1606,9 +1608,9 @@ def render_section(builder, section, cands, actions, group, nxt):
                         builder.file_accepted.add(q.id)
                     elif q.id not in builder.file_accepted:
                         qid_txt = -q.id  # picked up in an earlier guide: skip if not in the log
-                    lines.append("    .%s %d >>%s %s%s" % (verb, qid_txt, word, q.name, suffix))
+                    lines.append("    .%s %d >>%s %s" % (verb, qid_txt, word, q.name))
                 if wkind == "npc":
-                    lines.append("    .target %s" % nm)
+                    lines.append("    .target %s::%d" % (nm, wid))
             i = j
             continue
         # Objectives: merge the ones done at the same spot into one step.
@@ -1616,18 +1618,19 @@ def render_section(builder, section, cands, actions, group, nxt):
             qid, oi = action[1]
             return next(s for s in cands[qid]["sites"] if s[0] == oi)[5]
         place0 = place_of(actions[i])
+        tag = cands[ref[0]]["q"].class_tag()
         group_objs = [actions[i]]
         j = i + 1
         while (j < len(actions) and actions[j][0] == "obj" and math.dist(actions[j][2], where) < 3.0
+               and cands[actions[j][1][0]]["q"].class_tag() == tag
                and (place_of(actions[j]) or (None,))[0] == (place0 or (None,))[0]):
             group_objs.append(actions[j])
             j += 1
-        texts, completes, mobs_all, tags, buys = [], [], [], set(), set()
+        texts, completes, mobs_all, buys = [], [], [], set()
         for _, (qid, oi), _w in group_objs:
             c = cands[qid]
             site = next(s for s in c["sites"] if s[0] == oi)
             q = c["q"]
-            tags.add(q.class_tag())
             _, okind, label, mobs, _, place = site
             if okind == "kill":
                 t = "Kill |cRXP_ENEMY_%s|r" % label
@@ -1660,7 +1663,6 @@ def render_section(builder, section, cands, actions, group, nxt):
             for m in mobs:
                 if m not in mobs_all:
                     mobs_all.append(m)
-        tag = tags.pop() if len(tags) == 1 else None
         lines.append("step" + (" << " + tag if tag else ""))
         area = None
         if section.get("areas") and not place0:
