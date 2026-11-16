@@ -73,6 +73,16 @@ step
     .accept 1175 >>Accept A Bump in the Road
     .target Trackmaster Zherin
 step
+    .goto Thousand Needles,78.14,77.12
+    >>Talk to |cRXP_FRIENDLY_Wizzle Brassbolts|r
+    .accept 1105 >>Accept Hardened Shells
+    .target Wizzle Brassbolts
+step
+    .goto Thousand Needles,78.06,77.13
+    >>Talk to |cRXP_FRIENDLY_Fizzle Brassbolts|r
+    .accept 1104 >>Accept Salt Flat Venom
+    .target Fizzle Brassbolts
+step
     .goto Thousand Needles,77.53,87.98
     >>Kill |cRXP_ENEMY_Saltstone Crystalhide|r
     >>Kill |cRXP_ENEMY_Saltstone Gazer|r
@@ -91,6 +101,16 @@ step
     .complete 1175,1 --A Bump in the Road
     .mob Saltstone Basilisk
 step
+    .goto Thousand Needles,71.30,72.85
+    >>Kill |cRXP_ENEMY_Scorpid Reaver|r. Loot them for |cRXP_LOOT_Salty Scorpid Venom|r (about 25% drop)
+    .complete 1104,1 --Salt Flat Venom
+    .mob Scorpid Reaver
+step
+    .goto Thousand Needles,69.29,67.14
+    >>Kill |cRXP_ENEMY_Sparkleshell Tortoise|r. Loot them for |cRXP_LOOT_Hardened Tortoise Shell|r (about 30% drop)
+    .complete 1105,1 --Hardened Shells
+    .mob Sparkleshell Tortoise
+step
     .goto Thousand Needles,80.18,75.88
     >>Talk to |cRXP_FRIENDLY_Pozzik|r
     .turnin 1176 >>Turn in Load Lightening
@@ -100,6 +120,16 @@ step
     >>Talk to |cRXP_FRIENDLY_Trackmaster Zherin|r
     .turnin 1175 >>Turn in A Bump in the Road
     .target Trackmaster Zherin
+step
+    .goto Thousand Needles,78.14,77.12
+    >>Talk to |cRXP_FRIENDLY_Wizzle Brassbolts|r
+    .turnin 1105 >>Turn in Hardened Shells
+    .target Wizzle Brassbolts
+step
+    .goto Thousand Needles,78.06,77.13
+    >>Talk to |cRXP_FRIENDLY_Fizzle Brassbolts|r
+    .turnin 1104 >>Turn in Salt Flat Venom
+    .target Fizzle Brassbolts
 step << Warlock
     --oxp-class
     .goto The Barrens,49.31,57.21
