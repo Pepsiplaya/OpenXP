@@ -1322,7 +1322,19 @@ local function LayoutBlock(b, step, first)
         b.missing = m
         SetFont(w.text, 0)
         w.text:SetWidth(textWidth)
-        w.text:SetText(text)
+        -- easy to miss in gold: orange with a warning icon, and said once in
+        -- chat so you see it before you travel off (GitHub #11)
+        w.text:SetTextColor(unpack(C.orange))
+        w.text:SetText("|TInterface\\DialogFrame\\UI-Dialog-Icon-AlertNew:0|t " .. (text or ""))
+        local said = card.warnedSteps or {}
+        card.warnedSteps = said
+        local key = tostring(addon.currentGuide and addon.currentGuide.name) .. ":" .. tostring(step.index) .. ":" .. tostring(id)
+        if text and not said[key] then
+            said[key] = true
+            if addon.comms and addon.comms.PrettyPrint then
+                pcall(addon.comms.PrettyPrint, "|cFFFF7043" .. text:gsub("%%", "%%%%") .. "|r")
+            end
+        end
         SetFont(w.list, 0)
         w.list:SetWidth(textWidth)
         w.list:SetText(list or "")
