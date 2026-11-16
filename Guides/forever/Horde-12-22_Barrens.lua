@@ -5134,6 +5134,7 @@ step
     .goto 1454/1,-4739.57,2036.84
     .gossipoption 95758 >>Talk to |cRXP_FRIENDLY_Sovik|r
     .isNotOnQuest 2842
+    .isOnQuest 2841
     .target Sovik
 step
     .goto 1454/1,-4739.57,2036.84
@@ -5141,6 +5142,7 @@ step
     -->>|cRXP_WARN_You are required to have Rig Wars in your quest log to accept this quest|r
     .accept 2842 >>Accept Chief Engineer Scooty
     .target Sovik
+    .isOnQuest 2841 --needs Rig Wars (level 25) in your log
 step << skip --Rogue
     .goto 1454/1,-4355.53,1520.68
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|t|cRXP_BUY_Talk to|r |cRXP_FRIENDLY_Trak'gen|r|cRXP_BUY_. Buy |r |T135423:0|t[Deadly Throwing Axe] |cRXP_BUY_from him|r

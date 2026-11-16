@@ -2134,12 +2134,6 @@ step
     .target Sentinel Glynda Nal'Shea
     .isOnQuest 4811
 step
-    .goto 1439/1,472.12,6438.51--c:1439,37.703,43.393
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Sentinel Glynda Nal'Shea|r
-    .turnin 4812 >> Turn in As Water Cascades
-    .target Sentinel Glynda Nal'Shea
-    .isQuestComplete 4812
-step
     .goto 1439/1,467.93,6411.96--c:1439,37.767,44.001
     >>|cRXP_WARN_Use the|r |T134865:0|t[Empty Water Tube] |cRXP_WARN_at the Auberdine moonwell|r
     .complete 4812,1 --Moonwell Water Tube (1)
@@ -2989,7 +2983,7 @@ step
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Gryth Thurden|r
     .fp Ironforge >> Get the Ironforge flight path
     .target Gryth Thurden
-step Warrior
+step << Warrior
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Bilban Tosslespanner|r
     .goto 1455/0,-1234.65,-5035.67
     .trainer >> Train your class spells
@@ -6835,6 +6829,7 @@ step
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Barithras Moonshade|r
     .accept 948 >> Accept Onu
     .target Barithras Moonshade
+    .isQuestTurnedIn 947 --Onu is only offered after Cave Mushrooms
 step
     .goto 1439/1,489.35,6506.76
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Archaeologist Hollee|r
@@ -6878,9 +6873,14 @@ step
     .goto 1439/1,88.81,5001.87--c:1439,43.555,76.293
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Onu|r
     .turnin 952 >> Turn in Grove of the Ancients << NightElf
-    .turnin 948 >> Turn in Onu
+    .turnin -948 >> Turn in Onu
+    .target Onu
+step
+    .goto 1439/1,88.81,5001.87--c:1439,43.555,76.293
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Onu|r
     .accept 944 >> Accept The Master's Glaive
     .target Onu
+    .isQuestTurnedIn 948
 step
     #label MasterG
     .goto 1439/1,417.30,4575.82,100 >> Travel to The Master's Glaive
@@ -6900,15 +6900,18 @@ step
     .goto 1439/1,390.700,4542.700
     >>Discover The Master's Glaive
     .complete 944,1 --Enter the Master's Glaive (1)
+    .isOnQuest 944
 step
     #completewith next
     .cast 5809 >> |cRXP_WARN_Use the|r |T134715:0|t[Phial of Scrying] |cRXP_WARN_and place it on the ground|r
+    .isOnQuest 944
 step
     .goto 1439/1,417.30,4575.82
     >>|cRXP_WARN_Click the |cRXP_PICK_Scrying Bowl|r on the ground|r
     .turnin 944 >> Turn in The Master's Glaive
     .accept 949 >> Accept The Twilight Camp
     .macro Phial of Scrying,134715 >>/use [@player] item:5251
+    .isOnQuest 944
 step
     #label FunandGames
     .goto 1439/1,417.49,4575.82--c:1439,38.537,86.050
@@ -6916,6 +6919,7 @@ step
     .turnin 949 >> Turn in The Twilight Camp
     .accept 950 >> Accept Return to Onu
     .accept 98042 >>Accept It's All Fun and Games Until...
+    .isOnQuest 949
 step
     #completewith TheryluneEnd
     >>Kill |cRXP_ENEMY_Twilight Disciples|r and |cRXP_ENEMY_Twilight Thugs|r. Loot them for the |cRXP_LOOT_Peerless Eye|r and |T133743:0|t[|cRXP_LOOT_Book: The Powers Below|r]
@@ -7079,6 +7083,7 @@ step
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Onu|r
     .turnin 950 >> Turn in Return to Onu
     .target Onu
+    .isOnQuest 950
 step
     .goto 1439/1,33.40,4996.11--c:1439,44.401,76.425
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kerlonian Evershade|r to start the escort

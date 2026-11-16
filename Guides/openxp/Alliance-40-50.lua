@@ -137,7 +137,7 @@ step
     .target Marshal Redpath
 step
     .goto Alterac Mountains,52.14,43.96
-    >>Kill |cRXP_ENEMY_Crushridge Ogre|r and |cRXP_ENEMY_Crushridge Brute|r. Loot them for |cRXP_LOOT_Dirty Knucklebones|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Crushridge Ogre|r and |cRXP_ENEMY_Crushridge Brute|r. Loot them for |cRXP_LOOT_Dirty Knucklebones|r
     .complete 500,1 --Crushridge Bounty
     .mob Crushridge Ogre
     .mob Crushridge Brute
@@ -362,7 +362,7 @@ step
     .target Dizzy One-Eye
 step
     .goto Stranglethorn Vale,45.00,38.06
-    >>Kill |cRXP_ENEMY_Skullsplitter Warrior|r and |cRXP_ENEMY_Skullsplitter Axe Thrower|r and |cRXP_ENEMY_Skullsplitter Mystic|r. Loot them for |cRXP_LOOT_Skullsplitter Tusk|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Skullsplitter Warrior|r and |cRXP_ENEMY_Skullsplitter Axe Thrower|r and |cRXP_ENEMY_Skullsplitter Mystic|r. Loot them for |cRXP_LOOT_Skullsplitter Tusk|r
     .complete 209,1 --Skullsplitter Tusks
     .mob Skullsplitter Warrior
     .mob Skullsplitter Axe Thrower
@@ -728,7 +728,7 @@ step
     .mob Lord Shalzaru
 step
     .goto Feralas,52.26,57.93
-    >>Kill |cRXP_ENEMY_Feral Scar Yeti|r and |cRXP_ENEMY_Hulking Feral Scar|r and |cRXP_ENEMY_Enraged Feral Scar|r. Loot them for |cRXP_LOOT_Thick Yeti Hide|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Feral Scar Yeti|r and |cRXP_ENEMY_Hulking Feral Scar|r and |cRXP_ENEMY_Enraged Feral Scar|r. Loot them for |cRXP_LOOT_Thick Yeti Hide|r
     .complete 2821,1 --The Mark of Quality
     .mob Feral Scar Yeti
     .mob Hulking Feral Scar
@@ -827,7 +827,7 @@ step
     .target Senior Surveyor Fizzledowser
 step
     .goto Tanaris,32.99,44.72
-    >>Kill |cRXP_ENEMY_Centipaar Stinger|r and |cRXP_ENEMY_Centipaar Wasp|r and |cRXP_ENEMY_Centipaar Worker|r. Loot them for |cRXP_LOOT_Centipaar Insect Parts|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Centipaar Stinger|r and |cRXP_ENEMY_Centipaar Wasp|r and |cRXP_ENEMY_Centipaar Worker|r. Loot them for |cRXP_LOOT_Centipaar Insect Parts|r
     .complete 82,1 --Noxious Lair Investigation
     .mob Centipaar Stinger
     .mob Centipaar Wasp
@@ -873,7 +873,7 @@ step
     .mob Zapped Land Walker
 step
     .goto Feralas,54.05,32.51
-    >>Kill |cRXP_ENEMY_Rage Scar Yeti|r and |cRXP_ENEMY_Elder Rage Scar|r and |cRXP_ENEMY_Ferocious Rage Scar|r. Loot them for |cRXP_LOOT_Rage Scar Yeti Hide|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Rage Scar Yeti|r and |cRXP_ENEMY_Elder Rage Scar|r and |cRXP_ENEMY_Ferocious Rage Scar|r. Loot them for |cRXP_LOOT_Rage Scar Yeti Hide|r
     .complete 7733,1 --Improved Quality
     .mob Rage Scar Yeti
     .mob Elder Rage Scar

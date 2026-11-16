@@ -242,12 +242,12 @@ step
     .target Shizzle
 step
     .goto Un'Goro Crater,57.20,10.20
-    >>Kill |cRXP_ENEMY_Pterrordax|r. Loot them for |cRXP_LOOT_Webbed Pterrordax Scale|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Pterrordax|r. Loot them for |cRXP_LOOT_Webbed Pterrordax Scale|r
     .complete 4503,2 --Shizzle's Flyer
     .mob Pterrordax
 step
     .goto Un'Goro Crater,59.90,36.61
-    >>Kill |cRXP_ENEMY_Bloodpetal Lasher|r and |cRXP_ENEMY_Bloodpetal Thresher|r. Loot them for |cRXP_LOOT_Bloodpetal|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Bloodpetal Lasher|r and |cRXP_ENEMY_Bloodpetal Thresher|r. Loot them for |cRXP_LOOT_Bloodpetal|r
     .complete 4141,1 --Muigin and Larion
     .mob Bloodpetal Lasher
     .mob Bloodpetal Thresher
@@ -276,8 +276,8 @@ step
     .complete 3883,1 --Alien Ecology
 step
     .goto Un'Goro Crater,50.37,62.88
-    >>Kill |cRXP_ENEMY_Diemetradon|r. Loot them for |cRXP_LOOT_Webbed Diemetradon Scale|r (about 80% drop)
-    >>Kill |cRXP_ENEMY_Diemetradon|r. Loot them for |cRXP_LOOT_Dinosaur Bone|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Diemetradon|r. Loot them for |cRXP_LOOT_Webbed Diemetradon Scale|r
+    >>Kill |cRXP_ENEMY_Diemetradon|r. Loot them for |cRXP_LOOT_Dinosaur Bone|r
     .complete 4503,1 --Shizzle's Flyer
     .complete 3882,1 --Roll the Bones
     .mob Diemetradon
@@ -471,7 +471,7 @@ step << Mage
     >>Talk to |cRXP_FRIENDLY_Archmage Xylem|r
     .accept 8251 >>Accept Magic Dust
     .target Archmage Xylem
-step
+step << Hunter/Priest
     .goto Azshara,42.40,42.62
     >>Talk to |cRXP_FRIENDLY_Ogtinc|r
     .turnin 8254 >>Turn in Cenarion Aid << Priest
@@ -483,12 +483,12 @@ step
     .goto Azshara,42.38,64.15
     >>Loot the |cRXP_PICK_Rubbing: Rune of Sael'hai|r
     .complete 3449,4 --Arcane Runes
-step
+step << Hunter/Priest
     .goto Azshara,38.20,68.95
-    >>Kill |cRXP_ENEMY_Mosshoof Courser|r. Loot them for |cRXP_LOOT_Perfect Courser Antler|r (about 8% drop)
-    >>Kill |cRXP_ENEMY_Mosshoof Courser|r. Loot them for |cRXP_LOOT_Healthy Courser Gland|r (about 80% drop)
-    .complete 8153,1 --Courser Antlers
-    .complete 8255,1 --Of Coursers We Know
+    >>Kill |cRXP_ENEMY_Mosshoof Courser|r. Loot them for |cRXP_LOOT_Perfect Courser Antler|r (about 8% drop) << Hunter
+    >>Kill |cRXP_ENEMY_Mosshoof Courser|r. Loot them for |cRXP_LOOT_Healthy Courser Gland|r << Priest
+    .complete 8153,1 << Hunter
+    .complete 8255,1 << Priest
     .mob Mosshoof Courser
 step
     .goto Azshara,39.36,55.48
@@ -498,7 +498,7 @@ step
     .goto Azshara,39.56,50.25
     >>Loot the |cRXP_PICK_Rubbing: Rune of Jin'yael|r
     .complete 3449,2 --Arcane Runes
-step
+step << Hunter/Priest
     .goto Azshara,42.40,42.62
     >>Talk to |cRXP_FRIENDLY_Ogtinc|r
     .turnin 8255 >>Turn in Of Coursers We Know << Priest
@@ -513,12 +513,12 @@ step
     .target Kim'jael
 step
     .goto Azshara,56.71,28.05
-    >>Kill |cRXP_ENEMY_Blood Elf Reclaimer|r and |cRXP_ENEMY_Blood Elf Surveyor|r. Loot them for |cRXP_LOOT_Glittering Dust|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Blood Elf Reclaimer|r and |cRXP_ENEMY_Blood Elf Surveyor|r. Loot them for |cRXP_LOOT_Glittering Dust|r << Mage
     >>Loot the |cRXP_PICK_Kim'Jael's Compass|r
     >>Loot the |cRXP_PICK_Kim'Jael's Scope|r
     >>Loot the |cRXP_PICK_Kim'Jael's Stuffed Chicken|r
     >>Loot the |cRXP_PICK_Kim'Jael's Wizzlegoober|r
-    .complete 8251,1 --Magic Dust
+    .complete 8251,1 << Mage
     .complete 3601,1 --Kim'jael Indeed!
     .complete 3601,2 --Kim'jael Indeed!
     .complete 3601,3 --Kim'jael Indeed!
@@ -557,16 +557,16 @@ step << Priest
 step
     .goto Azshara,36.91,53.17
     >>Loot the |cRXP_PICK_Rubbing: Rune of Beth'Amara|r
-    >>Kill |cRXP_ENEMY_Spitelash Siren|r. Loot them for |cRXP_LOOT_Enchanted Coral|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Spitelash Siren|r. Loot them for |cRXP_LOOT_Enchanted Coral|r << Mage
     .complete 3449,1 --Arcane Runes
-    .complete 8252,1 --The Siren's Coral
+    .complete 8252,1 << Mage
     .mob Spitelash Siren
 step << Mage
     .goto Azshara,29.25,40.21
     >>Talk to |cRXP_FRIENDLY_Archmage Xylem|r
     .turnin 8252 >>Turn in The Siren's Coral
     .target Archmage Xylem
-step
+step << Hunter/Priest
     .goto Azshara,42.40,42.62
     >>Talk to |cRXP_FRIENDLY_Ogtinc|r
     .turnin 8231 >>Turn in Wavethrashing << Hunter
@@ -764,10 +764,10 @@ step
     .target Commander Ashlam Valorfist
 step
     .goto Western Plaguelands,50.36,80.05
-    >>Kill |cRXP_ENEMY_Skeletal Flayer|r and |cRXP_ENEMY_Skeletal Sorcerer|r and |cRXP_ENEMY_Slavering Ghoul|r. Loot them for |cRXP_LOOT_Minion's Scourgestone|r (about 50% drop)
+    >>Kill |cRXP_ENEMY_Skeletal Flayer|r and |cRXP_ENEMY_Skeletal Sorcerer|r and |cRXP_ENEMY_Slavering Ghoul|r. Loot them for |cRXP_LOOT_Minion's Scourgestone|r (about 50% drop) << Paladin
     >>Kill |cRXP_ENEMY_Slavering Ghoul|r
     >>Kill |cRXP_ENEMY_Skeletal Flayer|r
-    .complete 8414,1 --Dispelling Evil
+    .complete 8414,1 << Paladin
     .complete 5092,2 --Clear the Way
     .complete 5092,1 --Clear the Way
     .mob Skeletal Flayer
@@ -866,9 +866,9 @@ step
     .target Taronn Redfeather
 step
     .goto Felwood,40.66,85.54
-    >>Kill |cRXP_ENEMY_Jadefire Shadowstalker|r and |cRXP_ENEMY_Jadefire Felsworn|r and |cRXP_ENEMY_Jadefire Rogue|r. Loot them for |cRXP_LOOT_Felcloth|r (about 4% drop)
+    >>Kill |cRXP_ENEMY_Jadefire Shadowstalker|r and |cRXP_ENEMY_Jadefire Felsworn|r and |cRXP_ENEMY_Jadefire Rogue|r. Loot them for |cRXP_LOOT_Felcloth|r (about 4% drop) << Warlock
     >>Kill |cRXP_ENEMY_Jadefire Felsworn|r
-    .complete 8420,1 --Hot and Itchy
+    .complete 8420,1 << Warlock
     .complete 4421,1 --The Corruption of the Jadefire
     .mob Jadefire Shadowstalker
     .mob Jadefire Felsworn
@@ -1642,12 +1642,12 @@ step
     .target Windcaller Proudhorn
 step
     .goto Silithus,61.84,26.60
-    >>Kill |cRXP_ENEMY_Stonelash Scorpid|r. Loot them for |cRXP_LOOT_Stonelash Scorpid Stinger|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Stonelash Scorpid|r. Loot them for |cRXP_LOOT_Stonelash Scorpid Stinger|r
     .complete 8277,1 --Deadly Desert Venom
     .mob Stonelash Scorpid
 step
     .goto Silithus,55.57,22.78
-    >>Kill |cRXP_ENEMY_Sand Skitterer|r. Loot them for |cRXP_LOOT_Sand Skitterer Fang|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Sand Skitterer|r. Loot them for |cRXP_LOOT_Sand Skitterer Fang|r
     .complete 8277,2 --Deadly Desert Venom
     .mob Sand Skitterer
 step
@@ -1678,13 +1678,13 @@ step
     .mob Dredge Crusher
 step
     .goto Silithus,49.52,62.84
-    >>Kill |cRXP_ENEMY_Stonelash Pincer|r. Loot them for |cRXP_LOOT_Stonelash Pincer Stinger|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Stonelash Pincer|r. Loot them for |cRXP_LOOT_Stonelash Pincer Stinger|r
     .complete 8278,2 --Noggle's Last Hope
     .mob Stonelash Pincer
 step
     .goto Silithus,40.57,83.91
-    >>Kill |cRXP_ENEMY_Rock Stalker|r. Loot them for |cRXP_LOOT_Rock Stalker Fang|r (about 80% drop)
-    >>Kill |cRXP_ENEMY_Stonelash Flayer|r. Loot them for |cRXP_LOOT_Stonelash Flayer Stinger|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Rock Stalker|r. Loot them for |cRXP_LOOT_Rock Stalker Fang|r
+    >>Kill |cRXP_ENEMY_Stonelash Flayer|r. Loot them for |cRXP_LOOT_Stonelash Flayer Stinger|r
     .complete 8278,3 --Noggle's Last Hope
     .complete 8278,1 --Noggle's Last Hope
     .mob Rock Stalker
@@ -1774,7 +1774,7 @@ step
     .target Kirsta Deepshadow
 step
     .goto Western Plaguelands,47.11,50.51
-    >>Kill |cRXP_ENEMY_Skeletal Acolyte|r and |cRXP_ENEMY_Skeletal Executioner|r. Loot them for |cRXP_LOOT_Skeletal Fragments|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Skeletal Acolyte|r and |cRXP_ENEMY_Skeletal Executioner|r. Loot them for |cRXP_LOOT_Skeletal Fragments|r
     .complete 5537,1 --Skeletal Fragments
     .mob Skeletal Acolyte
     .mob Skeletal Executioner

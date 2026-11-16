@@ -380,7 +380,7 @@ step
     .mob Monstrous Ooze
 step
     .goto Wetlands,43.06,32.88
-    >>Kill |cRXP_ENEMY_Mosshide Fenrunner|r and |cRXP_ENEMY_Mosshide Brute|r and |cRXP_ENEMY_Mosshide Trapper|r. Loot them for |cRXP_LOOT_Crude Flint|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Mosshide Fenrunner|r and |cRXP_ENEMY_Mosshide Brute|r and |cRXP_ENEMY_Mosshide Trapper|r. Loot them for |cRXP_LOOT_Crude Flint|r
     .complete 277,1 --Fire Taboo
     .mob Mosshide Fenrunner
     .mob Mosshide Brute
@@ -406,11 +406,6 @@ step
     >>Talk to |cRXP_FRIENDLY_Valstag Ironjaw|r
     .turnin 98197 >>Turn in Spoils of War
     .target Valstag Ironjaw
-step
-    .goto Wetlands,9.86,57.49
-    >>Talk to |cRXP_FRIENDLY_Captain Stoutfist|r
-    .accept 98190 >>Accept A Friend of the Family
-    .target Captain Stoutfist
 step
     .goto Wetlands,8.32,58.57
     >>Talk to |cRXP_FRIENDLY_Karl Boran|r
@@ -463,6 +458,12 @@ step
     >>Talk to |cRXP_FRIENDLY_Karl Boran|r
     .turnin 286 >>Turn in Return the Statuette
     .target Karl Boran
+step
+    .goto Wetlands,9.86,57.49
+    >>Talk to |cRXP_FRIENDLY_Captain Stoutfist|r
+    .accept 98190 >>Accept A Friend of the Family
+    .target Captain Stoutfist
+    .isQuestTurnedIn 286 --offered once the statuette chain is done
 step << Warlock
     --oxp-class
     .goto Stormwind City,39.22,85.23
@@ -585,7 +586,7 @@ step
 step
     .goto Duskwood,78.96,69.68
     .area Duskwood,75.83,67.13,77.49,65.61,79.91,64.56,83.41,67.91,83.34,72.71,81.45,75.19,77.81,77.10,75.69,73.08
-    >>Kill |cRXP_ENEMY_Skeletal Warrior|r and |cRXP_ENEMY_Skeletal Mage|r. Loot them for |cRXP_LOOT_Skeleton Finger|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Skeletal Warrior|r and |cRXP_ENEMY_Skeletal Mage|r. Loot them for |cRXP_LOOT_Skeleton Finger|r
     >>Kill |cRXP_ENEMY_Skeletal Warrior|r
     >>Kill |cRXP_ENEMY_Skeletal Mage|r
     .complete 101,3 --The Totem of Infliction
@@ -628,7 +629,7 @@ step
 step
     .goto Duskwood,22.41,35.66
     .area Duskwood,20.22,35.21,21.68,31.16,26.65,31.64,26.45,40.07,24.25,40.64,22.63,40.58,20.67,39.39,20.25,38.19
-    >>Kill |cRXP_ENEMY_Flesh Eater|r and |cRXP_ENEMY_Bone Chewer|r and |cRXP_ENEMY_Rotted One|r. Loot them for |cRXP_LOOT_Ghoul Fang|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Flesh Eater|r and |cRXP_ENEMY_Bone Chewer|r and |cRXP_ENEMY_Rotted One|r. Loot them for |cRXP_LOOT_Ghoul Fang|r
     .complete 101,1 --The Totem of Infliction
     .mob Flesh Eater
     .mob Bone Chewer
@@ -654,7 +655,7 @@ step
 step
     .goto Duskwood,30.11,51.19
     .area Duskwood,24.89,52.97,25.26,46.02,27.59,43.28,34.34,44.71,36.75,55.65,31.61,58.59
-    >>Kill |cRXP_ENEMY_Black Widow Hatchling|r. Loot them for |cRXP_LOOT_Vial of Spider Venom|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Black Widow Hatchling|r. Loot them for |cRXP_LOOT_Vial of Spider Venom|r
     .complete 101,2 --The Totem of Infliction
     .mob Black Widow Hatchling
 step
@@ -786,7 +787,7 @@ step
 step
     .goto Duskwood,80.64,59.42
     .area Duskwood,78.19,56.45,81.24,54.71,82.76,55.85,82.56,61.76,81.14,63.23,79.10,63.26
-    >>Kill |cRXP_ENEMY_Skeletal Horror|r and |cRXP_ENEMY_Skeletal Fiend|r. Loot them for |cRXP_LOOT_Rot Blossom|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Skeletal Horror|r and |cRXP_ENEMY_Skeletal Fiend|r. Loot them for |cRXP_LOOT_Rot Blossom|r
     .complete 156,1 --Gather Rot Blossoms
     .mob Skeletal Horror
     .mob Skeletal Fiend
@@ -805,7 +806,7 @@ step
 step
     .goto Duskwood,24.14,36.05
     .area Duskwood,16.36,34.17,19.79,28.76,24.79,27.61,26.25,29.38,28.37,34.26,26.02,40.38,22.71,40.59,21.19,39.71
-    >>Kill |cRXP_ENEMY_Plague Spreader|r and |cRXP_ENEMY_Flesh Eater|r and |cRXP_ENEMY_Brain Eater|r. Loot them for |cRXP_LOOT_Ghoul Rib|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Plague Spreader|r and |cRXP_ENEMY_Flesh Eater|r and |cRXP_ENEMY_Brain Eater|r. Loot them for |cRXP_LOOT_Ghoul Rib|r
     .complete 133,1 --Ghoulish Effigy
     .mob Plague Spreader
     .mob Flesh Eater
@@ -927,7 +928,7 @@ step
     .mob Greater Tarantula
 step
     .goto Redridge Mountains,70.73,47.53
-    >>Kill |cRXP_ENEMY_Shadowhide Warrior|r and |cRXP_ENEMY_Shadowhide Brute|r and |cRXP_ENEMY_Shadowhide Gnoll|r. Loot them for |cRXP_LOOT_Shadowhide Pendant|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Shadowhide Warrior|r and |cRXP_ENEMY_Shadowhide Brute|r and |cRXP_ENEMY_Shadowhide Gnoll|r. Loot them for |cRXP_LOOT_Shadowhide Pendant|r
     .complete 91,1 --Solomon's Law
     .mob Shadowhide Warrior
     .mob Shadowhide Brute
@@ -1121,9 +1122,14 @@ step
 step
     .goto Stormwind City,80.21,38.35
     >>Talk to |cRXP_FRIENDLY_Highlord Bolvar Fordragon|r
-    .turnin 98190 >>Turn in A Friend of the Family
+    .turnin -98190 >>Turn in A Friend of the Family
+    .target Highlord Bolvar Fordragon
+step
+    .goto Stormwind City,80.21,38.35
+    >>Talk to |cRXP_FRIENDLY_Highlord Bolvar Fordragon|r
     .accept 98191 >>Accept A Friend of the Family
     .target Highlord Bolvar Fordragon
+    .isQuestTurnedIn 98190
 step
     .goto Stormwind City,51.05,48.39
     >>Talk to |cRXP_FRIENDLY_Brother Sarno|r
@@ -1145,7 +1151,7 @@ step << Human Priest
 step
     .goto Stormwind City,48.43,50.22
     >>Talk to |cRXP_FRIENDLY_Lord Grayson Shadowbreaker|r
-    .turnin 98191 >>Turn in A Friend of the Family
+    .turnin -98191 >>Turn in A Friend of the Family
     .target Lord Grayson Shadowbreaker
 step << Human Paladin/Dwarf Paladin
     --oxp-class
@@ -1450,7 +1456,7 @@ step
     .target Ormer Ironbraid
 step
     .goto Wetlands,46.79,45.31
-    >>Kill |cRXP_ENEMY_Dragonmaw Raider|r and |cRXP_ENEMY_Dragonmaw Bonewarder|r and |cRXP_ENEMY_Dragonmaw Swamprunner|r. Loot them for |cRXP_LOOT_Dragonmaw War Banner|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Dragonmaw Raider|r and |cRXP_ENEMY_Dragonmaw Bonewarder|r and |cRXP_ENEMY_Dragonmaw Swamprunner|r. Loot them for |cRXP_LOOT_Dragonmaw War Banner|r
     .complete 464,1 --War Banners
     .mob Dragonmaw Raider
     .mob Dragonmaw Bonewarder
@@ -1698,6 +1704,7 @@ step
     >>Talk to |cRXP_FRIENDLY_Lord Grayson Shadowbreaker|r
     .accept 98219 >>Accept The Shamed Lieutenant
     .target Lord Grayson Shadowbreaker
+    .isQuestTurnedIn 98191 --needs A Friend of the Family done
 step << Rogue
     --oxp-class
     .goto Stormwind City,50.58,60.14
@@ -1793,7 +1800,7 @@ step
     .accept 324 >>Accept The Lost Ingots
 step
     .goto Wetlands,10.22,66.31
-    >>Kill |cRXP_ENEMY_Bluegill Raider|r. Loot them for |cRXP_LOOT_Lightforge Ingot|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Bluegill Raider|r. Loot them for |cRXP_LOOT_Lightforge Ingot|r
     .complete 324,1 --The Lost Ingots
     .mob Bluegill Raider
 step

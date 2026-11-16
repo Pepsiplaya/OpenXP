@@ -1608,7 +1608,10 @@ def render_section(builder, section, cands, actions, group, nxt):
                     ch = inf.get("chance")
                     if ch and ch < 0.95 and not inf.get("click"):
                         pct = round(ch * 20) * 5 if ch >= 0.1 else max(1, round(ch * 100))
-                        t += " (about %d%% drop)" % pct
+                        # 80% is the database's placeholder for quest drops,
+                        # not a real rate (GitHub #38), so don't show it
+                        if pct != 80:
+                            t += " (about %d%% drop)" % pct
                 else:
                     t = "Loot the |cRXP_PICK_%s|r" % label
             else:

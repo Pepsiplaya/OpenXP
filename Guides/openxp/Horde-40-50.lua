@@ -122,7 +122,7 @@ step
     .target Fleet Master Seahorn
 step
     .goto Stranglethorn Vale,45.00,38.06
-    >>Kill |cRXP_ENEMY_Skullsplitter Warrior|r and |cRXP_ENEMY_Skullsplitter Axe Thrower|r and |cRXP_ENEMY_Skullsplitter Mystic|r. Loot them for |cRXP_LOOT_Skullsplitter Tusk|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Skullsplitter Warrior|r and |cRXP_ENEMY_Skullsplitter Axe Thrower|r and |cRXP_ENEMY_Skullsplitter Mystic|r. Loot them for |cRXP_LOOT_Skullsplitter Tusk|r
     .complete 209,1 --Skullsplitter Tusks
     .mob Skullsplitter Warrior
     .mob Skullsplitter Axe Thrower
@@ -194,7 +194,7 @@ step
     .mob Boss Tho'grun
 step
     .goto Badlands,4.11,79.91
-    >>Kill |cRXP_ENEMY_Greater Rock Elemental|r. Loot them for |cRXP_LOOT_Bracers of Rock Binding|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Greater Rock Elemental|r. Loot them for |cRXP_LOOT_Bracers of Rock Binding|r
     .complete 712,1 --Study of the Elements: Rock
     .mob Greater Rock Elemental
 step
@@ -249,7 +249,7 @@ step
     .target Hadoken Swiftstrider
 step
     .goto Feralas,72.48,37.77
-    >>Kill |cRXP_ENEMY_Woodpaw Mystic|r and |cRXP_ENEMY_Woodpaw Reaver|r and |cRXP_ENEMY_Woodpaw Mongrel|r. Loot them for |cRXP_LOOT_Woodpaw Gnoll Mane|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Woodpaw Mystic|r and |cRXP_ENEMY_Woodpaw Reaver|r and |cRXP_ENEMY_Woodpaw Mongrel|r. Loot them for |cRXP_LOOT_Woodpaw Gnoll Mane|r
     .complete 2862,1 --War on the Woodpaw
     .mob Woodpaw Mystic
     .mob Woodpaw Reaver
@@ -787,12 +787,12 @@ step
     .target Tok'Kar
 step
     .goto Swamp of Sorrows,95.60,70.40
-    >>Kill |cRXP_ENEMY_Monstrous Crawler|r. Loot them for |cRXP_LOOT_Monstrous Crawler Leg|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Monstrous Crawler|r. Loot them for |cRXP_LOOT_Monstrous Crawler Leg|r
     .complete 1430,1 --Fresh Meat
     .mob Monstrous Crawler
 step
     .goto Swamp of Sorrows,84.07,33.30
-    >>Kill |cRXP_ENEMY_Sawtooth Snapper|r. Loot them for |cRXP_LOOT_Sawtooth Snapper Claw|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Sawtooth Snapper|r. Loot them for |cRXP_LOOT_Sawtooth Snapper Claw|r
     .complete 699,1 --Lack of Surplus
     .mob Sawtooth Snapper
 step
@@ -1036,7 +1036,7 @@ step
     .target Senior Surveyor Fizzledowser
 step
     .goto Tanaris,32.99,44.72
-    >>Kill |cRXP_ENEMY_Centipaar Stinger|r and |cRXP_ENEMY_Centipaar Wasp|r and |cRXP_ENEMY_Centipaar Worker|r. Loot them for |cRXP_LOOT_Centipaar Insect Parts|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Centipaar Stinger|r and |cRXP_ENEMY_Centipaar Wasp|r and |cRXP_ENEMY_Centipaar Worker|r. Loot them for |cRXP_LOOT_Centipaar Insect Parts|r
     .complete 82,1 --Noxious Lair Investigation
     .mob Centipaar Stinger
     .mob Centipaar Wasp
@@ -1104,7 +1104,7 @@ step
     .target Kin'weelay
 step
     .goto Stranglethorn Vale,43.39,47.90
-    >>Kill |cRXP_ENEMY_Ironjaw Basilisk|r. Loot them for |cRXP_LOOT_Pulsing Blue Shard|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Ironjaw Basilisk|r. Loot them for |cRXP_LOOT_Pulsing Blue Shard|r
     .complete 589,1 --The Singing Crystals
     .mob Ironjaw Basilisk
 step
@@ -1151,7 +1151,7 @@ step
     .mob Stinglasher
 step
     .goto Feralas,52.26,57.93
-    >>Kill |cRXP_ENEMY_Feral Scar Yeti|r and |cRXP_ENEMY_Hulking Feral Scar|r and |cRXP_ENEMY_Enraged Feral Scar|r. Loot them for |cRXP_LOOT_Thick Yeti Hide|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Feral Scar Yeti|r and |cRXP_ENEMY_Hulking Feral Scar|r and |cRXP_ENEMY_Enraged Feral Scar|r. Loot them for |cRXP_LOOT_Thick Yeti Hide|r
     .complete 2822,1 --The Mark of Quality
     .mob Feral Scar Yeti
     .mob Hulking Feral Scar
@@ -1178,7 +1178,7 @@ step
     .target Jangdor Swiftstrider
 step
     .goto Feralas,54.05,32.51
-    >>Kill |cRXP_ENEMY_Rage Scar Yeti|r and |cRXP_ENEMY_Elder Rage Scar|r and |cRXP_ENEMY_Ferocious Rage Scar|r. Loot them for |cRXP_LOOT_Rage Scar Yeti Hide|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Rage Scar Yeti|r and |cRXP_ENEMY_Elder Rage Scar|r and |cRXP_ENEMY_Ferocious Rage Scar|r. Loot them for |cRXP_LOOT_Rage Scar Yeti Hide|r
     .complete 7734,1 --Improved Quality
     .mob Rage Scar Yeti
     .mob Elder Rage Scar

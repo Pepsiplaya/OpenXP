@@ -371,7 +371,7 @@ step
     .target Ajeck Rouack
 step
     .goto Stranglethorn Vale,36.85,10.51
-    >>Kill |cRXP_ENEMY_River Crocolisk|r. Loot them for |cRXP_LOOT_Large River Crocolisk Skin|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_River Crocolisk|r. Loot them for |cRXP_LOOT_Large River Crocolisk Skin|r
     .complete 575,1 --Supply and Demand
     .mob River Crocolisk
 step
@@ -476,8 +476,8 @@ step
     .target Kreldig Ungor
 step
     .goto Desolace,74.49,13.40
-    >>Kill |cRXP_ENEMY_Hatefury Hellcaller|r and |cRXP_ENEMY_Hatefury Trickster|r and |cRXP_ENEMY_Hatefury Felsworn|r. Loot them for |cRXP_LOOT_Hatefury Claw|r (about 80% drop)
-    >>Kill |cRXP_ENEMY_Hatefury Hellcaller|r and |cRXP_ENEMY_Hatefury Trickster|r and |cRXP_ENEMY_Hatefury Felsworn|r. Loot them for |cRXP_LOOT_Hatefury Horn|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Hatefury Hellcaller|r and |cRXP_ENEMY_Hatefury Trickster|r and |cRXP_ENEMY_Hatefury Felsworn|r. Loot them for |cRXP_LOOT_Hatefury Claw|r
+    >>Kill |cRXP_ENEMY_Hatefury Hellcaller|r and |cRXP_ENEMY_Hatefury Trickster|r and |cRXP_ENEMY_Hatefury Felsworn|r. Loot them for |cRXP_LOOT_Hatefury Horn|r
     .complete 1458,1 --Reagents for Reclaimers Inc.
     .complete 1458,2 --Reagents for Reclaimers Inc.
     .mob Hatefury Hellcaller
@@ -485,7 +485,7 @@ step
     .mob Hatefury Felsworn
 step
     .goto Desolace,71.54,45.46
-    >>Kill |cRXP_ENEMY_Kolkar Battle Lord|r and |cRXP_ENEMY_Kolkar Windchaser|r and |cRXP_ENEMY_Kolkar Mauler|r. Loot them for |cRXP_LOOT_Centaur Ear|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Kolkar Battle Lord|r and |cRXP_ENEMY_Kolkar Windchaser|r and |cRXP_ENEMY_Kolkar Mauler|r. Loot them for |cRXP_LOOT_Centaur Ear|r
     .complete 1387,1 --Centaur Bounty
     .mob Kolkar Battle Lord
     .mob Kolkar Windchaser
@@ -635,7 +635,7 @@ step
     .target Caitlin Grassman
 step
     .goto Wetlands,10.22,66.31
-    >>Kill |cRXP_ENEMY_Bluegill Raider|r. Loot them for |cRXP_LOOT_Lightforge Ingot|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Bluegill Raider|r. Loot them for |cRXP_LOOT_Lightforge Ingot|r
     .complete 526,1 --Lightforge Ingots
     .mob Bluegill Raider
 step
@@ -643,22 +643,6 @@ step
     >>Talk to |cRXP_FRIENDLY_Glorin Steelbrow|r
     .turnin 526 >>Turn in Lightforge Ingots
     .target Glorin Steelbrow
-step
-    .goto Wetlands,49.93,12.55
-    >>Talk to |cRXP_FRIENDLY_Comar Villard|r
-    .accept 87318 >>Accept Hearts of the Lost
-    .target Comar Villard
-step
-    .goto Wetlands,51.54,9.02
-    >>Talk to |cRXP_FRIENDLY_Essene Villard|r
-    .turnin 87318 >>Turn in Hearts of the Lost
-    .accept 88758 >>Accept Sentiments of the Lost
-    .target Essene Villard
-step
-    .goto Wetlands,49.93,12.55
-    >>Talk to |cRXP_FRIENDLY_Comar Villard|r
-    .turnin 88758 >>Turn in Sentiments of the Lost
-    .target Comar Villard
 step
     .goto Wetlands,49.36,42.13
     >>Talk to |cRXP_FRIENDLY_Howin Kindfeather|r
@@ -959,8 +943,8 @@ step
     .mob Witherbark Shadow Hunter
 step
     .goto Arathi Highlands,63.51,71.64
-    >>Kill |cRXP_ENEMY_Witherbark Headhunter|r and |cRXP_ENEMY_Witherbark Shadow Hunter|r and |cRXP_ENEMY_Witherbark Witch Doctor|r. Loot them for |cRXP_LOOT_Witherbark Tusk|r (about 80% drop)
-    >>Kill |cRXP_ENEMY_Witherbark Witch Doctor|r. Loot them for |cRXP_LOOT_Witherbark Medicine Pouch|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Witherbark Headhunter|r and |cRXP_ENEMY_Witherbark Shadow Hunter|r and |cRXP_ENEMY_Witherbark Witch Doctor|r. Loot them for |cRXP_LOOT_Witherbark Tusk|r
+    >>Kill |cRXP_ENEMY_Witherbark Witch Doctor|r. Loot them for |cRXP_LOOT_Witherbark Medicine Pouch|r
     .complete 691,1 --Worth Its Weight in Gold
     .complete 691,2 --Worth Its Weight in Gold
     .mob Witherbark Headhunter
@@ -1080,7 +1064,7 @@ step
     .target Nixxrax Fillamug
 step
     .goto Stranglethorn Vale,44.23,20.09
-    >>Kill |cRXP_ENEMY_Venture Co. Geologist|r. Loot them for |cRXP_LOOT_Tumbled Crystal|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Venture Co. Geologist|r. Loot them for |cRXP_LOOT_Tumbled Crystal|r
     .complete 213,1 --Hostile Takeover
     .mob Venture Co. Geologist
 step
@@ -1110,12 +1094,12 @@ step
     .mob Elder Stranglethorn Tiger
 step
     .goto Stranglethorn Vale,25.11,17.68
-    >>Kill |cRXP_ENEMY_Crystal Spine Basilisk|r. Loot them for |cRXP_LOOT_Singing Crystal Shard|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Crystal Spine Basilisk|r. Loot them for |cRXP_LOOT_Singing Crystal Shard|r
     .complete 605,1 --Singing Blue Shards
     .mob Crystal Spine Basilisk
 step
     .goto Stranglethorn Vale,24.40,11.18
-    >>Kill |cRXP_ENEMY_Bloodscalp Mystic|r and |cRXP_ENEMY_Bloodscalp Scout|r and |cRXP_ENEMY_Bloodscalp Headhunter|r. Loot them for |cRXP_LOOT_Bloodscalp Ear|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Bloodscalp Mystic|r and |cRXP_ENEMY_Bloodscalp Scout|r and |cRXP_ENEMY_Bloodscalp Headhunter|r. Loot them for |cRXP_LOOT_Bloodscalp Ear|r
     .complete 189,1 --Bloodscalp Ears
     .mob Bloodscalp Mystic
     .mob Bloodscalp Scout
@@ -1217,7 +1201,7 @@ step
     .target Krazek
 step
     .goto Stranglethorn Vale,21.01,23.32
-    >>Kill |cRXP_ENEMY_Lesser Water Elemental|r. Loot them for |cRXP_LOOT_Water Elemental Bracers|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Lesser Water Elemental|r. Loot them for |cRXP_LOOT_Water Elemental Bracers|r
     .complete 601,1 --Water Elementals
     .mob Lesser Water Elemental
 step
@@ -1419,7 +1403,7 @@ step
     .target Lotwil Veriatus
 step
     .goto Badlands,21.20,45.88
-    >>Kill |cRXP_ENEMY_Lesser Rock Elemental|r. Loot them for |cRXP_LOOT_Small Stone Shard|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Lesser Rock Elemental|r. Loot them for |cRXP_LOOT_Small Stone Shard|r
     .complete 710,1 --Study of the Elements: Rock
     .mob Lesser Rock Elemental
 step
@@ -1454,7 +1438,7 @@ step
     .target Kreldig Ungor
 step
     .goto Desolace,66.33,25.65
-    >>Kill |cRXP_ENEMY_Scorpashi Snapper|r. Loot them for |cRXP_LOOT_Scorpashi Venom|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Scorpashi Snapper|r. Loot them for |cRXP_LOOT_Scorpashi Venom|r
     .complete 1459,1 --Reagents for Reclaimers Inc.
     .mob Scorpashi Snapper
 step
@@ -1997,7 +1981,7 @@ step
     .target Sir S. J. Erlgadin
 step
     .goto Stranglethorn Vale,45.00,38.06
-    >>Kill |cRXP_ENEMY_Skullsplitter Mystic|r and |cRXP_ENEMY_Skullsplitter Witch Doctor|r. Loot them for |cRXP_LOOT_Skullsplitter Fetish|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Skullsplitter Mystic|r and |cRXP_ENEMY_Skullsplitter Witch Doctor|r. Loot them for |cRXP_LOOT_Skullsplitter Fetish|r
     .complete 205,1 --Troll Witchery
     .mob Skullsplitter Mystic
     .mob Skullsplitter Witch Doctor
@@ -2137,12 +2121,12 @@ step
     .target Theldurin the Lost
 step
     .goto Badlands,37.42,75.92
-    >>Kill |cRXP_ENEMY_Rock Elemental|r. Loot them for |cRXP_LOOT_Large Stone Slab|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Rock Elemental|r. Loot them for |cRXP_LOOT_Large Stone Slab|r
     .complete 711,1 --Study of the Elements: Rock
     .mob Rock Elemental
 step
     .goto Badlands,12.53,74.36
-    >>Kill |cRXP_ENEMY_Dustbelcher Mauler|r and |cRXP_ENEMY_Dustbelcher Wyrmhunter|r and |cRXP_ENEMY_Dustbelcher Mystic|r. Loot them for |cRXP_LOOT_Scrap Metal|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Dustbelcher Mauler|r and |cRXP_ENEMY_Dustbelcher Wyrmhunter|r and |cRXP_ENEMY_Dustbelcher Mystic|r. Loot them for |cRXP_LOOT_Scrap Metal|r
     .complete 733,1 --Scrounging
     .mob Dustbelcher Mauler
     .mob Dustbelcher Wyrmhunter
@@ -2302,12 +2286,12 @@ step
     .target Fleet Master Seahorn
 step
     .goto Stranglethorn Vale,33.03,66.12
-    >>Kill |cRXP_ENEMY_Elder Mistvale Gorilla|r. Loot them for |cRXP_LOOT_Mistvale Giblets|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Elder Mistvale Gorilla|r. Loot them for |cRXP_LOOT_Mistvale Giblets|r
     .complete 606,1 --Scaring Shaky
     .mob Elder Mistvale Gorilla
 step
     .goto Stranglethorn Vale,41.67,43.91
-    >>Kill |cRXP_ENEMY_Venture Co. Strip Miner|r and |cRXP_ENEMY_Venture Co. Tinkerer|r and |cRXP_ENEMY_Venture Co. Surveyor|r. Loot them for |cRXP_LOOT_Singing Blue Crystal|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Venture Co. Strip Miner|r and |cRXP_ENEMY_Venture Co. Tinkerer|r and |cRXP_ENEMY_Venture Co. Surveyor|r. Loot them for |cRXP_LOOT_Singing Blue Crystal|r
     .complete 600,1 --Venture Company Mining
     .mob Venture Co. Strip Miner
     .mob Venture Co. Tinkerer
@@ -2356,7 +2340,7 @@ step
     .target Deeg
 step
     .goto Stranglethorn Vale,28.23,82.40
-    >>Kill |cRXP_ENEMY_Bloodsail Warlock|r and |cRXP_ENEMY_Bloodsail Swashbuckler|r and |cRXP_ENEMY_Garr Salthoof|r. Loot them for |cRXP_LOOT_Snuff|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Bloodsail Warlock|r and |cRXP_ENEMY_Bloodsail Swashbuckler|r and |cRXP_ENEMY_Garr Salthoof|r. Loot them for |cRXP_LOOT_Snuff|r
     .complete 587,1 --Up to Snuff
     .mob Bloodsail Warlock
     .mob Bloodsail Swashbuckler
@@ -2431,13 +2415,13 @@ step
     .target Hornizz Brimbuzzle
 step
     .goto Desolace,56.88,75.49
-    >>Kill |cRXP_ENEMY_Mage Hunter|r. Loot them for |cRXP_LOOT_Felhound Brain|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Mage Hunter|r. Loot them for |cRXP_LOOT_Felhound Brain|r
     .complete 1466,1 --Reagents for Reclaimers Inc.
     .mob Mage Hunter
 step
     .goto Desolace,51.74,82.53
-    >>Kill |cRXP_ENEMY_Doomwarder Captain|r and |cRXP_ENEMY_Kaskk|r. Loot them for |cRXP_LOOT_Doomwarder Blood|r (about 80% drop)
-    >>Kill |cRXP_ENEMY_Nether Sorceress|r and |cRXP_ENEMY_Nether Maiden|r and |cRXP_ENEMY_Nether Sister|r. Loot them for |cRXP_LOOT_Nether Wing|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Doomwarder Captain|r and |cRXP_ENEMY_Kaskk|r. Loot them for |cRXP_LOOT_Doomwarder Blood|r
+    >>Kill |cRXP_ENEMY_Nether Sorceress|r and |cRXP_ENEMY_Nether Maiden|r and |cRXP_ENEMY_Nether Sister|r. Loot them for |cRXP_LOOT_Nether Wing|r
     .complete 1466,3 --Reagents for Reclaimers Inc.
     .complete 1466,2 --Reagents for Reclaimers Inc.
     .mob Doomwarder Captain
@@ -2448,7 +2432,7 @@ step
 step
     .goto Desolace,63.03,90.00
     >>Kill |cRXP_ENEMY_Undead Ravager|r
-    >>Kill |cRXP_ENEMY_Magrami Spectre|r. Loot them for |cRXP_LOOT_Ghost-o-plasm|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Magrami Spectre|r. Loot them for |cRXP_LOOT_Ghost-o-plasm|r
     .complete 261,1 --Down the Scarlet Path
     .complete 6134,1 --Ghost-o-plasm Round Up
     .mob Undead Ravager

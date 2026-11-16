@@ -58,7 +58,7 @@ step
     .target Archmage Xylem
 step << Mage
     .goto Azshara,56.71,28.05
-    >>Kill |cRXP_ENEMY_Blood Elf Reclaimer|r and |cRXP_ENEMY_Blood Elf Surveyor|r. Loot them for |cRXP_LOOT_Glittering Dust|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Blood Elf Reclaimer|r and |cRXP_ENEMY_Blood Elf Surveyor|r. Loot them for |cRXP_LOOT_Glittering Dust|r
     .complete 8251,1 --Magic Dust
     .mob Blood Elf Reclaimer
     .mob Blood Elf Surveyor
@@ -70,7 +70,7 @@ step << Mage
     .target Archmage Xylem
 step << Mage
     .goto Azshara,38.12,53.04
-    >>Kill |cRXP_ENEMY_Spitelash Siren|r. Loot them for |cRXP_LOOT_Enchanted Coral|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Spitelash Siren|r. Loot them for |cRXP_LOOT_Enchanted Coral|r
     .complete 8252,1 --The Siren's Coral
     .mob Spitelash Siren
 step << Mage
@@ -288,7 +288,7 @@ step
     .target Shizzle
 step
     .goto Un'Goro Crater,57.20,10.20
-    >>Kill |cRXP_ENEMY_Pterrordax|r. Loot them for |cRXP_LOOT_Webbed Pterrordax Scale|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Pterrordax|r. Loot them for |cRXP_LOOT_Webbed Pterrordax Scale|r
     .complete 4503,2 --Shizzle's Flyer
     .mob Pterrordax
 step
@@ -331,8 +331,8 @@ step << Druid
     .mob Gorishi Stinger
 step
     .goto Un'Goro Crater,50.37,62.88
-    >>Kill |cRXP_ENEMY_Diemetradon|r. Loot them for |cRXP_LOOT_Webbed Diemetradon Scale|r (about 80% drop)
-    >>Kill |cRXP_ENEMY_Diemetradon|r. Loot them for |cRXP_LOOT_Dinosaur Bone|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Diemetradon|r. Loot them for |cRXP_LOOT_Webbed Diemetradon Scale|r
+    >>Kill |cRXP_ENEMY_Diemetradon|r. Loot them for |cRXP_LOOT_Dinosaur Bone|r
     .complete 4503,1 --Shizzle's Flyer
     .complete 3882,1 --Roll the Bones
     .mob Diemetradon
@@ -1317,12 +1317,12 @@ step
     .target Windcaller Proudhorn
 step
     .goto Silithus,61.84,26.60
-    >>Kill |cRXP_ENEMY_Stonelash Scorpid|r. Loot them for |cRXP_LOOT_Stonelash Scorpid Stinger|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Stonelash Scorpid|r. Loot them for |cRXP_LOOT_Stonelash Scorpid Stinger|r
     .complete 8277,1 --Deadly Desert Venom
     .mob Stonelash Scorpid
 step
     .goto Silithus,55.57,22.78
-    >>Kill |cRXP_ENEMY_Sand Skitterer|r. Loot them for |cRXP_LOOT_Sand Skitterer Fang|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Sand Skitterer|r. Loot them for |cRXP_LOOT_Sand Skitterer Fang|r
     .complete 8277,2 --Deadly Desert Venom
     .mob Sand Skitterer
 step
@@ -1353,13 +1353,13 @@ step
     .mob Dredge Crusher
 step
     .goto Silithus,49.52,62.84
-    >>Kill |cRXP_ENEMY_Stonelash Pincer|r. Loot them for |cRXP_LOOT_Stonelash Pincer Stinger|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Stonelash Pincer|r. Loot them for |cRXP_LOOT_Stonelash Pincer Stinger|r
     .complete 8278,2 --Noggle's Last Hope
     .mob Stonelash Pincer
 step
     .goto Silithus,40.57,83.91
-    >>Kill |cRXP_ENEMY_Rock Stalker|r. Loot them for |cRXP_LOOT_Rock Stalker Fang|r (about 80% drop)
-    >>Kill |cRXP_ENEMY_Stonelash Flayer|r. Loot them for |cRXP_LOOT_Stonelash Flayer Stinger|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Rock Stalker|r. Loot them for |cRXP_LOOT_Rock Stalker Fang|r
+    >>Kill |cRXP_ENEMY_Stonelash Flayer|r. Loot them for |cRXP_LOOT_Stonelash Flayer Stinger|r
     .complete 8278,3 --Noggle's Last Hope
     .complete 8278,1 --Noggle's Last Hope
     .mob Rock Stalker

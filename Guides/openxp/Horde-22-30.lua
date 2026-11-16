@@ -15,6 +15,15 @@ RXPGuides.RegisterGuide([[
 #name 22-23 Hillsbrad/Alterac
 #next 23-25 Ashenvale
 
+step << Warrior/Rogue/Paladin/Hunter
+    --oxp-class
+    #optional
+    .goto 1458/0,323.57,1668.50
+    >>On your way through Undercity: talk to |cRXP_FRIENDLY_Archibald|r in the War Quarter and train Swords if you don't have them
+    .train 201 >>Train 1h Swords
+    .train 202 >>Train 2h Swords << Warrior/Paladin/Hunter
+    .target Archibald
+    .zoneskip Hillsbrad Foothills
 step
     #completewith next
     .zone Hillsbrad Foothills >>Take the zeppelin to Undercity, then ride south to Tarren Mill
@@ -57,7 +66,7 @@ step
     .target Krusk
 step
     .goto Hillsbrad Foothills,79.79,39.65
-    >>Kill |cRXP_ENEMY_Syndicate Shadow Mage|r. Loot them for |cRXP_LOOT_Vial of Innocent Blood|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Syndicate Shadow Mage|r. Loot them for |cRXP_LOOT_Vial of Innocent Blood|r
     >>Rescue Tog'thar
     .complete -1066,1 --Blood of Innocents
     .complete 498,2 --The Rescue
@@ -81,8 +90,8 @@ step
     .mob Forest Moss Creeper
 step
     .goto Hillsbrad Foothills,54.86,39.54
-    >>Kill |cRXP_ENEMY_Vicious Gray Bear|r. Loot them for |cRXP_LOOT_Gray Bear Tongue|r (about 80% drop)
-    >>Kill |cRXP_ENEMY_Starving Mountain Lion|r. Loot them for |cRXP_LOOT_Mountain Lion Blood|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Vicious Gray Bear|r. Loot them for |cRXP_LOOT_Gray Bear Tongue|r
+    >>Kill |cRXP_ENEMY_Starving Mountain Lion|r. Loot them for |cRXP_LOOT_Mountain Lion Blood|r
     .complete 496,1 --Elixir of Suffering
     .complete 501,1 --Elixir of Pain
     .mob Vicious Gray Bear
@@ -154,7 +163,6 @@ step
     .turnin 527 >>Turn in Battle of Hillsbrad
     .turnin 494 >>Turn in Time To Strike
     .accept 528 >>Accept Battle of Hillsbrad
-    .accept 98094 >>Accept Scout Support
     .target High Executor Darthalia
 step
     .goto Hillsbrad Foothills,62.11,19.70
@@ -167,15 +175,8 @@ step
     .turnin 498 >>Turn in The Rescue
     .target Krusk
 step
-    .goto Hillsbrad Foothills,63.58,53.11
-    >>Talk to |cRXP_FRIENDLY_Deathstalker Masoj|r
-    .turnin 98094 >>Turn in Scout Support
-    .accept 98095 >>Accept Valuable Vantages
-    .turnin 98095 >>Turn in Valuable Vantages
-    .target Deathstalker Masoj
-step
     .goto Hillsbrad Foothills,33.80,46.52
-    >>Kill |cRXP_ENEMY_Hillsbrad Farmhand|r and |cRXP_ENEMY_Hillsbrad Farmer|r and |cRXP_ENEMY_Hillsbrad Footman|r. Loot them for |cRXP_LOOT_Hillsbrad Human Skull|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Hillsbrad Farmhand|r and |cRXP_ENEMY_Hillsbrad Farmer|r and |cRXP_ENEMY_Hillsbrad Footman|r. Loot them for |cRXP_LOOT_Hillsbrad Human Skull|r
     >>Kill |cRXP_ENEMY_Hillsbrad Peasant|r
     .complete 546,1 --Souvenirs of Death
     .complete 528,1 --Battle of Hillsbrad
@@ -187,12 +188,20 @@ step
     .goto Hillsbrad Foothills,62.33,20.45
     >>Talk to |cRXP_FRIENDLY_High Executor Darthalia|r
     .turnin 528 >>Turn in Battle of Hillsbrad
+    .accept 98094 >>Accept Scout Support
     .target High Executor Darthalia
 step
     .goto Hillsbrad Foothills,62.11,19.70
     >>Talk to |cRXP_FRIENDLY_Deathguard Samsa|r
     .turnin 546 >>Turn in Souvenirs of Death
     .target Deathguard Samsa
+step
+    .goto Hillsbrad Foothills,63.58,53.11
+    >>Talk to |cRXP_FRIENDLY_Deathstalker Masoj|r
+    .turnin 98094 >>Turn in Scout Support
+    .accept 98095 >>Accept Valuable Vantages
+    .turnin 98095 >>Turn in Valuable Vantages
+    .target Deathstalker Masoj
 step << Undead Paladin
     --oxp-class
     .goto Tirisfal Glades,22.09,44.66
@@ -528,7 +537,7 @@ step
     .complete 6381,1 --New Life
 step
     .goto Stonetalon Mountains,29.98,65.44
-    >>Kill |cRXP_ENEMY_Burning Destroyer|r and |cRXP_ENEMY_Burning Ravager|r. Loot them for |cRXP_LOOT_Incendrites|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Burning Destroyer|r and |cRXP_ENEMY_Burning Ravager|r. Loot them for |cRXP_LOOT_Incendrites|r
     .complete -6393,1 --Elemental War
     .mob Burning Destroyer
     .mob Burning Ravager
@@ -552,7 +561,7 @@ step
     .mob Great Courser
 step
     .goto Stonetalon Mountains,39.77,13.76
-    >>Kill |cRXP_ENEMY_Fey Dragon|r and |cRXP_ENEMY_Wily Fey Dragon|r. Loot them for |cRXP_LOOT_Fey Dragon Scale|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Fey Dragon|r and |cRXP_ENEMY_Wily Fey Dragon|r. Loot them for |cRXP_LOOT_Fey Dragon Scale|r
     .complete -1058,4 --Jin'Zil's Forest Magic
     .mob Fey Dragon
     .mob Wily Fey Dragon
@@ -569,12 +578,12 @@ step
     .mob Cenarion Botanist
 step
     .goto Stonetalon Mountains,32.17,10.36
-    >>Kill |cRXP_ENEMY_Twilight Runner|r. Loot them for |cRXP_LOOT_Twilight Whisker|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Twilight Runner|r. Loot them for |cRXP_LOOT_Twilight Whisker|r
     .complete -1058,2 --Jin'Zil's Forest Magic
     .mob Twilight Runner
 step
     .goto Stonetalon Mountains,35.71,18.34
-    >>Kill |cRXP_ENEMY_Sap Beast|r. Loot them for |cRXP_LOOT_Stonetalon Sap|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Sap Beast|r. Loot them for |cRXP_LOOT_Stonetalon Sap|r
     .complete -1058,1 --Jin'Zil's Forest Magic
     .mob Sap Beast
 step
@@ -747,9 +756,9 @@ step
     .target Gann Stonespire
 step
     .goto The Barrens,49.15,84.13
-    >>Kill |cRXP_ENEMY_Bael'dun Soldier|r and |cRXP_ENEMY_Bael'dun Rifleman|r and |cRXP_ENEMY_Bael'dun Officer|r. Loot them for |cRXP_LOOT_Nitroglycerin|r (about 80% drop)
-    >>Kill |cRXP_ENEMY_Bael'dun Soldier|r and |cRXP_ENEMY_Bael'dun Rifleman|r and |cRXP_ENEMY_Bael'dun Officer|r. Loot them for |cRXP_LOOT_Wood Pulp|r (about 80% drop)
-    >>Kill |cRXP_ENEMY_Bael'dun Soldier|r and |cRXP_ENEMY_Bael'dun Rifleman|r and |cRXP_ENEMY_Bael'dun Officer|r. Loot them for |cRXP_LOOT_Sodium Nitrate|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_Bael'dun Soldier|r and |cRXP_ENEMY_Bael'dun Rifleman|r and |cRXP_ENEMY_Bael'dun Officer|r. Loot them for |cRXP_LOOT_Nitroglycerin|r
+    >>Kill |cRXP_ENEMY_Bael'dun Soldier|r and |cRXP_ENEMY_Bael'dun Rifleman|r and |cRXP_ENEMY_Bael'dun Officer|r. Loot them for |cRXP_LOOT_Wood Pulp|r
+    >>Kill |cRXP_ENEMY_Bael'dun Soldier|r and |cRXP_ENEMY_Bael'dun Rifleman|r and |cRXP_ENEMY_Bael'dun Officer|r. Loot them for |cRXP_LOOT_Sodium Nitrate|r
     .complete 846,1 --Revenge of Gann
     .complete 846,2 --Revenge of Gann
     .complete 846,3 --Revenge of Gann
@@ -928,6 +937,19 @@ step
     .goto Hillsbrad Foothills,62.56,19.66
     >>Click the |cRXP_PICK_Dangerous!|r
     .accept 567 >>Accept Dangerous!
+step
+    .goto Hillsbrad Foothills,33.80,46.52
+    >>You still have Battle of Hillsbrad (part 2): finish it first
+    >>Kill |cRXP_ENEMY_Hillsbrad Peasant|r
+    .complete 528,1 --Battle of Hillsbrad
+    .mob Hillsbrad Peasant
+    .isOnQuest 528
+step
+    .goto Hillsbrad Foothills,62.33,20.45
+    >>Talk to |cRXP_FRIENDLY_High Executor Darthalia|r
+    .turnin 528 >>Turn in Battle of Hillsbrad
+    .target High Executor Darthalia
+    .isOnQuest 528
 step
     .goto Hillsbrad Foothills,62.33,20.45
     >>Talk to |cRXP_FRIENDLY_High Executor Darthalia|r
@@ -1223,7 +1245,7 @@ step
     .mob Young Panther
 step
     .goto Stranglethorn Vale,36.85,10.51
-    >>Kill |cRXP_ENEMY_River Crocolisk|r. Loot them for |cRXP_LOOT_Large River Crocolisk Skin|r (about 80% drop)
+    >>Kill |cRXP_ENEMY_River Crocolisk|r. Loot them for |cRXP_LOOT_Large River Crocolisk Skin|r
     .complete 575,1 --Supply and Demand
     .mob River Crocolisk
 step
