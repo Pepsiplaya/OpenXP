@@ -1590,6 +1590,8 @@ function card.StepStatus(guide, index, current)
     if not step then return end
     current = current or CurrentStep()
     local rec = StatusRecords(guide)[index]
+    -- you marked it done yourself (the addon didn't see it, GitHub #15/#21)
+    if rec == "done" then return "done" end
     for _, e in ipairs(step.elements or {}) do
         if e.tooltipText == L(MISSING_PREREQ) or e.tooltipText == MISSING_PREREQ then return "chain" end
     end
@@ -1702,6 +1704,26 @@ function card.GoBack()
             return card.JumpTo(target)
         end
     end
+end
+
+-- Mark a step done by hand: for when you already did it and the addon
+-- didn't notice (GitHub #15/#21). Unlike Skip it doesn't skip the rest of
+-- the quest chain. On the current step, moves on.
+function card.MarkDone(index)
+    local guide = addon.currentGuide
+    if not (guide and guide.steps) then return end
+    local cur = CurrentStep()
+    index = index or cur
+    if not guide.steps[index] then return end
+    OXPCData.stepSkip = OXPCData.stepSkip or {}
+    OXPCData.stepSkip[index] = true
+    card.MarkStatus(guide, index, "done")
+    if index == cur then
+        card.hold = nil
+        ManualSetStep(cur + 1)
+    end
+    if card.FillStepList then card.FillStepList() end
+    card.Refresh(true)
 end
 
 -- Skipping a step you never picked the quests up from also skips the rest
@@ -2510,11 +2532,25 @@ function card.BuildStepList()
         row.text:SetPoint("RIGHT", row.pill, "LEFT", -6, 0)
         row.text:SetJustifyH("LEFT")
         row.text:SetWordWrap(false)
-        row:SetScript("OnEnter", function(self) self.hl:SetColorTexture(1, 1, 1, 0.08) end)
+        row:SetScript("OnEnter", function(self)
+            self.hl:SetColorTexture(1, 1, 1, 0.08)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText(L("Click: go to this step"), 1, 1, 1)
+            GameTooltip:AddLine(L("Right-click: mark it done (if you already did it)"), 0.8, 0.8, 0.8)
+            GameTooltip:Show()
+        end)
         row:SetScript("OnLeave", function(self)
             self.hl:SetColorTexture(1, 1, 1, self.current and 0.05 or 0)
+            GameTooltip:Hide()
         end)
-        row:SetScript("OnClick", function(self) card.JumpTo(self.index) end)
+        row:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+        row:SetScript("OnClick", function(self, button)
+            if button == "RightButton" then
+                card.MarkDone(self.index)
+            else
+                card.JumpTo(self.index)
+            end
+        end)
         list.rows[r] = row
     end
     list:SetHeight(28 + LIST_ROWS * 18 + 8)

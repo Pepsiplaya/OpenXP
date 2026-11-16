@@ -418,6 +418,10 @@ try("going back to a finished step holds there until you press Next", function()
     card.JumpTo(43)
     card.GoNext()
     assert(cur == 44 and card.StepStatus(addon.currentGuide, 43, 44) == "skipped", "not marked skipped")
+    -- Mark done (GitHub #15/#21): shows done and moves on
+    card.MarkDone()
+    assert(cur == 45 and card.StepStatus(addon.currentGuide, 44, 45) == "done", "mark done didn't stick")
+    assert(OXPCData.stepSkip[44], "marked step not left behind")
     steps[41].sticky = nil
     card.hold = nil
     addon.SetStep = function(n) calls.setStep = n end

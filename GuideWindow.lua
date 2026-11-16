@@ -2883,6 +2883,13 @@ function RXPFrame:GenerateMenuTable(menu)
             func = function() addon:CloseMenu(); addon.smartStart.ShowCatchUp() end,
         })
     end
+    if addon.card and addon.card.MarkDone then
+        tinsert(menuList, {
+            text = L("Mark this step done"),
+            notCheckable = 1,
+            func = function() addon:CloseMenu(); addon.card.MarkDone() end,
+        })
+    end
     if addon.welcome then
         tinsert(menuList, {
             text = L("What's new"),
