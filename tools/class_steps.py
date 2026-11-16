@@ -41,6 +41,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_route as B  # noqa: E402
+from validate_quest_steps import quest_npcs
 
 ROOT = B.ROOT
 MARK = "    --oxp-class"
@@ -209,6 +210,13 @@ def givers(db, ref):
             if pts:
                 out.append(("obj", oid, B.li(o, 1), z, pts[0]))
     return out
+
+
+def quest_givers(db, quest, action):
+    ref = quest.startedBy if action == "accept" else quest.finishedBy
+    expected = quest_npcs(quest.evidence, action)
+    return [giver for giver in givers(db, ref)
+            if not expected or giver[0] == "npc" and giver[1] in expected]
 
 
 def objectives(db, q):
@@ -523,7 +531,7 @@ def build(db, sections, chains, faction):
             # there is one, else the one reached first
             gl = []
             for o in options:
-                for g in givers(db, o.startedBy):
+                for g in quest_givers(db, o, "accept"):
                     gl.append((o, g))
             plans = []  # (races, quest variant, pickup (pos, det, g) or None)
             if carried_now:
@@ -549,9 +557,10 @@ def build(db, sections, chains, faction):
             for races, v, _ in plans:
                 obj = v.objectives or {}
                 want = sum(len(B.as_list(B.li(obj, k))) for k in (1, 2, 3, 5)) + (1 if v.triggerEnd else 0)
-                if len(objectives(db, v)) < want:
+                found = {site[0] for site in objectives(db, v)}
+                if len(found) < want or not found.issuperset(v.evidence.get("objectives", ())):
                     missing = "an objective has no known place"
-                elif not givers(db, v.finishedBy):
+                elif not quest_givers(db, v, "turnin"):
                     missing = "no known turn-in place"
             if not plans:
                 missing = "no known pickup place"
@@ -579,7 +588,7 @@ def build(db, sections, chains, faction):
                     c = pos
                     if det:
                         detours.append("%s objective in %s" % (v.name, AREAS[z][0]))
-                fl = givers(db, v.finishedBy)
+                fl = quest_givers(db, v, "turnin")
                 tchoice = {}
                 for rs, home in race_groups(races):
                     cand = [g for g in fl if g[3] in home] or fl
@@ -730,6 +739,10 @@ def render_obj(tag, q, idx, kind, label, mobs, area, p, hard, sign=1):
         t = "Loot the |cRXP_PICK_%s|r" % label
     else:
         t = label or "Explore the area"
+    use = q.evidence.get("objective_use", {}).get(str(idx))
+    if use:
+        lines.append("    >>" + use["instruction"])
+        lines.append("    .use %d" % use["item"])
     lines.append("    >>" + t)
     if hard:
         lines.append("    >>|cRXP_WARN_This is an elite or group part: bring help, or skip this step|r")

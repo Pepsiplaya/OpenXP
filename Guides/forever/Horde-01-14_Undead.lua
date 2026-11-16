@@ -4004,9 +4004,9 @@ step << Undead Rogue
     .isQuestTurnedIn 1886
 step
     .goto 1458/0,310.900,1528.100
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Alessandro Luca|r
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Alessandro Luca::7683|r. Head straight to the Apothecarium once you have the potion.
     .accept 97891 >>Accept Prompt Potion Runner
-    .target Alessandro Luca
+    .target Alessandro Luca::7683
 step
     #completewith next
     #optional
@@ -4015,13 +4015,13 @@ step
     .goto 1458/0,371.68,1370.64,15,0--c:1458,52.275,79.254
     .goto 1458/0,381.23,1366.35,15,0--c:1458,51.279,79.923
     .goto 1458/0,396.45,1372.88,15,0--c:1458,49.693,78.903
-    .goto 1458/0,413.16,1390.37,15 >>Travel to the The Apothecarium--c:1458,47.951,76.171
+    .goto 1458/0,413.16,1390.37,15 >>Travel to the Apothecarium--c:1458,47.951,76.171
 step
     .goto 1458/0,426.100,1403.600
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Doctor Martin Felben|r
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Doctor Martin Felben::11044|r before the potion expires.
     .complete 97891,1 --|1/1 Speak to Doctor Martin Felben
     .turnin 97891 >>Turn in Prompt Potion Runner
-    .target Doctor Martin Felben
+    .target Doctor Martin Felben::11044
 step
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Faranell|r and |cRXP_FRIENDLY_Zinge|r in The Apothecarium
     .turnin 447 >>Turn in A Recipe For Death

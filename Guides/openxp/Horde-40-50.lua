@@ -144,10 +144,11 @@ step
     .target Kebok
 step << Orc Shaman/Troll Shaman/Tauren Shaman
     --oxp-class
+    .isOnQuest 79442
     .goto Alterac Mountains,80.50,66.92
     >>Talk to |cRXP_FRIENDLY_Bath'rah the Windwatcher|r
     .turnin -79442 >>Turn in The Tempest's Weapons
-    .target Bath'rah the Windwatcher
+    .target Bath'rah the Windwatcher::6176
 ]])
 
 RXPGuides.RegisterGuide([[

@@ -497,9 +497,9 @@ def dense_clusters(points, radius=4.0, keep=4, thin=0.8):
 # Route building
 # ---------------------------------------------------------------------------
 
-def season_of_discovery(qid, name):
+def season_of_discovery(qid, name, *, available_in_forever=False):
     """Flag legacy seasonal records that the Forever planner skips."""
-    return 76000 <= qid <= 85999 or (name or "").startswith("Legacy Reward")
+    return not available_in_forever and (76000 <= qid <= 85999 or (name or "").startswith("Legacy Reward"))
 
 
 class Builder:
@@ -649,7 +649,7 @@ class Builder:
         real (map name, x, y) for the .goto, or None for the home zone.
         """
         # The class guides handle these scripted encounters and delays.
-        if q.evidence.get("interactions") or q.evidence.get("wait_for_event"):
+        if any(q.evidence.get(key) for key in ("interactions", "objective_use", "wait_for_event")):
             return None
         seq = []  # each located objective's spawn points in the home zone
 
@@ -864,7 +864,7 @@ class Builder:
                 continue  # holiday and world-event quests
             if q.name.startswith("[") or "<" in q.name:
                 continue  # placeholder / unused quests in the data
-            if season_of_discovery(q.id, q.name):
+            if season_of_discovery(q.id, q.name, available_in_forever=q.evidence.get("available_in_forever")):
                 continue
             carried = qid in self.accepted_before
             if not carried and (q.level < lo or q.level > hi or q.reqLevel > hi):

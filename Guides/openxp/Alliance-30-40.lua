@@ -2183,10 +2183,11 @@ step
     .target Doctor Draxlegauge
 step << Shaman
     --oxp-class
+    .isQuestTurnedIn 79358
     .goto Arathi Highlands,59.84,27.57
     >>Talk to |cRXP_FRIENDLY_Veyric Thunderhame|r
     .accept 96135 >>Accept Heed My Call
-    .target Veyric Thunderhame
+    .target Veyric Thunderhame::259023
 step
     .goto Arathi Highlands,32.80,81.48
     >>Talk to |cRXP_FRIENDLY_First Mate Nilzlix|r
@@ -2548,9 +2549,11 @@ step << Warlock
     .target Menara Voidrender
 step << Shaman
     --oxp-class
+    .isOnQuest 96135
     .goto Thousand Needles,36.68,39.08
-    >>Kill |cRXP_ENEMY_Ravaging Tempest|r. Loot them for |cRXP_LOOT_Eye of the Tempest|r
-    >>|cRXP_WARN_This is an elite or group part: bring help, or skip this step|r
+    >>Bring help to the steam pools west of Freewind Post. Use the |cRXP_LOOT_Corrupted Totems|r at the ritual circle.
+    >>Fight the waves, then loot the |cRXP_LOOT_Eye of the Tempest|r from |cRXP_ENEMY_Ravaging Tempest::216474|r.
     .complete 96135,1 --Heed My Call
-    .mob Ravaging Tempest
+    .use 268582
+    .mob Ravaging Tempest::216474
 ]])

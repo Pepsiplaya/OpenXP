@@ -87,6 +87,53 @@
     "turnin_npc": 11406,
     "source": "https://db.icy-veins.com/wow-forever/quests/5641"
   },
+  "79360": {
+    "name": "Elemental Aid",
+    "available_in_forever": true,
+    "objectives": [1],
+    "accept_npc": 5905,
+    "turnin_npc": 4722,
+    "source": "https://db.icy-veins.com/wow-forever/quests/79360"
+  },
+  "79361": {
+    "name": "Storm, Earth, and Fire",
+    "available_in_forever": true,
+    "objectives": [1, 2, 3, 4],
+    "requires": [79364],
+    "accept_npc": 5905,
+    "turnin_npc": 5905,
+    "source": "https://db.icy-veins.com/wow-forever/quests/79361"
+  },
+  "79364": {
+    "name": "Eyes on the Sky",
+    "available_in_forever": true,
+    "delivery": true,
+    "requires": [79360],
+    "accept_npc": 4722,
+    "turnin_npc": 5905,
+    "source": "https://db.icy-veins.com/wow-forever/quests/79364"
+  },
+  "79366": {
+    "name": "Heed My Call",
+    "available_in_forever": true,
+    "objectives": [1],
+    "requires": [79361],
+    "accept_npc": 5905,
+    "turnin_npc": 4722,
+    "objective_use": {
+      "1": {"item": 268582, "instruction": "Use the Corrupted Totems at the ritual circle near the steam pools west of Freewind Post. Bring help for the event."}
+    },
+    "source": "https://db.icy-veins.com/wow-forever/quests/79366"
+  },
+  "79442": {
+    "name": "The Tempest's Weapons",
+    "available_in_forever": true,
+    "delivery": true,
+    "requires": [79366],
+    "accept_npc": 4722,
+    "turnin_npc": 6176,
+    "source": "https://db.icy-veins.com/wow-forever/quests/79442"
+  },
   "92743": {
     "name": "A Conqueror's Crown",
     "objectives": [1],
@@ -172,6 +219,41 @@
     "tag": "Gnome Priest",
     "turnin_npc": 258785,
     "source": "https://db.icy-veins.com/wow-forever/quests/94820"
+  },
+  "96016": {
+    "name": "The Tempest's Weapons",
+    "delivery": true,
+    "requires": [96135],
+    "accept_npc": 259023,
+    "turnin_npc": 6176,
+    "source": "https://db.icy-veins.com/wow-forever/quests/96016"
+  },
+  "96135": {
+    "name": "Heed My Call",
+    "objectives": [1],
+    "requires": [79358],
+    "accept_npc": 259023,
+    "turnin_npc": 259023,
+    "objective_use": {
+      "1": {"item": 268582, "instruction": "Use the Corrupted Totems at the ritual circle near the steam pools west of Freewind Post. Bring help for the event."}
+    },
+    "source": "https://db.icy-veins.com/wow-forever/quests/96135"
+  },
+  "96136": {
+    "name": "Call of Air",
+    "delivery": true,
+    "level": 30,
+    "tag": "Skyborne Shaman",
+    "accept_npc": 259119,
+    "turnin_npc": 5905,
+    "source": "https://db.icy-veins.com/wow-forever/quests/96136"
+  },
+  "97891": {
+    "name": "Prompt Potion Runner",
+    "objectives": [1],
+    "accept_npc": 7683,
+    "turnin_npc": 11044,
+    "source": "https://www.stillsixty.com/quest/97891"
   },
   "97968": {
     "name": "Camping 101: Herbalism",

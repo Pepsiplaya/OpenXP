@@ -205,13 +205,13 @@ step << Shaman
     >>Talk to |cRXP_FRIENDLY_Islen Waterseer|r
     .turnin -96 >>Turn in Call of Water
     .target Islen Waterseer
-step << Orc Shaman/Troll Shaman/Undead Shaman/Skyborne Shaman
+step << Orc Shaman/Troll Shaman
     --oxp-class
     .goto Orgrimmar,37.96,37.73
     >>Talk to |cRXP_FRIENDLY_Searn Firewarder|r
     .accept 1531 >>Accept Call of Air
     .target Searn Firewarder
-step << Orc Shaman/Troll Shaman/Undead Shaman/Skyborne Shaman
+step << Orc Shaman/Troll Shaman
     --oxp-class
     .goto Thousand Needles,53.54,42.65
     >>Talk to |cRXP_FRIENDLY_Prate Cloudseer|r
@@ -229,6 +229,17 @@ step << Tauren Shaman
     >>Talk to |cRXP_FRIENDLY_Prate Cloudseer|r
     .turnin 1532 >>Turn in Call of Air
     .target Prate Cloudseer
+step << Skyborne Shaman
+    --oxp-class
+    .goto Mulgore,33.37,22.57
+    .accept 96136 >>Accept Call of Air from |cRXP_FRIENDLY_Alaana Stormwalker::259119|r
+    .target Alaana Stormwalker::259119
+step << Skyborne Shaman
+    --oxp-class
+    .isOnQuest 96136
+    .goto Thousand Needles,53.54,42.65
+    .turnin 96136 >>Turn in Call of Air to |cRXP_FRIENDLY_Prate Cloudseer::5905|r
+    .target Prate Cloudseer::5905
 step << Troll Mage/Undead Mage
     --oxp-class
     .goto Orgrimmar,38.45,86.13
@@ -635,23 +646,38 @@ step << Tauren Warlock/Undead Warlock/Skyborne Warlock
     .target Menara Voidrender
 step << Shaman
     --oxp-class
-    .goto Thousand Needles,46.14,51.71
-    >>Talk to |cRXP_FRIENDLY_Rau Cliffrunner|r
+    .isQuestTurnedIn 1531,1532,96136
+    .goto Thousand Needles,53.54,42.65
+    >>After Call of Air, speak with |cRXP_FRIENDLY_Prate Cloudseer::5905|r.
     .accept 79360 >>Accept Elemental Aid
-    .target Rau Cliffrunner
+    .target Prate Cloudseer::5905
 step << Shaman
     --oxp-class
+    .isOnQuest 79360
     .goto The Barrens,42.30,89.90
-    >>Kill |cRXP_ENEMY_Charlga Razorflank|r in Razorfen Kraul (dungeon). Loot them for |cRXP_LOOT_Tattered Note|r
-    >>|cRXP_WARN_This is an elite or group part: bring help, or skip this step|r
+    >>Enter Razorfen Kraul with your group. Defeat |cRXP_ENEMY_Charlga Razorflank::4421|r and loot the |cRXP_LOOT_Tattered Note|r.
     .complete 79360,1 --Elemental Aid
-    .mob Charlga Razorflank
+    .mob Charlga Razorflank::4421
 step << Shaman
     --oxp-class
+    .isOnQuest 79360
     .goto Thousand Needles,46.14,51.71
-    >>Talk to |cRXP_FRIENDLY_Rau Cliffrunner|r
+    >>Bring the note to |cRXP_FRIENDLY_Rau Cliffrunner::4722|r at Freewind Post.
     .turnin 79360 >>Turn in Elemental Aid
-    .target Rau Cliffrunner
+    .target Rau Cliffrunner::4722
+step << Shaman
+    --oxp-class
+    .isQuestTurnedIn 79360
+    .goto Thousand Needles,46.14,51.71
+    .accept 79364 >>Accept Eyes on the Sky
+    .target Rau Cliffrunner::4722
+step << Shaman
+    --oxp-class
+    .isOnQuest 79364
+    .goto Thousand Needles,53.54,42.65
+    >>To continue the weapon chain, look for The Tempest's Weapons under OpenXP Extras, Class Quests.
+    .turnin 79364 >>Turn in Eyes on the Sky
+    .target Prate Cloudseer::5905
 ]])
 
 RXPGuides.RegisterGuide([[
@@ -1986,15 +2012,29 @@ step << Warlock
     .mob Burning Blade Summoner
 step << Shaman
     --oxp-class
+    .isQuestTurnedIn 79361
+    .goto Thousand Needles,53.54,42.65
+    .accept 79366 >>Accept Heed My Call from |cRXP_FRIENDLY_Prate Cloudseer::5905|r
+    .target Prate Cloudseer::5905
+step << Shaman
+    --oxp-class
+    .isOnQuest 79366
+    .goto Thousand Needles,36.68,39.08
+    >>Bring help to the steam pools west of Freewind Post. Find the ritual circle and use the |cRXP_LOOT_Corrupted Totems|r there.
+    >>Fight the waves, then defeat |cRXP_ENEMY_Ravaging Tempest::216474|r and loot the |cRXP_LOOT_Eye of the Tempest|r.
+    .complete 79366,1 --Heed My Call
+    .use 268582
+    .mob Ravaging Tempest::216474
+step << Shaman
+    --oxp-class
+    .isOnQuest 79366
     .goto Thousand Needles,46.14,51.71
-    >>Talk to |cRXP_FRIENDLY_Rau Cliffrunner|r
-    .accept 79366 >>Accept Heed My Call
     .turnin 79366 >>Turn in Heed My Call
-    .target Rau Cliffrunner
+    .target Rau Cliffrunner::4722
 step << Orc Shaman/Troll Shaman/Tauren Shaman
     --oxp-class
+    .isQuestTurnedIn 79366
     .goto Thousand Needles,46.14,51.71
-    >>Talk to |cRXP_FRIENDLY_Rau Cliffrunner|r
     .accept 79442 >>Accept The Tempest's Weapons
-    .target Rau Cliffrunner
+    .target Rau Cliffrunner::4722
 ]])

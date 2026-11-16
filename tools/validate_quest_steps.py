@@ -71,7 +71,11 @@ def validate(body, evidence, *, strict=False, faction=None):
                 options = ", ".join(map(str, sorted(npcs)))
                 yield f"{context}: {kind} needs NPC {options}"
             if kind == "accept":
-                if not set(fact.get("requires", ())) <= turned:
+                # A prior chapter may supply a prerequisite. Require the
+                # explicit single-quest gate in that case (multiple IDs are OR).
+                external = {int(match[1]) for row in lines if
+                            (match := re.fullmatch(r"\.isQuestTurnedIn\s+(\d+)(?:\s*--.*)?", row))}
+                if not set(fact.get("requires", ())) <= turned | external:
                     yield f"{context}: prerequisite turn-in missing before pickup"
                 if fact.get("level", 0) > minimum:
                     yield f"{context}: minimum level gate missing"
@@ -86,6 +90,9 @@ def validate(body, evidence, *, strict=False, faction=None):
                                     or interaction["required_text"] not in step
                                     or any(row.startswith(".mob ") for row in lines)):
                     yield f"{context}: objective {index} needs {interaction['required_text']} with NPC {interaction['target_npc']}"
+                use = fact.get("objective_use", {}).get(index)
+                if use and not any(re.match(rf"^\.use {use['item']}\b", row) for row in lines):
+                    yield f"{context}: objective {index} needs quest item {use['item']}"
                 if qid in accepted:
                     accepted[qid][1].append(int(index) if index else None)
             else:

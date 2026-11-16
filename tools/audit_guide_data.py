@@ -83,7 +83,7 @@ def review_record(qid, row, fact, npc_ids):
         group.add(alternatives[0])
     missing = set(fact.get("requires", ())) - group
     if missing:
-        yield "reviewed_prerequisites_missing", f"Export lacks required prerequisites {sorted(missing)}."
+        yield "reviewed_prerequisites_missing", f"Export does not enforce the reviewed prerequisites {sorted(missing)}."
     for kind in ("accept", "turnin"):
         expected = quest_npcs(fact, kind)
         missing = expected.difference(route.as_list(route.li(endpoint(row, kind), 1)))
@@ -95,7 +95,7 @@ def review_record(qid, row, fact, npc_ids):
     for kind in ("accept", "turnin"):
         if not endpoint(row, kind):
             yield "endpoint_unrecorded", f"Export does not record a {kind} source."
-    if route.season_of_discovery(qid, route.li(row, 1)):
+    if route.season_of_discovery(qid, route.li(row, 1), available_in_forever=fact.get("available_in_forever")):
         yield "seasonal_review", "The Forever planner's legacy seasonal filter flags this record."
 
 

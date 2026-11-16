@@ -73,17 +73,24 @@ step << Human Warlock
     .target Demisette Cloyce
 step << Shaman
     --oxp-class
+    .isOnQuest 96135
     .goto Arathi Highlands,59.84,27.57
     >>Talk to |cRXP_FRIENDLY_Veyric Thunderhame|r
     .turnin -96135 >>Turn in Heed My Call
-    .accept 96016 >>Accept The Tempest's Weapons
-    .target Veyric Thunderhame
+    .target Veyric Thunderhame::259023
 step << Shaman
     --oxp-class
+    .isQuestTurnedIn 96135
+    .goto Arathi Highlands,59.84,27.57
+    .accept 96016 >>Accept The Tempest's Weapons
+    .target Veyric Thunderhame::259023
+step << Shaman
+    --oxp-class
+    .isOnQuest 96016
     .goto Alterac Mountains,80.50,66.92
     >>Talk to |cRXP_FRIENDLY_Bath'rah the Windwatcher|r
     .turnin 96016 >>Turn in The Tempest's Weapons
-    .target Bath'rah the Windwatcher
+    .target Bath'rah the Windwatcher::6176
 ]])
 
 RXPGuides.RegisterGuide([[

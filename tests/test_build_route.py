@@ -197,6 +197,18 @@ class ClassObjectiveTests(unittest.TestCase):
         self.assertNotIn(".mob ", text)
         self.assertIsNone(route.Builder(db, (), ()).objective_sites(quest, 400))
 
+    def test_heed_my_call_preview_uses_the_ritual_item_and_reviewed_pickup(self):
+        quest = route.Quest(79366, {1: "Heed My Call", 2: [[4722, 5905]]})
+        db = {"n": {4722: {1: "Rau", 7: {400: [[46.14, 51.71]]}},
+                    5905: {1: "Prate", 7: {400: [[53.54, 42.65]]}}}, "o": {}}
+        pickup, = class_steps.quest_givers(db, quest, "accept")
+        self.assertEqual(pickup[1], 5905)
+        text = class_steps.render_obj("step << Shaman", quest, 1, "loot", "Eye of the Tempest",
+                                      ["Ravaging Tempest"], 400, (36.68, 39.08), True)
+        self.assertIn(".use 268582", text)
+        self.assertIn("ritual circle", text)
+        self.assertIn(".complete 79366,1", text)
+
     def test_affray_exploration_precedes_the_kill(self):
         quest = route.Quest(1719, {
             1: "The Affray", 9: ["Step on the grate", {17: [[68.60, 48.72]]}],

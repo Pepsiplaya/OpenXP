@@ -43,7 +43,7 @@ class QuestEvidenceTests(unittest.TestCase):
     def test_mage_wand_routes_each_faction_through_both_prerequisites(self):
         manifest = source(GUIDES / "GuideList-forever.xml")
         self.assertIn('file="Guides/openxp/Extras-ClassQuests.lua"', manifest)
-        mage, _ = GUIDE.findall(source(CLASS_QUESTS))
+        mage = GUIDE.findall(source(CLASS_QUESTS))[0]
         self.assertIn("\n<< Mage\n", mage)
         for faction in ("Alliance", "Horde"):
             self.assertEqual(list(validate(mage, EVIDENCE, strict=True, faction=faction)), [])
@@ -59,12 +59,33 @@ class QuestEvidenceTests(unittest.TestCase):
         self.assertTrue(any("/beckon with NPC 6626" in error for error in validate(altered, EVIDENCE)))
 
     def test_horde_warrior_route_reaches_fray_island_before_arena_targets(self):
-        _, horde = GUIDE.findall(source(CLASS_QUESTS))
+        horde = GUIDE.findall(source(CLASS_QUESTS))[1]
         self.assertIn("\n<< Horde Warrior\n", horde)
         self.assertEqual(list(validate(horde, EVIDENCE, strict=True, faction="Horde")), [])
         self.assertLess(horde.index(".subzone 720"), horde.index(".goto The Barrens,68.62,49.16"))
         self.assertLess(horde.index(".complete 1719,2"), horde.index(".complete 1719,1"))
         self.assertIn(".mob Big Will::6238", horde)
+
+    def test_horde_shaman_summons_and_loots_tempest_before_turnin(self):
+        horde = source(GUIDES / "openxp" / "Horde-30-40.lua")
+        phase, = (body for body in GUIDE.findall(horde) if ".accept 79366" in body)
+        self.assertLess(phase.index(".complete 79366,1"), phase.index(".turnin 79366"))
+        self.assertFalse(list(validate(phase, EVIDENCE)))
+        no_gate = phase.replace(".isQuestTurnedIn 79361", "")
+        self.assertTrue(any("prerequisite" in error for error in validate(no_gate, EVIDENCE)))
+        no_use = phase.replace(".use 268582", "")
+        self.assertTrue(any("needs quest item 268582" in error for error in validate(no_use, EVIDENCE)))
+
+    def test_tempest_chapter_collects_the_four_totems_before_returning_to_prate(self):
+        shaman = GUIDE.findall(source(CLASS_QUESTS))[2]
+        self.assertEqual(list(validate(shaman, EVIDENCE, strict=True, faction="Horde")), [])
+        steps = STEP.split(shaman)
+        collection = [(re.search(r"\.goto ([^,]+)", step)[1], int(index)) for step in steps
+                      if (index := next(iter(re.findall(r"\.complete 79361,(\d+)", step)), None))]
+        self.assertEqual(collection, [("Desolace", 4), ("Dustwallow Marsh", 1),
+                                      ("Swamp of Sorrows", 2), ("Badlands", 3)])
+        self.assertLess(shaman.index(".turnin 79361"), shaman.index(".accept 79366"))
+        self.assertLess(shaman.index(".turnin 79366"), shaman.index(".accept 79442"))
 
     def test_skyborne_scholar_moves_from_shriekling_den_to_valanaar(self):
         text = source(GUIDES / "forever" / "RestedXP-Skyborne.lua")

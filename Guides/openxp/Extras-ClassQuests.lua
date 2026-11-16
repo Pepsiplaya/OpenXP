@@ -138,3 +138,97 @@ step << Warrior
     .turnin 1719 >>Turn in The Affray to learn Berserker Stance and Intercept.
     .target Klannoc Macleod::6236
 ]])
+
+RXPGuides.RegisterGuide([[
+#forever
+#version 1
+#group OpenXP Extras
+#subgroup Class Quests
+#name The Tempest's Weapons (Horde)
+<< Horde Orc Shaman/Horde Troll Shaman/Horde Tauren Shaman
+
+step
+    .xp 30 >>Reach level 30.
+step
+    .isQuestAvailable 79360
+    +Finish Elemental Aid in the Horde 33–34 Dustwallow Marsh guide. Return after handing the note to Rau.
+step
+    .isQuestTurnedIn 79360
+    .goto Thousand Needles,46.14,51.71
+    .accept 79364 >>Accept Eyes on the Sky from |cRXP_FRIENDLY_Rau Cliffrunner::4722|r
+    .target Rau Cliffrunner::4722
+step
+    .isOnQuest 79364
+    .goto Thousand Needles,53.54,42.65
+    .turnin 79364 >>Turn in Eyes on the Sky to |cRXP_FRIENDLY_Prate Cloudseer::5905|r
+    .target Prate Cloudseer::5905
+step
+    .isQuestTurnedIn 79364
+    .goto Thousand Needles,53.54,42.65
+    >>The four kinds of totems can be collected in any order. Plan for enemies around levels 34–40 and bring help for the ritual afterward.
+    .accept 79361 >>Accept Storm, Earth, and Fire
+    .target Prate Cloudseer::5905
+step
+    .isOnQuest 79361
+    .goto Desolace,32.17,55.50
+    >>Loot five |cRXP_LOOT_Twisted Air Totems|r from the Maraudine in the western valley of Desolace.
+    .complete 79361,4 --Twisted Air Totem
+    .mob Maraudine Mauler::4656
+    .mob Maraudine Windchaser::4657
+    .mob Maraudine Wrangler::4655
+step
+    .isOnQuest 79361
+    .goto Dustwallow Marsh,59.60,9.20
+    >>On the northern coast, loot five |cRXP_LOOT_Twisted Water Totems|r from |cRXP_ENEMY_Mirefin Warriors|r and |cRXP_ENEMY_Mirefin Oracles|r.
+    .complete 79361,1 --Twisted Water Totem
+    .mob Mirefin Warrior::4360
+    .mob Mirefin Oracle::4363
+step
+    .isOnQuest 79361
+    .goto Swamp of Sorrows,50.16,34.18
+    >>Look for Lost Ones in the northern swamp and loot five |cRXP_LOOT_Twisted Earth Totems|r.
+    .complete 79361,2 --Twisted Earth Totem
+    .mob Lost One Mudlurker::755
+    .mob Lost One Fisherman::757
+    .mob Lost One Hunter::759
+step
+    .isOnQuest 79361
+    .goto Badlands,66.33,22.05
+    >>Loot five |cRXP_LOOT_Twisted Fire Totems|r from the |cRXP_ENEMY_Dustbelcher Warriors|r and |cRXP_ENEMY_Dustbelcher Mystics|r in northeastern Badlands.
+    .complete 79361,3 --Twisted Fire Totem
+    .mob Dustbelcher Warrior::2906
+    .mob Dustbelcher Mystic::2907
+step
+    .isOnQuest 79361
+    .goto Thousand Needles,53.54,42.65
+    .turnin 79361 >>Turn in Storm, Earth, and Fire to |cRXP_FRIENDLY_Prate Cloudseer::5905|r
+    .target Prate Cloudseer::5905
+step
+    .isQuestTurnedIn 79361
+    .goto Thousand Needles,53.54,42.65
+    .accept 79366 >>Accept Heed My Call
+    .target Prate Cloudseer::5905
+step
+    .isOnQuest 79366
+    .goto Thousand Needles,36.68,39.08
+    >>Bring help to the steam pools west of Freewind Post. Use the |cRXP_LOOT_Corrupted Totems|r at the ritual circle.
+    >>Defeat the waves and loot the |cRXP_LOOT_Eye of the Tempest|r from |cRXP_ENEMY_Ravaging Tempest::216474|r.
+    .complete 79366,1 --Heed My Call
+    .use 268582
+    .mob Ravaging Tempest::216474
+step
+    .isOnQuest 79366
+    .goto Thousand Needles,46.14,51.71
+    .turnin 79366 >>Turn in Heed My Call to |cRXP_FRIENDLY_Rau Cliffrunner::4722|r
+    .target Rau Cliffrunner::4722
+step
+    .isQuestTurnedIn 79366
+    .goto Thousand Needles,46.14,51.71
+    .accept 79442 >>Accept The Tempest's Weapons
+    .target Rau Cliffrunner::4722
+step
+    .isOnQuest 79442
+    .goto Alterac Mountains,80.50,66.92
+    .turnin 79442 >>Deliver the Eye to |cRXP_FRIENDLY_Bath'rah the Windwatcher::6176|r and choose a weapon.
+    .target Bath'rah the Windwatcher::6176
+]])

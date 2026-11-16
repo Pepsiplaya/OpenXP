@@ -57,7 +57,7 @@ ALLIANCE = [
     dict(cls="Shaman", name="Call of Water", why="need (water totems)",
          quests=[94494, 94616, 94495, 94497, 94499, 94500, 94501, 94502, 94503, 94505]),
     dict(cls="Shaman", name="Call of Air", why="need (air totems)",
-         quests=[94789, 96264, 96135, 96016]),
+         quests=[94789, 96264, 79358, 96135, 96016]),
 
     # Rogue
     dict(cls="Rogue", name="Poisons", why="need",
@@ -151,8 +151,11 @@ HORDE = [
     # started in the Barrens; this finishes Water and adds Forever's Air
     dict(cls="Shaman", name="Call of Water", why="need (water totems)",
          quests=[1534, 220, 63, 100, 96]),
+    dict(cls="Shaman", race="Skyborne", name="Windshaper Call of Air", why="need (air totems)",
+         quests=[96136]),
     dict(cls="Shaman", name="Call of Air", why="need (air totems)",
-         quests=[(1531, 1532), 79360, 79366, 79442]),
+         quests=[(1531, 1532), 79360, 79364, 79361, 79366, 79442],
+         only={1531: "Orc/Troll/Tauren", 79442: "Orc/Troll/Tauren"}),
 
     # Rogue
     dict(cls="Rogue", name="Poisons", why="need",
