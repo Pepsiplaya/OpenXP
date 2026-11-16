@@ -64,6 +64,30 @@ class QuestEvidenceTests(unittest.TestCase):
         altered = mage.replace("/beckon", "kill the chicken")
         self.assertTrue(any("/beckon with NPC 6626" in error for error in validate(altered, EVIDENCE)))
 
+    def test_early_mage_weapon_alternatives_track_their_distinct_objectives(self):
+        mirror = class_quest("Mirror Lake")
+        bink = class_quest("Mage-tastic Gizmonitor")
+        for body, own, other in ((mirror, 1861, 1880), (bink, 1880, 1861)):
+            with self.subTest(quest=own):
+                self.assertEqual(list(validate(body, EVIDENCE, strict=True)), [])
+                self.assertIn(f".turnin {own},0,1", body, "the player chooses the reward")
+                self.assertIn(f".isQuestAvailable {other}", body)
+                self.assertIn(f".isNotOnQuest {other}", body)
+        self.assertIn(".use 7207", mirror)
+        self.assertIn(".goto Elwynn Forest,28.57,61.39", mirror)
+        self.assertIn(".goto Dun Morogh,27.72,36.42", bink)
+        self.assertIn("<< Alliance Human Mage/Alliance Gnome Mage", bink)
+
+    def test_manaweave_robe_tracks_the_ritual_then_the_mine_delivery(self):
+        robe = class_quest("Manaweave Robe")
+        self.assertIn("<< Alliance Human Mage/Alliance Gnome Mage", robe)
+        self.assertEqual(list(validate(robe, EVIDENCE, strict=True)), [])
+        ritual, = (step for step in STEP.split(robe) if ".complete 1920,1" in step)
+        self.assertIn(".use 7308", ritual)
+        self.assertIn(".use 7247", ritual)
+        self.assertIn(".mob Rift Spawn::6492", ritual)
+        self.assertLess(robe.index("Enter the Silver Stream Mine"), robe.index(".complete 1921,2"))
+
     def test_horde_warrior_route_reaches_fray_island_before_arena_targets(self):
         horde = class_quest("The Islander and The Affray")
         self.assertIn("\n<< Horde Warrior\n", horde)

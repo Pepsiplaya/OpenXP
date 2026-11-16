@@ -78,6 +78,7 @@ end
 
 function mage.Readout(level, race, knows, guideName)
     local lines = {}
+    local humanOrGnome = race == "Human" or race == "Gnome"
     local function add(text) lines[#lines + 1] = text end
     local function heading(text)
         if #lines > 0 then add("") end
@@ -120,6 +121,13 @@ function mage.Readout(level, race, knows, guideName)
         add(L("Ormer's Revenge in the Wetlands offers Excavation Rod. A Blackfathom Deeps group can earn Gravestone Scepter through Blackfathom Villainy."))
     else
         add(L("Mage's Wand is under OpenXP Extras → Class Quests. Collect both Arathi materials and the Scarlet Monastery Library book before returning to Tabetha."))
+    end
+    if level >= 10 and level < 20 then
+        add(L("Open Mirror Lake under Class Quests for a staff or off-hand reward from Stormwind."))
+        if humanOrGnome then add(L("If you're near Ironforge, choose Mage-tastic Gizmonitor instead.")) end
+    end
+    if level >= 15 and level < 23 and humanOrGnome then
+        add(L("The Manaweave Robe chapter starts at the Stormwind Mage Tower. It includes a trip to the Silver Stream Mine in Loch Modan."))
     end
     if level >= 6 and not knows(1302508) then
         add(L("To learn Study, open Research Access under OpenXP Extras → Class Quests. Bring a library book to Garion Wendell during a Stormwind visit."))

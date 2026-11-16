@@ -76,6 +76,64 @@
     "wait_for_event": "Wait by the forge while Jordan makes the weapon. Speak with him again for Verigan's Fist.",
     "source": "https://db.icy-veins.com/wow-forever/quests/1806"
   },
+  "1860": {
+    "name": "Speak with Jennea",
+    "delivery": true,
+    "accept_npc": 328,
+    "turnin_npc": 5497,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1860"
+  },
+  "1861": {
+    "name": "Mirror Lake",
+    "level": 10,
+    "objectives": [1],
+    "accept_npc": 5497,
+    "turnin_npc": 5497,
+    "objective_use": {
+      "1": {"item": 7207, "instruction": "Fill Jennea's Flask at the base of the Mirror Lake waterfall in western Elwynn Forest."}
+    },
+    "source": "https://db.icy-veins.com/wow-forever/quests/1861"
+  },
+  "1879": {
+    "name": "Speak with Bink",
+    "delivery": true,
+    "accept_npc": 1228,
+    "turnin_npc": 5144,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1879"
+  },
+  "1880": {
+    "name": "Mage-tastic Gizmonitor",
+    "level": 10,
+    "objectives": [1],
+    "accept_npc": 5144,
+    "turnin_npc": 5144,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1880"
+  },
+  "1919": {
+    "name": "Report to Jennea",
+    "delivery": true,
+    "accept_npcs": [328, 1228, 7312],
+    "turnin_npc": 5497,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1919"
+  },
+  "1920": {
+    "name": "Investigate the Blue Recluse",
+    "level": 15,
+    "objectives": [2, 3, 1],
+    "ordered": true,
+    "accept_npc": 5497,
+    "turnin_npc": 5497,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1920"
+  },
+  "1921": {
+    "name": "Gathering Materials",
+    "level": 15,
+    "requires": [1920],
+    "objectives": [1, 2],
+    "accept_npc": 5497,
+    "turnin_npc": 1309,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1921"
+  },
   "1939": {
     "name": "High Sorcerer Andromath",
     "delivery": true,
@@ -83,6 +141,15 @@
     "accept_npcs": [5144, 5497],
     "turnin_npc": 5694,
     "source": "https://db.icy-veins.com/wow-forever/quests/1939"
+  },
+  "1941": {
+    "name": "Manaweave Robe",
+    "level": 15,
+    "instant": true,
+    "requires": [1921],
+    "accept_npc": 1309,
+    "turnin_npc": 1309,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1941"
   },
   "1947": {
     "name": "Journey to the Marsh",

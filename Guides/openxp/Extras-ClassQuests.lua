@@ -6,6 +6,127 @@ RXPGuides.RegisterGuide([[
 #version 1
 #group OpenXP Extras
 #subgroup Class Quests
+#name Mirror Lake
+<< Alliance Mage
+
+step
+    .xp 10 >>Reach level 10 before starting this Mage quest.
+step
+    .isQuestAvailable 1880
+    .isNotOnQuest 1880
+    .goto Stormwind City,49.56,85.80
+    >>Talk to |cRXP_FRIENDLY_Jennea Cannon::5497|r at the Mage Tower. If she has no offer, Human and Gnome Mages can check with Zaldimar Wefhellt in Goldshire for Speak with Jennea.
+    .turnin -1860 >>Turn in Speak with Jennea << Human/Gnome
+    .accept 1861 >>Accept Mirror Lake
+    .target Jennea Cannon::5497
+step
+    .isOnQuest 1861
+    .goto Elwynn Forest,28.57,61.39
+    .use 7207 >>Fill Jennea's Flask at the base of the Mirror Lake waterfall in western Elwynn Forest.
+    .complete 1861,1 --Mirror Lake Water Sample
+step
+    .isQuestComplete 1861
+    .goto Stormwind City,49.56,85.80
+    >>Choose Ley Staff for a two-handed weapon or Ley Orb if you have a main-hand weapon to pair with it.
+    .turnin 1861,0,1 >>Turn in Mirror Lake to |cRXP_FRIENDLY_Jennea Cannon::5497|r
+    .target Jennea Cannon::5497
+]])
+
+RXPGuides.RegisterGuide([[
+#forever
+#version 1
+#group OpenXP Extras
+#subgroup Class Quests
+#name Mage-tastic Gizmonitor
+<< Alliance Human Mage/Alliance Gnome Mage
+
+step
+    .xp 10 >>Reach level 10 before starting this Mage quest.
+step
+    .isQuestAvailable 1861
+    .isNotOnQuest 1861
+    .goto Ironforge,27.25,8.30
+    >>Talk to |cRXP_FRIENDLY_Bink::5144|r in the Mystic Ward. If she has no offer, check with Magis Sparkmantle in Kharanos for Speak with Bink.
+    .turnin -1879 >>Turn in Speak with Bink
+    .accept 1880 >>Accept Mage-tastic Gizmonitor
+    .target Bink::5144
+step
+    .isOnQuest 1880
+    .goto Dun Morogh,27.72,36.42
+    >>Check the hut north of Gnomeregan for |cRXP_PICK_Bink's Toolbox|r. Watch for leper gnome patrols and pull them apart before looting.
+    .complete 1880,1 --Mage-tastic Gizmonitor
+step
+    .isQuestComplete 1880
+    .goto Ironforge,27.25,8.30
+    >>Choose Arcane Staff for a two-handed weapon or Arcane Orb to pair with a main-hand weapon.
+    .turnin 1880,0,1 >>Turn in Mage-tastic Gizmonitor to |cRXP_FRIENDLY_Bink::5144|r
+    .target Bink::5144
+]])
+
+RXPGuides.RegisterGuide([[
+#forever
+#version 1
+#group OpenXP Extras
+#subgroup Class Quests
+#name Manaweave Robe
+<< Alliance Human Mage/Alliance Gnome Mage
+
+step
+    .xp 15 >>Reach level 15 before starting the robe quest.
+step
+    .goto Stormwind City,49.56,85.80
+    .turnin -1919 >>Turn in Report to Jennea if you accepted it.
+    .accept 1920 >>Accept Investigate the Blue Recluse from |cRXP_FRIENDLY_Jennea Cannon::5497|r
+    .target Jennea Cannon::5497
+step
+    .isOnQuest 1920
+    .goto Stormwind City,49.51,85.60
+    >>Pick up a Chest of Containment Coffers and the Cantation of Manifestation behind Jennea.
+    .complete 1920,2 --Chest of Containment Coffers
+    .complete 1920,3 --Cantation of Manifestation
+step
+    .isOnQuest 1920
+    .goto Stormwind City,51.30,93.33
+    >>In the Blue Recluse, use the Cantation to reveal Rift Spawns. Subdue one, use the chest on the stunned spawn, then loot the filled coffer. Repeat for three coffers.
+    .use 7308
+    .use 7247
+    .complete 1920,1 --Filled Containment Coffer
+    .mob Rift Spawn::6492
+step
+    .goto Stormwind City,49.56,85.80
+    .turnin 1920 >>Turn in Investigate the Blue Recluse
+    .accept 1921 >>Accept Gathering Materials
+    .target Jennea Cannon::5497
+step
+    .isOnQuest 1921
+    >>Carry ten pieces of Linen Cloth. Use the cloth you've saved from questing if you have it.
+    .complete 1921,1 --Linen Cloth
+step
+    #completewith next
+    .isOnQuest 1921
+    .goto 1432/0,-2972.96,-4835.187,20 >>Enter the Silver Stream Mine in northern Loch Modan.
+step
+    .isOnQuest 1921
+    .goto Loch Modan,35.89,27.68
+    >>Look through the Miners' League Crates around the mine for six Charged Rift Gems.
+    .complete 1921,2 --Charged Rift Gem
+step
+    .goto Stormwind City,51.84,83.51
+    .turnin 1921 >>Deliver the linen and gems to |cRXP_FRIENDLY_Wynne Larson::1309|r at Larson Clothiers.
+    .target Wynne Larson::1309
+step
+    .goto Stormwind City,51.84,83.51
+    .isQuestTurnedIn 1921
+    .accept 1941 >>Accept Manaweave Robe from |cRXP_FRIENDLY_Wynne Larson::1309|r
+    .turnin 1941 >>Receive the Manaweave Robe.
+    .target Wynne Larson::1309
+]])
+
+RXPGuides.RegisterGuide([[
+#forever
+#version 1
+#group OpenXP Extras
+#subgroup Class Quests
 #name Research Access
 << Alliance Mage
 

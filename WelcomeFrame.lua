@@ -15,6 +15,14 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.69-beta",
+        date = "November 2026",
+        changes = {
+            "At level 10, Alliance Mages can open Mirror Lake in Class Quests. Human and Gnome Mages also have the Ironforge alternative, Mage-tastic Gizmonitor.",
+            "Manaweave Robe is available for Human and Gnome Mages at level 15. The guide tracks the Blue Recluse ritual, the gems from Silver Stream Mine, and the delivery to Wynne Larson.",
+        },
+    },
+    {
         version = "1.3.68-beta",
         date = "November 2026",
         changes = {

@@ -38,3 +38,11 @@
 - Compared local and remote hubs from matched Mage checkpoints at 21, 36, and 53. The level-21 estimate was too close to justify changing the default. Fixed a stale breadcrumb cache between hub visits and reproduced the comparison on the same export.
 - Added the opt-in standalone recorder, SavedVariables importer, and analysis of measured sessions against route and hub estimates. Its own archive contains no guide dependency. Live and indoor event behavior remain pending. [Recorder documentation](RECORDER.md)
 - The pinned audit covers 5,922 quests and 23 bundled files and now flags 16 items for review. Verified three library quests previously flagged as seasonal. Windows validation passed 55 Python tests, 270 Smart Start assertions, all Lua smoke tests, and the coordinate, label, and frozen-route checks. The three fresh Mage paths reach the level-cap handoff in simulation.
+- Packaged OpenXP 1.3.68-beta and OpenXP Recorder 0.1.0-beta from `a78f763`. Both archives passed integrity and layout checks. The 17 changed addon Lua files and the recorder passed Lua 5.1 compilation from the ZIPs. The [fork's Linux checks](https://github.com/Pepsiplaya/OpenXP/actions/runs/43963508238) passed.
+
+### 1.3.69-beta
+
+- Added optional Mirror Lake and Mage-tastic Gizmonitor chapters for the level-10 staff and off-hand rewards. They check for the alternate quest and let the player choose the reward. The Mirror Lake chapter uses the waterfall and flask records. The Ironforge chapter directs Human and Gnome Mages to Bink's Toolbox. Logged the difference between the Skyborne eligibility record and the older introductory quest.
+- Added Manaweave Robe for Human and Gnome Mages. The guide tracks the two quest tools, three filled coffers, the Silver Stream Mine approach and gem objectives, and Wynne's final reward. All three additions stay in OpenXP Extras.
+- The 5,922-quest audit still has 16 findings and none for these three chapters. Added strict tests for the early weapon alternatives and the robe's objective and hand-in order.
+- Windows validation passed 57 Python tests, 270 Smart Start assertions, all Lua suites, and the coordinate, label, and frozen-route checks. Live quest offers, alley and mine navigation, and the ritual sequence remain on the player test list.
