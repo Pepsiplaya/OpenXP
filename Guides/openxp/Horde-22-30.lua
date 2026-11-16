@@ -34,8 +34,13 @@ step
     .accept 496 >>Accept Elixir of Suffering
     .accept 501 >>Accept Elixir of Pain
     .turnin -1065 >>Turn in Journey to Tarren Mill
+    .target Apothecary Lydon
+step
+    .goto Hillsbrad Foothills,61.44,19.06
+    >>Talk to |cRXP_FRIENDLY_Apothecary Lydon|r
     .accept 1066 >>Accept Blood of Innocents
     .target Apothecary Lydon
+    .isQuestTurnedIn 1065
 step
     .goto Hillsbrad Foothills,62.33,20.45
     >>Talk to |cRXP_FRIENDLY_High Executor Darthalia|r
@@ -54,7 +59,7 @@ step
     .goto Hillsbrad Foothills,79.79,39.65
     >>Kill |cRXP_ENEMY_Syndicate Shadow Mage|r. Loot them for |cRXP_LOOT_Vial of Innocent Blood|r (about 80% drop)
     >>Rescue Tog'thar
-    .complete 1066,1 --Blood of Innocents
+    .complete -1066,1 --Blood of Innocents
     .complete 498,2 --The Rescue
     .mob Syndicate Shadow Mage
 step
@@ -98,9 +103,14 @@ step
     .goto Hillsbrad Foothills,61.44,19.06
     >>Talk to |cRXP_FRIENDLY_Apothecary Lydon|r
     .accept 502 >>Accept Elixir of Pain
-    .turnin 1066 >>Turn in Blood of Innocents
+    .turnin -1066 >>Turn in Blood of Innocents
+    .target Apothecary Lydon
+step
+    .goto Hillsbrad Foothills,61.44,19.06
+    >>Talk to |cRXP_FRIENDLY_Apothecary Lydon|r
     .accept 1067 >>Accept Return to Thunder Bluff
     .target Apothecary Lydon
+    .isQuestTurnedIn 1066
 step
     .goto Hillsbrad Foothills,62.33,20.45
     >>Talk to |cRXP_FRIENDLY_High Executor Darthalia|r
@@ -1154,36 +1164,6 @@ step
     >>Talk to |cRXP_FRIENDLY_Dorn Plainstalker|r
     .turnin 1150 >>Turn in Test of Endurance
     .target Dorn Plainstalker
-step
-    .goto Thousand Needles,78.14,77.12
-    >>Talk to |cRXP_FRIENDLY_Wizzle Brassbolts|r
-    .accept 1105 >>Accept Hardened Shells
-    .target Wizzle Brassbolts
-step
-    .goto Thousand Needles,78.06,77.13
-    >>Talk to |cRXP_FRIENDLY_Fizzle Brassbolts|r
-    .accept 1104 >>Accept Salt Flat Venom
-    .target Fizzle Brassbolts
-step
-    .goto Thousand Needles,71.30,72.85
-    >>Kill |cRXP_ENEMY_Scorpid Reaver|r. Loot them for |cRXP_LOOT_Salty Scorpid Venom|r (about 25% drop)
-    .complete 1104,1 --Salt Flat Venom
-    .mob Scorpid Reaver
-step
-    .goto Thousand Needles,69.29,67.14
-    >>Kill |cRXP_ENEMY_Sparkleshell Tortoise|r. Loot them for |cRXP_LOOT_Hardened Tortoise Shell|r (about 30% drop)
-    .complete 1105,1 --Hardened Shells
-    .mob Sparkleshell Tortoise
-step
-    .goto Thousand Needles,78.14,77.12
-    >>Talk to |cRXP_FRIENDLY_Wizzle Brassbolts|r
-    .turnin 1105 >>Turn in Hardened Shells
-    .target Wizzle Brassbolts
-step
-    .goto Thousand Needles,78.06,77.13
-    >>Talk to |cRXP_FRIENDLY_Fizzle Brassbolts|r
-    .turnin 1104 >>Turn in Salt Flat Venom
-    .target Fizzle Brassbolts
 ]])
 
 RXPGuides.RegisterGuide([[
