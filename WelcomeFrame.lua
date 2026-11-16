@@ -14,6 +14,19 @@ addon.openxpVersion = OPENXP_VERSION
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.63",
+        date = "November 2026",
+        changes = {
+            "Junk deleting and selling never touch quest items anymore (quest items, items that start a quest, and anything your guide uses or collects), even if you marked one as junk by hand",
+            "Level-up messages to party and guild no longer end with a note about the addon",
+            "Horde Hillsbrad (22-23): Blood of Innocents only shows up if you have Journey to Tarren Mill from Thunder Bluff",
+            "Find my place (/oxp where) no longer tells you to hand in a quest you haven't finished. It sends you to the step where you finish it",
+            "A dungeon guide you had picked stays picked when you log out and back in",
+            "Find my place (/oxp where) no longer sends you to a zone a few levels above you (like level 22 Wetlands at 19) while there's a section at your level",
+            "Horde Thousand Needles: the Shimmering Flats quests Salt Flat Venom and Hardened Shells moved from 27-28 to 30-31, where the mobs fit your level",
+        },
+    },
+    {
         version = "1.3.62",
         date = "November 2026",
         changes = {
