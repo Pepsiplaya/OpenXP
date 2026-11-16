@@ -571,5 +571,28 @@ do
     reset()
 end
 
+-- Skipping a pickup skips the rest of that chain (GitHub #8)
+do
+    reset()
+    local A, B, C = 990001, 990002, 990003
+    local sg = {name = "test", steps = {
+        {elements = {{tag = "accept", questId = A}}},
+        {elements = {{tag = "complete", questId = A}}},
+        {elements = {{tag = "turnin", questId = A}, {tag = "accept", questId = B}}},
+        {elements = {{tag = "complete", questId = B}, {tag = "accept", questId = C}}},
+        {elements = {{tag = "turnin", questId = B}}},
+        {elements = {{tag = "turnin", questId = C}}},
+    }}
+    local pre = SS.InferPrerequisites({sg})
+    local later = SS.ChainAfterSkip(sg, 1, pre)
+    local set = {}
+    for _, i in ipairs(later) do set[i] = true end
+    check(set[2] and set[3] and set[5], "skipping the pickup skips its objectives, turn-in and the follow-up")
+    check(not set[4] and not set[6], "a step with another quest still in it stays")
+    state.onQuest[A] = true
+    check(#SS.ChainAfterSkip(sg, 1, pre) == 0, "nothing extra skipped when you have the quest")
+    reset()
+end
+
 print(string.format("%d passed, %d failed", passes, failures))
 return failures

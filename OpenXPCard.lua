@@ -1102,6 +1102,7 @@ local function GetWarn(b)
         local m = b.missing
         if m and addon.currentGuide then
             card.MarkStatus(addon.currentGuide, m.step, "skipped")
+            if card.SkipChainAfter then card.SkipChainAfter(addon.currentGuide, m.step) end
             card.hold = nil
             card.ManualSetStep(m.step + 1)
         end
@@ -1703,13 +1704,32 @@ function card.GoBack()
     end
 end
 
+-- Skipping a step you never picked the quests up from also skips the rest
+-- of those quest chains further on (GitHub #8)
+local function SkipChainAfter(guide, index)
+    local SS = addon.smartStart
+    if not (guide and index and SS and SS.ChainAfterSkip and OXPCData) then return end
+    OXPCData.stepSkip = OXPCData.stepSkip or {}
+    local ok, later = pcall(SS.ChainAfterSkip, guide, index)
+    if not ok or type(later) ~= "table" then return end
+    for _, i in ipairs(later) do
+        OXPCData.stepSkip[i] = true
+        card.MarkStatus(guide, i, "chain")
+    end
+    return #later
+end
+card.SkipChainAfter = SkipChainAfter
+
 -- Next: move on. A step you never finished is remembered as skipped.
 function card.GoNext()
     local guide = addon.currentGuide
     if not guide then return end
     local cur = CurrentStep()
     local status = card.StepStatus(guide, cur, cur)
-    if status ~= "done" and status ~= "chain" then card.MarkStatus(guide, cur, "skipped") end
+    if status ~= "done" and status ~= "chain" then
+        card.MarkStatus(guide, cur, "skipped")
+        SkipChainAfter(guide, cur)
+    end
     card.hold = nil
     ManualSetStep(cur + 1)
     card.Refresh(true)

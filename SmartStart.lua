@@ -513,6 +513,44 @@ function SS.PlanSteps(guide, prereqs, skipped, minStart, level)
     return start, skip, blockedList, graySteps
 end
 
+-- You skipped step `index` without picking up its quests: later steps that
+-- only do those quests, or quests that need them first, can't be done
+-- either. Returns those step indexes (GitHub #8).
+function SS.ChainAfterSkip(guide, index, prereqs)
+    local steps = SS.QuestSteps(guide)
+    local dropped = {}
+    for _, q in ipairs(steps[index] or {}) do
+        if q.tag == "accept" and not SS.IsSatisfied(q.tag, q.id) then dropped[q.id] = true end
+    end
+    if not next(dropped) then return {} end
+    prereqs = prereqs or SS.Prerequisites()
+    local function needsDropped(id)
+        for _, p in ipairs(SS.MissingPrerequisites(id, prereqs)) do
+            if dropped[p] then return true end
+        end
+    end
+    local out = {}
+    for i = index + 1, #(guide.steps or {}) do
+        local quests = steps[i]
+        if quests then
+            local open, allDropped = false, true
+            for _, q in ipairs(quests) do
+                if not SS.IsSatisfied(q.tag, q.id) then
+                    open = true
+                    local gone = dropped[q.id] and not SS.api.IsOnQuest(q.id)
+                    if not gone and q.tag == "accept" and needsDropped(q.id) then
+                        dropped[q.id] = true
+                        gone = true
+                    end
+                    if not gone then allDropped = false end
+                end
+            end
+            if open and allDropped then out[#out + 1] = i end
+        end
+    end
+    return out
+end
+
 function SS.GuideAccepts(steps, id)
     for _, quests in pairs(steps) do
         for _, q in ipairs(quests) do
