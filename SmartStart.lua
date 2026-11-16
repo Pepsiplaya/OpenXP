@@ -214,7 +214,10 @@ function SS.ScoreGuide(guide, level, zone)
     -- Resume a section the player is in the middle of: quests from it are
     -- in their quest log. (Turned-in quests alone aren't a good signal,
     -- because sections share quests with each other.)
-    if started > 0 then score = score + 100 + started * 5 end
+    -- Only when you're in or above its levels, though: a level 19 holding a
+    -- level 22 Wetlands quest belongs in a 19-20 section first, and goes
+    -- back to the Wetlands once nothing at their level is left.
+    if started > 0 and level >= lo - 1 then score = score + 100 + started * 5 end
     -- Prefer the section whose level range fits best: lower bound closest
     -- to the player's level.
     score = score + 20 - math.abs(level - lo) * 2
@@ -225,7 +228,7 @@ function SS.ScoreGuide(guide, level, zone)
     end
     -- Small nudge toward the zone the player is standing in.
     local name = (SS.api.GuideName(guide) or ""):lower()
-    if zone and zone ~= "" and name:find(zone:lower(), 1, true) then
+    if zone and zone ~= "" and level >= lo - 1 and name:find(zone:lower(), 1, true) then
         score = score + 10
     end
     return score, {total = total, done = done, started = started}
@@ -479,6 +482,33 @@ function SS.PlanSteps(guide, prereqs, skipped, minStart, level)
     for id, b in pairs(blocked) do if b then blockedList[id] = true end end
     -- never back to before where you already are in this section
     if minStart and minStart > start then start = minStart end
+
+    -- Never open on handing in a quest you're still doing (you came back
+    -- from dungeons with quests half done): go back to the step where this
+    -- section does that quest's objectives, unless you skipped it by hand.
+    local back
+    local seen = 0
+    for _, i in ipairs(order) do
+        if i >= start and state[i] == "todo" then
+            seen = seen + 1
+            if seen > SS.GUARD_STEPS then break end
+            for _, q in ipairs(steps[i]) do
+                if q.tag == "turnin" and SS.api.IsOnQuest(q.id) and not SS.IsSatisfied("complete", q.id) then
+                    for _, j in ipairs(order) do
+                        if j >= i then break end
+                        if state[j] == "todo" and not skipped[j] then
+                            for _, c in ipairs(steps[j]) do
+                                if c.tag == "complete" and c.id == q.id and (not back or j < back) then
+                                    back = j
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    if back and back < start then start = back end
     return start, skip, blockedList, graySteps
 end
 
@@ -678,6 +708,7 @@ end
 SS.ShowGuide = ShowGuide
 
 local RETRIES, RETRY_DELAY = 6, 2
+local RESTORE_RETRIES = 15 -- up to 30 s for the saved guide to come back
 function SS.OnLogin(attempt)
     attempt = attempt or 1
     local settings = addon.settings and addon.settings.profile
@@ -701,6 +732,12 @@ function SS.OnLogin(attempt)
             SS.hinted = true
             Print("You're above this section's level. Type /oxp where to jump to the right section.")
         end
+        return
+    end
+    -- The guide you had at logout is still being restored (dungeon guides
+    -- load last): wait for it instead of picking a leveling section.
+    if addon.IsRestoringGuide and addon.IsRestoringGuide() and attempt < RESTORE_RETRIES and C_Timer then
+        C_Timer.After(RETRY_DELAY, function() SS.OnLogin(attempt + 1) end)
         return
     end
     -- No guide: pick one for the character's race, faction and level so the

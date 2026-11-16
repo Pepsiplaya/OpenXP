@@ -525,5 +525,51 @@ do
     reset()
 end
 
+-- Find my place never opens on handing in a quest that isn't finished yet
+-- (came back from dungeons with it half done): back to its objectives step.
+do
+    reset()
+    local function st(tag, id) return {elements = {{tag = tag, questId = id}}} end
+    local fake = {name = "1-2 Turnin Test", steps = {
+        st("accept", 920100), st("accept", 920101), st("accept", 920102),
+        st("complete", 920100), st("complete", 920102), st("turnin", 920102),
+        st("accept", 920103), st("turnin", 920100), st("turnin", 920101)}}
+    state.onQuest[920100] = true
+    state.onQuest[920101] = true; state.complete[920101] = true
+    state.turnedIn[920102] = true; state.turnedIn[920103] = true
+    local fp = SS.InferPrerequisites({fake})
+    local start = SS.PlanSteps(fake, fp)
+    check(start == 4, "unfinished quest's turn-in sends you to its objectives step, got " .. start)
+    state.complete[920100] = true
+    start = SS.PlanSteps(fake, fp)
+    check(start == 8, "finished quest goes straight to the turn-in, got " .. start)
+    state.complete[920100] = nil
+    start = SS.PlanSteps(fake, fp, {[4] = true})
+    check(start == 8, "objectives step you skipped by hand stays skipped, got " .. start)
+    reset()
+end
+
+-- A level 19 holding a level-22 Wetlands quest isn't sent to the Wetlands
+-- while there's a section at their level; once those are done, it is.
+do
+    reset(); state.level = 19; state.zone = "Wetlands"
+    for _, name in ipairs({"1-6 Northshire", "6-11 Elwynn Forest", "11-13 Loch Modan",
+                           "13-15 Westfall", "14-16 Darkshore", "15-16 Loch Modan", "16-19 Darkshore"}) do
+        finishGuide(byName(name))
+    end
+    state.onQuest[279] = true -- Claws from the Deep
+    local pick = SS.PickGuide(guides, 19, "Wetlands")
+    local plo = pick and tonumber(pick.name:match("^(%d+)"))
+    check(pick and plo and plo <= 20, "level 19 with a Wetlands quest picks a 19-20 section, got " .. tostring(pick and pick.name))
+    for _, gg in ipairs(guides) do
+        local glo = tonumber(gg.name:match("^(%d+)"))
+        if glo and glo <= 21 then finishGuide(gg) end
+    end
+    state.turnedIn[279] = nil
+    pick = SS.PickGuide(guides, 19, "Wetlands")
+    check(pick and pick.name == "22-23 Wetlands", "with nothing at their level left, back to the Wetlands, got " .. tostring(pick and pick.name))
+    reset()
+end
+
 print(string.format("%d passed, %d failed", passes, failures))
 return failures

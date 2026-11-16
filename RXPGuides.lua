@@ -1343,6 +1343,13 @@ local currentGuideName
 local startStep
 local startStepId
 
+-- OpenXP: true while the guide you had at logout (a dungeon guide, say) is
+-- still waiting for the guide list to finish loading, so smart start doesn't
+-- load a leveling section over it.
+function addon.IsRestoringGuide()
+    return currentGuideGroup ~= nil
+end
+
 local function LoadEmbeddedGuides(start,limit,guide)
     if #addon.embeddedGuides ~= 0 then
         if addon.player.hardcore then
