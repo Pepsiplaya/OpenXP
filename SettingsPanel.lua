@@ -846,7 +846,12 @@ function addon.settings:CreateAceOptionsPanel()
                         order = 2.3,
                         set = function(info, value)
                             SetProfileOption(info, value)
-                            addon.DrawArrow(addon.arrowFrame)
+                            if value then
+                                addon.arrowFrame:Hide()
+                            elseif addon.UpdateGotoSteps then
+                                -- bring it back on the current step's waypoint
+                                addon.UpdateGotoSteps()
+                            end
                         end
                     },
                     disableItemWindow = {

@@ -102,7 +102,13 @@ end
 function addon.DrawArrow(self)
     self = self or addon.arrowFrame
 
-    if addon.settings.profile.disableArrow or not self then return end
+    if not self then return end
+    -- "Hide waypoint arrow": hide it here too, since the travel, path and
+    -- card code can show the frame again (OnUpdate stops once it's hidden)
+    if addon.settings.profile.disableArrow then
+        self:Hide()
+        return
+    end
     if af.wrongContinent then
         -- If first time setting wrong continent, notify player
         if self.text:GetText() ~= "~" then
