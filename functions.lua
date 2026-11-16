@@ -297,6 +297,7 @@ local _G = _G
 local GetNumQuests = C_QuestLog.GetNumQuestLogEntries or
                          _G.GetNumQuestLogEntries
 local GetQuestLogTitle = _G.GetQuestLogTitle
+local GetQuestLogInfo = C_QuestLog.GetInfo
 local GetNumDayEvents = _G.C_Calendar and _G.C_Calendar.GetNumDayEvents
 local GetDayEvent = _G.C_Calendar and _G.C_Calendar.GetDayEvent
 local GetCurrentCalendarTime = _G.C_DateAndTime.GetCurrentCalendarTime
@@ -434,13 +435,29 @@ function addon.QuestLogIDs()
     if not questLogDirty then return questLogCache end
     questLogDirty = false
     questLogCache = nil
-    if not (GetQuestLogTitle and GetNumQuests) then return end
+    if not (GetNumQuests and (GetQuestLogInfo or GetQuestLogTitle)) then return end
+    local rows, totalQuests = GetNumQuests()
+    if not rows then return end
     local ids = {}
-    for i = 1, GetNumQuests() do
-        local title, _, _, isHeader, isCollapsed, _, _, questID = GetQuestLogTitle(i)
+    local seen = 0
+    for i = 1, rows do
+        local title, isHeader, isCollapsed, questID
+        if GetQuestLogInfo then
+            local info = GetQuestLogInfo(i)
+            if not info then return end
+            title, isHeader, isCollapsed, questID = info.title, info.isHeader, info.isCollapsed, info.questID
+        else
+            local _
+            title, _, _, isHeader, isCollapsed, _, _, questID = GetQuestLogTitle(i)
+            if not (title or questID) then return end
+        end
         if isHeader and isCollapsed then return end
-        if not isHeader and questID and questID > 0 then ids[questID] = title or true end
+        if not isHeader and questID and questID > 0 then
+            ids[questID] = title or true
+            seen = seen + 1
+        end
     end
+    if totalQuests and seen < totalQuests then return end
     questLogCache = ids
     return ids
 end
