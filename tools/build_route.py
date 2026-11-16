@@ -497,6 +497,11 @@ def dense_clusters(points, radius=4.0, keep=4, thin=0.8):
 # Route building
 # ---------------------------------------------------------------------------
 
+def season_of_discovery(qid, name):
+    """Flag legacy seasonal records that the Forever planner skips."""
+    return 76000 <= qid <= 85999 or (name or "").startswith("Legacy Reward")
+
+
 class Builder:
     def __init__(self, db, done_before, carried):
         self.db = db
@@ -628,14 +633,6 @@ class Builder:
         if key not in self._cache:
             self._cache[key] = fn(q, zone)
         return self._cache[key]
-
-    def season_of_discovery(self, q):
-        """Season of Discovery quests that the installed Questie also knows,
-        so they show up in /oxp questdump, but aren't in WoW Forever (like
-        Alonso's Dragonslayer quests in Ashenvale). SoD's quest ids sit in
-        76000-85999. NPC ids aren't a safe test: Forever's own new NPCs
-        (Skyborne, Undead paladins) use the same 200000+ range."""
-        return 76000 <= q.id <= 85999 or q.name.startswith("Legacy Reward")
 
     def quests(self):
         if self._quests is None:
@@ -864,7 +861,7 @@ class Builder:
                 continue  # holiday and world-event quests
             if q.name.startswith("[") or "<" in q.name:
                 continue  # placeholder / unused quests in the data
-            if self.season_of_discovery(q):
+            if season_of_discovery(q.id, q.name):
                 continue
             carried = qid in self.accepted_before
             if not carried and (q.level < lo or q.level > hi or q.reqLevel > hi):
