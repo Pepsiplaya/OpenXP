@@ -15,6 +15,26 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.64",
+        date = "November 2026",
+        changes = {
+            "Hide waypoint arrow now really hides the arrow",
+            "No more Lua error ('wrong number of arguments to insert') in dungeon guides like Blackrock Depths",
+            "The step list no longer comes up blank when you use a custom font from another addon",
+            "Skipping a step where you'd pick up a quest now also skips the rest of that quest chain further on",
+            "New: mark a step done yourself if the addon didn't notice you did it. Right-click it in the step list, or pick Mark this step done in the menu",
+            "Quest chain warnings (quests to do first) are now orange with an alert icon, and show once in chat",
+            "Quests are only shown when the game will offer them: Chief Engineer Scooty (needs Rig Wars), Onu (needs Cave Mushrooms), A Friend of the Family (needs the Menethil statuette chain), The Shamed Lieutenant, and Scout Support (needs Battle of Hillsbrad part 2)",
+            "Horde Hillsbrad 27-28: if you still have Battle of Hillsbrad part 2, the guide has you finish it before part 3",
+            "Darkshore: no more wrong turn-in of As Water Cascades in Auberdine. You turn it in at the Red Crystal",
+            "Alliance Azshara, Western Plaguelands and Felwood: class quest steps (Hunter, Priest, Mage, Paladin, Warlock) only show for that class",
+            "Alliance Wetlands 32-33: Hearts of the Lost is gone (it isn't in Forever)",
+            "Alliance Stonetalon: Gerenzo's Orders now says to defend Piznik, and warns that it's an elite fight",
+            "Drop rates: removed the made-up \"about 80% drop\" from loot steps. Real drop rates stay",
+            "Horde 22-23: on your way through Undercity, Warriors, Rogues, Paladins and Hunters can train Swords",
+        },
+    },
+    {
         version = "1.3.63",
         date = "November 2026",
         changes = {
