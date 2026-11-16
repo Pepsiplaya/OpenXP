@@ -29,4 +29,7 @@ print("== guide_places.py")
 failures += subprocess.call([sys.executable, os.path.join(ROOT, "tests", "guide_places.py")])
 print("== guide_labels.py")
 failures += subprocess.call([sys.executable, os.path.join(ROOT, "tests", "guide_labels.py")])
+print("== Python unit tests")
+failures += subprocess.call([sys.executable, "-m", "unittest", "discover",
+                             "-s", os.path.join(ROOT, "tests"), "-v"])
 sys.exit(1 if failures else 0)

@@ -51,7 +51,10 @@ CLASS_BITS = {
     "Shaman": 64, "Mage": 128, "Warlock": 256, "Druid": 1024,
 }
 ALL_CLASSES = sum(CLASS_BITS.values())
-QUEST_LOG_LIMIT = 20
+# The Forever 1.60.1 client exposes 40 in QuestLogConstsMainlineCamelot.
+# See docs/RESEARCH_SOURCES.md for the client build and source.
+QUEST_LOG_LIMITS = {"Forever": 40, "Classic": 20}
+QUEST_LOG_LIMIT = QUEST_LOG_LIMITS["Forever"]
 # Quests whose objectives are in another zone are picked up only when the
 # route reaches that zone within this many sections.
 CARRY_AHEAD = 6
@@ -947,7 +950,7 @@ class Builder:
         if t is not None:
             return self.simulate_terrain(section, cands, start_pos, t)
         xp0, lvl0 = self.xp, self.level()
-        accepted = set(q for q in self.accepted_before if q in cands)
+        accepted = self.accepted_before.copy()
         objectives_left = {qid: [s[0] for s in c["sites"]] for qid, c in cands.items()}
         turned_in = set()
         pos = start_pos
@@ -1033,7 +1036,7 @@ class Builder:
         # lines, as the terrain zones do with their paths.
         actions, _ = self.improve_order(actions, cands, {}, start_pos, xp0, _Straight(), lvl0)
         # Quests finished in a later zone travel on in the quest log.
-        for qid in accepted:
+        for qid in accepted.intersection(cands):
             if cands[qid]["obj_later"]:
                 self.accepted_before.add(qid)
             elif cands[qid]["finish_later"] and not objectives_left[qid]:
@@ -1109,7 +1112,7 @@ class Builder:
             return t.cost(a, b, None, arrow=ARROW_COSTS) / unit
 
         st = dict(pos=start_pos, xp=self.xp, minutes=self.minutes, kills=0.0, quests=0.0,
-                  accepted=set(q for q in self.accepted_before if q in cands),
+                  accepted=self.accepted_before.copy(),
                   left={qid: set(s[0] for s in c["sites"]) for qid, c in cands.items()},
                   turned=set(), actions=[])
 
@@ -1290,7 +1293,7 @@ class Builder:
         self.xp_from["kills"] += st["kills"]
         self.xp_from["quests"] += st["quests"]
         turned_in = st["turned"]
-        for qid in st["accepted"]:
+        for qid in st["accepted"].intersection(cands):
             if cands[qid]["obj_later"]:
                 self.accepted_before.add(qid)
             elif cands[qid]["finish_later"] and not st["left"][qid]:
@@ -1368,7 +1371,7 @@ class Builder:
             else:
                 gain.append(0.0)
         gains = {id(a): g for a, g in zip(acts, gain)}
-        in_log0 = set(q for q in self.accepted_before if q in cands)
+        in_log0 = self.accepted_before
         in_visit = set(a[1] for a in acts if a[0] == "turnin")
 
         def valid(seq):
@@ -1749,15 +1752,16 @@ def main():
 
     routes = [load_route(p) for p in args.routes]
     first = routes[0]
-    global GAME, FACTION, FACTS
+    global GAME, FACTION, FACTS, QUEST_LOG_LIMIT
+    GAME = getattr(first, "GAME", "Forever")
+    FACTION = getattr(first, "FACTION", "Alliance")
+    QUEST_LOG_LIMIT = QUEST_LOG_LIMITS[GAME]
     # OXP_SET="LEVELS_ABOVE=3,QUEST_WORTH_IT=0.6": try other tuning knobs
     for kv in filter(None, os.environ.get("OXP_SET", "").split(",")):
         k, v = kv.split("=")
         globals()[k] = type(globals()[k])(float(v))
     if args.facts:
         FACTS = pickle.load(open(args.facts, "rb"))
-    GAME = getattr(first, "GAME", "Forever")
-    FACTION = getattr(first, "FACTION", "Alliance")
     db = load_db(args.questiedb)
     if args.dump:
         db = merge_db(db, load_dump_cached(args.dump, args.questiedb))
