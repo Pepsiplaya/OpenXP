@@ -400,6 +400,37 @@ function addon.inventoryManager:GetShardCount(bag, slot)
     return GetItemCount(SOUL_SHARD_ID) > max, max, storedShards
 end
 
+-- OpenXP: quest items are never junk, even when they're gray or were marked
+-- as junk by hand (a stray Ctrl/Alt+right-click): deleting one can break a
+-- quest for good (Horn of Echeyakee). Covers the game's quest items, items
+-- that start a quest and any item the loaded guide uses or collects.
+local guideItems, guideItemsFor = {}, nil
+local function GuideItems()
+    local guide = addon.currentGuide
+    if guide == guideItemsFor then return guideItems end
+    guideItems, guideItemsFor = {}, guide
+    for _, step in ipairs(guide and guide.steps or {}) do
+        for _, element in ipairs(step.elements or {}) do
+            if element.activeItems then
+                for item in pairs(element.activeItems) do guideItems[item] = true end
+            end
+            if element.id and (element.tag == "collect" or element.tag == "collectmultiple") then
+                guideItems[element.id] = true
+            end
+        end
+    end
+    return guideItems
+end
+
+function addon.inventoryManager:IsQuestItem(id)
+    if not id then return false end
+    if addon.questItemList and addon.questItemList[id] then return true end
+    if GuideItems()[id] then return true end
+    local _, _, _, _, _, _, _, _, _, _, _, classID, _, bindType = GetItemInfo(id)
+    if classID == 12 or bindType == 4 then return true end -- 12 = Quest, 4 = quest item
+    return false
+end
+
 function addon.inventoryManager:IsJunk(id, bag, slot)
     if not self:IsFeatureEnabled() then return false end
 
@@ -411,7 +442,7 @@ function addon.inventoryManager:IsJunk(id, bag, slot)
 
         local pass, count, storedShards = self:GetShardCount(bag, slot)
         return bag and slot and pass and storedShards >= count
-    elseif not id or exclusions[id] then
+    elseif not id or exclusions[id] or self:IsQuestItem(id) then
         return false
     end
 
@@ -441,6 +472,12 @@ end
 
 function addon.inventoryManager:ToggleJunk(id, bag, slot)
     if not self:IsFeatureEnabled() or not id or exclusions[id] then return end
+    if self:IsQuestItem(id) then
+        local _, qlink = GetItemInfo(id)
+        addon.comms.PrettyPrint(L("|c%s%s is a quest item, so it is never sold or deleted|r"),
+                                addon.guideTextColors["RXP_WARN_"], qlink or id)
+        return
+    end
 
     local junk = self:IsJunk(id, bag, slot)
     local _, link = GetItemInfo(id)
