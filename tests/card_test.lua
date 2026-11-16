@@ -10,11 +10,16 @@ local function obj(name)
     return setmetatable(o, {__index = function(t, k)
         if type(k) ~= "string" or k:match("^[a-z_]") then return nil end -- fields, not methods
         if k == "GetStringHeight" then return function() return 14 end end
-        if k == "GetStringWidth" then return function() return 60 end end
+        if k == "GetStringWidth" then return function(self) return #(self._text or "") * 5 end end
         if k == "GetLeft" then return function() return 100 end end
         if k == "GetFrameLevel" then return function() return 1 end end
         if k == "GetPoint" then return function() return "CENTER", nil, "CENTER", 0, 0 end end
-        if k == "GetWidth" or k == "GetHeight" then return function() return 100 end end
+        if k == "GetWidth" then return function(self) return self._width or 100 end end
+        if k == "GetHeight" then return function(self) return self._height or 100 end end
+        if k == "SetWidth" then return function(self, w) self._width = w end end
+        if k == "SetHeight" then return function(self, h) self._height = h end end
+        if k == "SetSize" then return function(self, w, h) self._width, self._height = w, h end end
+        if k == "SetTexture" then return function(self, path) self._texture = path end end
         if k == "SetScript" then return function(self, ev, fn) rawset(self, "_" .. ev, fn) end end
         if k == "GetScript" then return function(self, ev) return rawget(self, "_" .. ev) end end
         if k == "SetText" then return function(self, t) rawset(self, "_text", t) end end
@@ -22,7 +27,8 @@ local function obj(name)
         if k == "IsShown" then return function(self) return self.shown end end
         if k == "Show" then return function(self) self.shown = true end end
         if k == "Hide" then return function(self) self.shown = false end end
-        if k == "CreateTexture" or k == "CreateFontString" or k == "CreateAnimationGroup" then
+        if k == "SetShown" then return function(self, shown) self.shown = shown end end
+        if k == "CreateTexture" or k == "CreateFontString" or k == "CreateAnimationGroup" or k == "CreateAnimation" then
             return function() return obj(k) end
         end
         return function() end
@@ -32,6 +38,7 @@ function CreateFrame(kind, name) return obj(kind) end
 UIParent = obj("UIParent")
 GameTooltip = obj("GameTooltip")
 C_Timer = {After = function(_, fn) fn() end}
+UISpecialFrames = {}
 
 local stepSkip = {}
 OXPCData = {stepSkip = stepSkip}
@@ -67,6 +74,7 @@ addon.arrowFrame.text = obj("fs")
 addon.DrawArrow = function(self) self.distance = 142; self.element = {title = "Lord Ello"} end
 addon.SetupArrow = function() end
 
+assert(loadfile(ROOT .. "/OpenXPStyle.lua"))("OpenXP", addon)
 local chunk = assert(loadfile(ROOT .. "/OpenXPCard.lua"))
 chunk("OpenXP", addon)
 local card = addon.card
@@ -77,6 +85,56 @@ local function try(label, fn)
 end
 try("enable and lay out two steps", function() card.Enable() end)
 try("refresh again", function() card.Refresh() end)
+try("branded card header keeps the guide and step counter readable at minimum width", function()
+    local header = card.header
+    assert(header.brand:GetText() == "OpenXP Ultimate")
+    assert(header.zone:GetText() == "Duskwood" and header.range:IsShown())
+    assert(header.step:GetText() == "Step 1 / 20")
+    card.width = 200
+    addon.settings.profile.guideFontSize = 20
+    card.Refresh(true)
+    assert(header.brand:GetWidth() >= header.brand:GetStringWidth())
+    assert(header.step:GetText() == "1 / 20" and not header.range:IsShown())
+    assert(header.zone:GetWidth() > 100 and header:GetHeight() > 49)
+    local opened
+    local toggle = card.ToggleStepList
+    card.ToggleStepList = function() opened = true end
+    header.stepBtn:GetScript("OnClick")()
+    card.ToggleStepList = toggle
+    assert(opened, "step button did not open the step list")
+    card.width = nil
+    addon.settings.profile.guideFontSize = 12
+    card.Refresh(true)
+end)
+try("level progress is visible at a glance and removed at max level", function()
+    UnitXP, UnitXPMax = function() return 400 end, function() return 1000 end
+    UnitLevel, GetXPExhaustion = function() return 28 end, function() return 300 end
+    card.Refresh(true)
+    assert(card.xpStrip:IsShown() and card.xpStrip.label:GetText() == "Level 28: 40%")
+    assert(card.xpStrip.fill:GetWidth() == 40 and card.xpStrip.rested:GetWidth() == 70)
+    local levelingHeight = card.frame:GetHeight()
+    UnitLevel = function() return 60 end
+    card.Refresh(true)
+    assert(not card.xpStrip:IsShown() and card.frame:GetHeight() < levelingHeight)
+    UnitXP, UnitXPMax, UnitLevel, GetXPExhaustion = nil, nil, nil, nil
+    card.ResetXPSession()
+end)
+try("welcome and changelog open with the shared style", function()
+    assert(loadfile(ROOT .. "/WelcomeFrame.lua"))("OpenXP", addon)
+    addon.welcome.Show("welcome")
+    addon.welcome.Show("update")
+    assert(UISpecialFrames[1] == "OpenXPWelcomeFrame")
+end)
+try("quest interactions use an interaction badge", function()
+    addon.RXPFrame.activeSteps = {{index = 1, elements = {
+        {textOnly = true, text = "Target Plucky and type /beckon."},
+        {tag = "target", textOnly = true}, {tag = "complete", text = "Secret phrase learned: 0/1"},
+    }}}
+    card.Refresh(true)
+    assert(card.blocksForTest[1].badge.icon._texture:match("/target$"))
+    addon.RXPFrame.activeSteps = {steps[1], steps[2]}
+    card.Refresh(true)
+end)
 try("collapse", function() card.SetCollapsed(true) end)
 try("expand", function() card.SetCollapsed(false) end)
 try("arrow update", function()

@@ -51,20 +51,8 @@ local MAX_UPNEXT = 12
 local PAD = 12
 local MAX_BLOCKS = 4
 local MAX_LINES = 8
-
-local C = {
-    bg = {16 / 255, 17 / 255, 21 / 255, 0.9},
-    border = {150 / 255, 160 / 255, 180 / 255, 0.35},
-    text = {0.92, 0.93, 0.95},
-    dim = {0.62, 0.64, 0.70},
-    faint = {0.54, 0.56, 0.61},
-    blue = {90 / 255, 184 / 255, 1},
-    gold = {242 / 255, 195 / 255, 92 / 255},
-    orange = {1, 112 / 255, 67 / 255},
-    cyan = {38 / 255, 198 / 255, 218 / 255},
-    purple = {179 / 255, 157 / 255, 219 / 255},
-    green = {61 / 255, 187 / 255, 122 / 255},
-}
+local TOP_INSET, GUIDE_TRACK, CONTROL_HEIGHT, XP_HEIGHT = 3, 3, 38, 21
+local C = addon.openxpStyle.colors
 
 local card = {}
 addon.card = card
@@ -133,6 +121,12 @@ f:SetBackdrop({bgFile = WHITE, edgeFile = WHITE, edgeSize = 1,
 f:SetBackdropColor(unpack(C.bg))
 f:SetBackdropBorderColor(unpack(C.border))
 f:Hide()
+
+local topEdge = f:CreateTexture(nil, "OVERLAY")
+topEdge:SetPoint("TOPLEFT", 1, -1)
+topEdge:SetPoint("TOPRIGHT", -1, -1)
+topEdge:SetHeight(TOP_INSET - 1)
+topEdge:SetColorTexture(unpack(C.gold))
 
 f:SetScript("OnDragStart", function(self)
     local p = Profile()
@@ -208,57 +202,71 @@ f:SetScript("OnMouseUp", function(self, button)
     end
 end)
 
--- Header: dot, ZONE, level range ............ Step 12 / 82
 local header = CreateFrame("Frame", nil, f)
-header:SetPoint("TOPLEFT", 1, -1)
-header:SetPoint("TOPRIGHT", -1, -1)
-header:SetHeight(28)
+header:SetPoint("TOPLEFT", 1, -TOP_INSET)
+header:SetPoint("TOPRIGHT", -1, -TOP_INSET)
+card.header = header
 
-header.dot = header:CreateTexture(nil, "ARTWORK")
-header.dot:SetTexture(TEX .. "filledcircle")
-header.dot:SetSize(9, 9)
-header.dot:SetPoint("LEFT", PAD - 1, 0)
-Tint(header.dot, C.blue)
+local headerBg = header:CreateTexture(nil, "BACKGROUND")
+headerBg:SetAllPoints()
+headerBg:SetColorTexture(unpack(C.header))
+
+local mark = addon.openxpStyle.Mark(header, 16)
+mark:SetPoint("TOPLEFT", PAD, -7)
+header.brand = header:CreateFontString(nil, "OVERLAY")
+header.brand:SetPoint("LEFT", mark, "RIGHT", 6, 0)
+header.brand:SetJustifyH("LEFT")
+header.brand:SetWordWrap(false)
+header.brand:SetText("OpenXP Ultimate")
+header.brand:SetTextColor(unpack(C.accent))
+FixedFont(header.brand, 11)
 
 header.zone = header:CreateFontString(nil, "OVERLAY")
-header.zone:SetPoint("LEFT", header.dot, "RIGHT", 7, 0)
+header.zone:SetPoint("BOTTOMLEFT", PAD, 7)
 header.zone:SetTextColor(unpack(C.text))
-
-header.range = header:CreateFontString(nil, "OVERLAY")
-header.range:SetPoint("LEFT", header.zone, "RIGHT", 6, 0)
-header.range:SetTextColor(unpack(C.dim))
-
-header.step = header:CreateFontString(nil, "OVERLAY")
-header.step:SetPoint("RIGHT", -PAD + 1, 0)
-header.step:SetTextColor(unpack(C.dim))
 header.zone:SetJustifyH("LEFT")
 header.zone:SetWordWrap(false)
 
+header.range = header:CreateFontString(nil, "OVERLAY")
+header.range:SetPoint("BOTTOMRIGHT", -PAD, 7)
+header.range:SetTextColor(unpack(C.gold))
+
 -- "Step 12 / 82" opens the step list
-header.stepBtn = CreateFrame("Button", nil, header)
-header.stepBtn:SetPoint("TOPRIGHT", 0, 0)
-header.stepBtn:SetPoint("BOTTOMRIGHT", 0, 0)
-header.stepBtn:SetWidth(80)
+header.stepBtn = CreateFrame("Button", nil, header, "BackdropTemplate")
+header.stepBtn:SetPoint("TOPRIGHT", -PAD, -5)
+header.stepBtn:SetHeight(20)
+header.stepBtn:SetBackdrop({bgFile = WHITE, edgeFile = WHITE, edgeSize = 1})
+header.stepBtn:SetBackdropColor(unpack(C.surface))
+header.stepBtn:SetBackdropBorderColor(unpack(C.border))
+header.step = header.stepBtn:CreateFontString(nil, "OVERLAY")
+header.step:SetPoint("CENTER")
+header.step:SetWordWrap(false)
+header.step:SetTextColor(unpack(C.text))
+FixedFont(header.step, 11)
 header.stepBtn:SetScript("OnClick", function() card.ToggleStepList() end)
 header.stepBtn:SetScript("OnEnter", function(self)
+    self:SetBackdropBorderColor(unpack(C.accent))
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
     GameTooltip:SetText(L("Show every step in this guide"), 1, 1, 1)
     GameTooltip:AddLine(L("Click a step to jump to it. Mouse wheel scrolls."), 0.8, 0.8, 0.8, true)
     GameTooltip:Show()
 end)
-header.stepBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+header.stepBtn:SetScript("OnLeave", function(self)
+    self:SetBackdropBorderColor(unpack(C.border))
+    GameTooltip:Hide()
+end)
 
 local progressBg = f:CreateTexture(nil, "ARTWORK")
 progressBg:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, 0)
 progressBg:SetPoint("TOPRIGHT", header, "BOTTOMRIGHT", 0, 0)
-progressBg:SetHeight(2)
-progressBg:SetColorTexture(1, 1, 1, 0.08)
+progressBg:SetHeight(GUIDE_TRACK)
+progressBg:SetColorTexture(unpack(C.surface))
 
 local progress = f:CreateTexture(nil, "OVERLAY")
 progress:SetPoint("TOPLEFT", progressBg, "TOPLEFT")
-progress:SetHeight(2)
+progress:SetHeight(GUIDE_TRACK)
 progress:SetWidth(1)
-progress:SetColorTexture(C.blue[1], C.blue[2], C.blue[3], 1)
+progress:SetColorTexture(unpack(C.accent))
 
 ---------------------------------------------------------------------------
 -- Status tags: a small rounded-looking pill on steps you're past
@@ -351,9 +359,10 @@ body:SetHeight(10)
 
 local BADGES = {
     accept = {glyph = "!", color = C.gold},
-    turnin = {glyph = "?", color = C.gold},
+    turnin = {glyph = "?", color = C.accent},
     kill = {icon = "cross", color = C.orange},
     loot = {icon = "diamond", color = C.cyan},
+    interact = {icon = "target", color = C.purple},
     travel = {icon = "travel", color = C.blue},
     town = {icon = "house", color = C.purple},
 }
@@ -419,6 +428,11 @@ local function GetBlock(i)
     local b = blocks[i]
     if b then return b end
     b = CreateFrame("Frame", nil, body)
+    b.rail = b:CreateTexture(nil, "ARTWORK")
+    b.rail:SetPoint("TOPLEFT", 0, -8)
+    b.rail:SetPoint("BOTTOMLEFT", 0, 8)
+    b.rail:SetWidth(2)
+    b.rail:SetColorTexture(unpack(C.accent))
     b.sep = b:CreateTexture(nil, "ARTWORK")
     b.sep:SetPoint("TOPLEFT", PAD, 0)
     b.sep:SetPoint("TOPRIGHT", -PAD, 0)
@@ -457,6 +471,9 @@ local function StepKind(step)
         if textAll:find("loot") or textAll:find("collect") or textAll:find("click") or
             textAll:find("pick") or has.collect then
             return "loot"
+        end
+        if has.complete and not has.mob and (has.target or textAll:find("step on", 1, true)) then
+            return "interact"
         end
         return "kill"
     end
@@ -1155,6 +1172,7 @@ local function LayoutBlock(b, step, first)
     elseif role == "done" then
         title = "|cFF3DBB7A" .. L("DONE") .. ":|r " .. StripCodes(title)
     end
+    b.rail:SetShown(role == "now")
     b:SetAlpha(role == "done" and 0.45 or role == "side" and 0.8 or 1)
     -- a pickup step is where you get the quest; say so, since it isn't in your log yet
     if role == "now" and not step.detour then
@@ -1387,7 +1405,8 @@ upNext.sep:SetHeight(1)
 upNext.sep:SetColorTexture(1, 1, 1, 0.07)
 upNext.label = upNext:CreateFontString(nil, "OVERLAY")
 upNext.label:SetPoint("TOPLEFT", PAD, -10)
-upNext.label:SetTextColor(unpack(C.dim))
+upNext.label:SetTextColor(unpack(C.accent))
+upNext.label:SetWordWrap(false)
 upNext.text = upNext:CreateFontString(nil, "OVERLAY")
 upNext.text:SetPoint("TOPLEFT", upNext.label, "TOPRIGHT", 8, 1)
 upNext.text:SetJustifyH("LEFT")
@@ -1407,37 +1426,41 @@ local function UpNextLine(i)
 end
 
 local bar = CreateFrame("Frame", nil, f)
-bar:SetHeight(38)
+bar:SetHeight(CONTROL_HEIGHT)
 bar:SetPoint("BOTTOMLEFT", 1, 1)
 bar:SetPoint("BOTTOMRIGHT", -1, 1)
 bar.bg = bar:CreateTexture(nil, "BACKGROUND")
 bar.bg:SetAllPoints()
-bar.bg:SetColorTexture(1, 1, 1, 0.04)
+bar.bg:SetColorTexture(unpack(C.panel))
 bar.line = bar:CreateTexture(nil, "ARTWORK")
 bar.line:SetPoint("TOPLEFT")
 bar.line:SetPoint("TOPRIGHT")
 bar.line:SetHeight(1)
-bar.line:SetColorTexture(1, 1, 1, 0.07)
+bar.line:SetColorTexture(unpack(C.border))
 
 -- Level progress along the bottom edge: gold for XP, faint blue for rested.
 -- Hover it for XP per hour and time to level this session.
 local xpStrip = CreateFrame("Frame", nil, bar)
-xpStrip:SetPoint("BOTTOMLEFT", 0, 0)
-xpStrip:SetPoint("BOTTOMRIGHT", 0, 0)
-xpStrip:SetHeight(8)
+xpStrip:SetPoint("BOTTOMLEFT", PAD, 3)
+xpStrip:SetPoint("BOTTOMRIGHT", -22, 3)
+xpStrip:SetHeight(XP_HEIGHT)
 xpStrip:EnableMouse(true)
+xpStrip.label = xpStrip:CreateFontString(nil, "OVERLAY")
+xpStrip.label:SetPoint("TOPLEFT", 0, 0)
+xpStrip.label:SetTextColor(unpack(C.dim))
+FixedFont(xpStrip.label, 10)
 xpStrip.bg = xpStrip:CreateTexture(nil, "ARTWORK")
 xpStrip.bg:SetPoint("BOTTOMLEFT")
 xpStrip.bg:SetPoint("BOTTOMRIGHT")
-xpStrip.bg:SetHeight(3)
-xpStrip.bg:SetColorTexture(1, 1, 1, 0.06)
+xpStrip.bg:SetHeight(4)
+xpStrip.bg:SetColorTexture(unpack(C.surface))
 xpStrip.rested = xpStrip:CreateTexture(nil, "ARTWORK", nil, 1)
 xpStrip.rested:SetPoint("BOTTOMLEFT")
-xpStrip.rested:SetHeight(3)
+xpStrip.rested:SetHeight(4)
 xpStrip.rested:SetColorTexture(C.blue[1], C.blue[2], C.blue[3], 0.35)
 xpStrip.fill = xpStrip:CreateTexture(nil, "ARTWORK", nil, 2)
 xpStrip.fill:SetPoint("BOTTOMLEFT")
-xpStrip.fill:SetHeight(3)
+xpStrip.fill:SetHeight(4)
 xpStrip.fill:SetColorTexture(C.gold[1], C.gold[2], C.gold[3], 0.9)
 card.xpStrip = xpStrip
 
@@ -1468,13 +1491,19 @@ end
 function card.UpdateXP()
     local x = card.XPStats()
     local maxLevel = addon.player and addon.player.maxlevel or 60
-    if x.max <= 0 or x.level >= maxLevel then xpStrip:Hide(); return end
-    xpStrip:Show()
+    local visible = x.max > 0 and x.level < maxLevel
+    xpStrip:SetShown(visible)
+    bar:SetHeight(CONTROL_HEIGHT + (visible and XP_HEIGHT or 0))
+    if not visible then return end
+    local fraction = math.max(0, math.min(1, x.cur / x.max))
+    xpStrip.label:SetText(fmt(L("Level %d: %d%%"), x.level, math.floor(fraction * 100)))
     local w = xpStrip:GetWidth() or 0
-    if w <= 0 then w = Width() - 2 end
-    xpStrip.fill:SetWidth(math.max(1, w * x.cur / x.max))
+    if w <= 0 then w = Width() - PAD - 24 end
+    xpStrip.fill:SetWidth(math.max(1, w * fraction))
+    xpStrip.fill:SetShown(fraction > 0)
     local restedTo = math.min(x.max, x.cur + (x.rested or 0))
     xpStrip.rested:SetWidth(math.max(1, w * restedTo / x.max))
+    xpStrip.rested:SetShown(restedTo > x.cur)
 end
 
 xpStrip:SetScript("OnEnter", function(self)
@@ -1501,38 +1530,34 @@ local function MakeButton(parent, icon, tip, onClick, label)
     btn:SetSize(label and 116 or 40, 30)
     btn.bg = btn:CreateTexture(nil, "BACKGROUND")
     btn.bg:SetAllPoints()
-    btn.bg:SetTexture(WHITE)
+    local background = label and C.primary or C.surface
+    btn.bg:SetColorTexture(unpack(background))
     btn.icon = btn:CreateTexture(nil, "ARTWORK")
     btn.icon:SetTexture(TEX .. icon)
     btn.icon:SetSize(16, 16)
     if label then
-        btn.bg:SetVertexColor(C.blue[1], C.blue[2], C.blue[3], 0.16)
         btn.icon:SetPoint("LEFT", 10, 0)
-        Tint(btn.icon, {159 / 255, 212 / 255, 1})
+        Tint(btn.icon, C.accent)
         btn.label = btn:CreateFontString(nil, "OVERLAY")
         FixedFont(btn.label, 13, "")
         btn.label:SetPoint("LEFT", btn.icon, "RIGHT", 6, 0)
+        btn.label:SetPoint("RIGHT", -6, 0)
+        btn.label:SetJustifyH("LEFT")
+        btn.label:SetWordWrap(false)
         btn.label:SetText(label)
-        btn.label:SetTextColor(159 / 255, 212 / 255, 1)
+        btn.label:SetTextColor(unpack(C.accent))
     else
-        btn.bg:SetVertexColor(1, 1, 1, 0)
         btn.icon:SetPoint("CENTER")
-        Tint(btn.icon, {0.87, 0.88, 0.92})
+        Tint(btn.icon, C.text)
     end
-    btn.baseAlpha = label and 0.16 or 0
     btn:SetScript("OnEnter", function(self)
-        self.bg:SetAlpha(1)
-        self.bg:SetVertexColor(1, 1, 1, 0.1)
+        self.bg:SetColorTexture(unpack(C.border))
         GameTooltip:SetOwner(self, "ANCHOR_TOP")
         GameTooltip:SetText(tip, 1, 1, 1)
         GameTooltip:Show()
     end)
     btn:SetScript("OnLeave", function(self)
-        if label then
-            self.bg:SetVertexColor(C.blue[1], C.blue[2], C.blue[3], 0.16)
-        else
-            self.bg:SetVertexColor(1, 1, 1, 0)
-        end
+        self.bg:SetColorTexture(unpack(background))
         GameTooltip:Hide()
     end)
     btn:SetScript("OnClick", onClick)
@@ -1780,7 +1805,7 @@ function card.Resume()
 end
 
 bar.prev = MakeButton(bar, "prev", L("Back one step"), function() card.GoBack() end)
-bar.prev:SetPoint("LEFT", 6, 0)
+bar.prev:SetPoint("TOPLEFT", 6, -4)
 bar.next = MakeButton(bar, "next", L("Next step (an unfinished step is marked Skipped)"), function() card.GoNext() end)
 bar.next:SetPoint("LEFT", bar.prev, "RIGHT", 2, 0)
 bar.find = MakeButton(bar, "target", L("Jump to the right guide and step for your level, zone and quests"),
@@ -1797,7 +1822,7 @@ bar.resume = MakeButton(bar, "next", L("Go back to the step you were on"), funct
 bar.resume:SetPoint("LEFT", bar.next, "RIGHT", 6, 0)
 bar.resume:Hide()
 bar.collapse = MakeButton(bar, "up", L("Collapse to one line"), function() card.SetCollapsed(true) end)
-bar.collapse:SetPoint("RIGHT", -20, 0)
+bar.collapse:SetPoint("TOPRIGHT", -20, -4)
 bar.settings = MakeButton(bar, "gear", L("Settings"), function() addon.settings.OpenSettings() end)
 bar.settings:SetPoint("RIGHT", bar.collapse, "LEFT", -2, 0)
 bar.menu = MakeButton(bar, "menu", L("Pick a guide, skipped quest chains, what's new"), function()
@@ -1807,7 +1832,7 @@ bar.menu:SetPoint("RIGHT", bar.settings, "LEFT", -2, 0)
 
 -- Collapsed: one line with the badge, the step and an expand button
 local mini = CreateFrame("Frame", nil, f)
-mini:SetPoint("TOPLEFT", 1, -1)
+mini:SetPoint("TOPLEFT", 1, -TOP_INSET)
 mini:SetPoint("BOTTOMRIGHT", -1, 1)
 mini.badge = MakeBadge(mini, 24)
 mini.badge:SetPoint("LEFT", 10, 0)
@@ -2047,13 +2072,13 @@ function card.Refresh(force)
     end
     card.lastSig, card.lastFull = sig, now
     if card.FillStepList then pcall(card.FillStepList) end
-    if card.UpdateXP then pcall(card.UpdateXP) end
 
     local guide = addon.currentGuide
     local p = Profile()
     local scale = (p and p.windowScale) or 1
     if f:GetScale() ~= scale then f:SetScale(scale) end
     if not card.sizing and f:GetWidth() ~= Width() then f:SetWidth(Width()) end
+    pcall(card.UpdateXP)
     grip:SetShown(not (p and p.lockFrames))
     local total = guide.steps and #guide.steps or 0
     local current = math.min(CurrentStep() or 1, math.max(total, 1))
@@ -2115,7 +2140,7 @@ function card.Refresh(force)
         btn:SetWidth(bw)
     end
     bar.collapse:ClearAllPoints()
-    bar.collapse:SetPoint("RIGHT", slim and -18 or -20, 0)
+    bar.collapse:SetPoint("TOPRIGHT", slim and -18 or -20, -4)
     for _, btn in ipairs({bar.find, bar.stop, bar.resume}) do
         btn:SetWidth(wide and 116 or bw)
         btn.label:SetShown(wide)
@@ -2131,24 +2156,33 @@ function card.Refresh(force)
     header:Show(); progressBg:Show(); progress:Show(); body:Show(); upNext:Show(); bar:Show()
 
     local zone, range = SplitGuideName(guide)
-    SetFont(header.zone, -1)
+    local headerHeight = math.max(49, FontSize(2) + 32)
+    header:SetHeight(headerHeight)
+    SetFont(header.zone, 2)
     SetFont(header.range, -1)
-    SetFont(header.step, -1)
-    header.zone:SetWidth(0)
-    header.zone:SetText(zone:upper())
-    local zoneMax = math.max(50, Width() - 150)
-    if header.zone:GetStringWidth() > zoneMax then header.zone:SetWidth(zoneMax) end
-    header.range:SetText(range)
-    header.range:SetShown(Width() >= 300) -- no room for the level range on a narrow card
-    header.step:SetText(fmt(L("Step %d / %d"), current, total))
+    local countText = Width() >= 260 and L("Step %d / %d") or L("%d / %d")
+    local stepText = fmt(countText, current, total)
     if detourStep then
-        header.zone:SetText(L("QUEST CHAIN"))
-        header.range:SetText("")
-        header.step:SetText(fmt(L("%d / %d"), detourIndex, #card.detour.ids))
+        zone, range = L("QUEST CHAIN"), ""
+        stepText = fmt(L("%d / %d"), detourIndex, #card.detour.ids)
     end
+    local innerWidth = Width() - 2 - 2 * PAD
+    header.step:SetWidth(0)
+    header.step:SetText(stepText)
+    local stepWidth = math.min(math.ceil(header.step:GetStringWidth()) + 14, math.floor(innerWidth * 0.43))
+    header.step:SetWidth(stepWidth - 10)
+    header.stepBtn:SetWidth(stepWidth)
+    header.brand:SetWidth(innerWidth - stepWidth - 34)
+
+    local showRange = range ~= "" and Width() >= 260
+    header.range:SetText(range)
+    header.range:SetShown(showRange)
+    header.zone:SetWidth(innerWidth - (showRange and (header.range:GetStringWidth() + 10) or 0))
+    header.zone:SetText(zone)
     local frac = total > 0 and current / total or 0
     if detourStep then frac = detourIndex / math.max(#card.detour.ids, 1) end
     progress:SetWidth(math.max(1, (Width() - 2) * frac))
+    progress:SetShown(frac > 0)
 
     local histH = card.LayoutHistory(guide, current)
     body:ClearAllPoints()
@@ -2177,7 +2211,8 @@ function card.Refresh(force)
 
     -- One "up next" line by default; a taller card shows more of the route
     local lineH = FontSize(0) + 6
-    local baseHeight = 1 + 28 + 2 + histH + y + 4 + 34 + 38 + 1
+    local fixedHeight = TOP_INSET + headerHeight + GUIDE_TRACK + histH + y + 4 + bar:GetHeight() + 1
+    local baseHeight = fixedHeight + 34
     local want = card.sizing and (f:GetHeight() or 0) or (card.height or 0)
     local extra = math.max(0, math.floor((want - baseHeight) / lineH))
     local count = math.min(MAX_UPNEXT, 1 + extra)
@@ -2204,7 +2239,10 @@ function card.Refresh(force)
     if #texts > 0 then
         SetFont(upNext.label, -2, "")
         upNext.label:SetText(L("UP NEXT"))
-        local textW = Width() - PAD * 2 - upNext.label:GetStringWidth() - 10
+        upNext.label:SetWidth(0)
+        local labelWidth = math.min(upNext.label:GetStringWidth(), innerWidth * 0.42)
+        upNext.label:SetWidth(labelWidth)
+        local textW = innerWidth - labelWidth - 10
         for i = 1, math.max(#texts, #upNext.lines) do
             local line = texts[i] and UpNextLine(i) or upNext.lines[i]
             if texts[i] then
@@ -2228,7 +2266,7 @@ function card.Refresh(force)
     upNext:SetHeight(math.max(upHeight, 1))
 
     if not card.sizing then
-        local content = 1 + 28 + 2 + histH + y + 4 + upHeight + 38 + 1
+        local content = fixedHeight + upHeight
         f:SetHeight(math.max(content, card.height or 0))
     end
 end
@@ -2342,7 +2380,7 @@ local function StyleArrow()
     af.dialBg:SetTexture(TEX .. "dialdisc")
     af.dialBg:SetPoint("CENTER")
     af.dialBg:SetSize(76 * scale, 76 * scale)
-    af.dialBg:SetVertexColor(16 / 255, 17 / 255, 21 / 255, 0.85)
+    Tint(af.dialBg, C.bg)
 
     af.dialRing = af:CreateTexture(nil, "BORDER")
     af.dialRing:SetTexture(TEX .. "dialring")
@@ -2417,7 +2455,7 @@ local function ArrowUpdate(self, ...)
     else
         af.texture:Show()
         af.arrived:Hide()
-        Tint(af.dialRing, C.blue, 0.6)
+        Tint(af.dialRing, C.accent, 0.82)
         af.oxpDist:SetText(fmt("%d yd", dist))
         af.oxpDist:SetTextColor(0.96, 0.97, 0.98)
     end
@@ -2516,14 +2554,19 @@ function card.BuildStepList()
     list:SetBackdropBorderColor(unpack(C.border))
     list:SetFrameStrata("DIALOG")
     list:SetWidth(340)
+    list:SetClampedToScreen(true)
     list:EnableMouse(true)
     list:EnableMouseWheel(true)
     list.offset = 0
     list.title = list:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     list.title:SetPoint("TOPLEFT", PAD, -9)
-    list.title:SetTextColor(unpack(C.dim))
+    list.title:SetTextColor(unpack(C.accent))
+    list.title:SetJustifyH("LEFT")
+    list.title:SetWordWrap(false)
     list.close = MakeButton(list, "cross", L("Close"), function() list:Hide() end)
+    list.close:SetSize(26, 22)
     list.close:SetPoint("TOPRIGHT", -4, -4)
+    list.title:SetPoint("TOPRIGHT", -38, -9)
     list.rows = {}
     for r = 1, LIST_ROWS do
         local row = CreateFrame("Button", nil, list)
@@ -2545,14 +2588,14 @@ function card.BuildStepList()
         row.text:SetJustifyH("LEFT")
         row.text:SetWordWrap(false)
         row:SetScript("OnEnter", function(self)
-            self.hl:SetColorTexture(1, 1, 1, 0.08)
+            self.hl:SetColorTexture(unpack(C.surface))
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:SetText(L("Click: go to this step"), 1, 1, 1)
             GameTooltip:AddLine(L("Right-click: mark it done (if you already did it)"), 0.8, 0.8, 0.8)
             GameTooltip:Show()
         end)
         row:SetScript("OnLeave", function(self)
-            self.hl:SetColorTexture(1, 1, 1, self.current and 0.05 or 0)
+            self.hl:SetColorTexture(C.accent[1], C.accent[2], C.accent[3], self.current and 0.12 or 0)
             GameTooltip:Hide()
         end)
         row:RegisterForClicks("LeftButtonUp", "RightButtonUp")
@@ -2607,10 +2650,10 @@ function card.FillStepList()
             local status = not row.current and card.StepStatus(guide, i, cur) or nil
             row.pill:SetStatus(status)
             local done = status == "done" or status == "skipped"
-            local color = row.current and C.blue or done and C.faint or C.text
+            local color = row.current and C.accent or done and C.faint or C.text
             row.text:SetTextColor(unpack(color))
-            row.num:SetTextColor(unpack(row.current and C.blue or C.dim))
-            row.hl:SetColorTexture(1, 1, 1, row.current and 0.05 or 0)
+            row.num:SetTextColor(unpack(row.current and C.accent or C.dim))
+            row.hl:SetColorTexture(C.accent[1], C.accent[2], C.accent[3], row.current and 0.12 or 0)
             row:Show()
         else
             row:Hide()
@@ -2623,7 +2666,7 @@ function card.ToggleStepList()
     if list:IsShown() then list:Hide(); return end
     list:ClearAllPoints()
     local left = f:GetLeft() or 0
-    if left > 320 then
+    if left > list:GetWidth() + 4 then
         list:SetPoint("TOPRIGHT", f, "TOPLEFT", -4, 0)
     else
         list:SetPoint("TOPLEFT", f, "TOPRIGHT", 4, 0)
@@ -2894,7 +2937,8 @@ end)
 -- Anything quest or level related bumps the counter, so the card redraws
 local watcher = CreateFrame("Frame")
 for _, ev in ipairs({"QUEST_LOG_UPDATE", "QUEST_ACCEPTED", "QUEST_TURNED_IN", "QUEST_REMOVED",
-                     "PLAYER_LEVEL_UP", "PLAYER_XP_UPDATE", "ZONE_CHANGED_NEW_AREA", "BAG_UPDATE_DELAYED"}) do
+                     "PLAYER_LEVEL_UP", "PLAYER_XP_UPDATE", "UPDATE_EXHAUSTION", "ZONE_CHANGED_NEW_AREA",
+                     "BAG_UPDATE_DELAYED"}) do
     pcall(watcher.RegisterEvent, watcher, ev)
 end
 watcher:SetScript("OnEvent", function()
@@ -2937,7 +2981,7 @@ function card.SkinPanel(frame)
     local title = frame.title
     if title and title.SetBackdrop and not Skinned(title) then
         title:SetBackdrop(PANEL_BACKDROP)
-        title:SetBackdropColor(0.10, 0.11, 0.14, 0.95)
+        title:SetBackdropColor(unpack(C.header))
         title:SetBackdropBorderColor(unpack(C.border))
     end
     local text = title and title.text

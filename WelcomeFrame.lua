@@ -881,21 +881,9 @@ local CHANGELOG = {
     },
 }
 
--- Same palette as the minimal guide window theme. "gold" is the accent
--- (OpenXP blue) and "goldDark" the hairline border; names kept for history.
-local COLORS = {
-    bg = {16 / 255, 17 / 255, 21 / 255, 0.96},
-    panel = {22 / 255, 24 / 255, 29 / 255, 0.9},
-    gold = {90 / 255, 184 / 255, 255 / 255},
-    goldDark = {60 / 255, 66 / 255, 78 / 255},
-    blue = {90 / 255, 184 / 255, 255 / 255},
-    text = {0.86, 0.86, 0.9},
-    muted = {0.6, 0.62, 0.7},
-}
-
-local GOLD_HEX = "|cFF5AB8FF"
-local BLUE_HEX = "|cFF5AB8FF"
-local LOGO = "Interface/AddOns/" .. addonName .. "/Textures/openxp_logo-128"
+local C = addon.openxpStyle.colors
+local GOLD_HEX = "|cFFF5C478"
+local ACCENT_HEX = "|cFF7DE6C9"
 
 local frame
 
@@ -913,18 +901,18 @@ end
 local function MakeButton(parent, text, primary)
     local b = CreateFrame("Button", nil, parent, "BackdropTemplate")
     b:SetSize(150, 30)
-    Backdrop(b, primary and {28 / 255, 70 / 255, 104 / 255, 1} or COLORS.panel,
-             primary and COLORS.gold or COLORS.goldDark)
+    local border = primary and C.accent or C.border
+    Backdrop(b, primary and C.primary or C.panel, border)
     local label = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     label:SetPoint("CENTER")
     label:SetText(text)
-    label:SetTextColor(unpack(primary and {1, 1, 1} or COLORS.text))
+    label:SetTextColor(unpack(primary and C.accent or C.text))
     b.label = label
     b:SetScript("OnEnter", function(self)
-        self:SetBackdropBorderColor(1, 1, 1, 0.8)
+        self:SetBackdropBorderColor(unpack(C.gold))
     end)
     b:SetScript("OnLeave", function(self)
-        self:SetBackdropBorderColor(unpack(primary and COLORS.gold or COLORS.goldDark))
+        self:SetBackdropBorderColor(unpack(border))
     end)
     return b
 end
@@ -932,21 +920,19 @@ end
 local function BuildBody(mode, lastSeen)
     local lines = {}
     if mode == "welcome" then
-        table.insert(lines, GOLD_HEX .. L("Welcome, adventurer!") .. "|r")
+        table.insert(lines, L("Follow the steps and waypoint arrow to level in WoW Forever."))
         table.insert(lines, "")
-        table.insert(lines, L("OpenXP is a free, community-made leveling guide for WoW Forever. Follow the arrow and the steps, and it takes you from quest to quest by the fastest route."))
-        table.insert(lines, "")
-        table.insert(lines, BLUE_HEX .. "•|r  " .. L("Already leveling? Smart start finds where you are from your level, zone and quests."))
-        table.insert(lines, BLUE_HEX .. "•|r  " .. string.format(L("%sRight-click the guide window|r for Find my place, Skipped quest chains and What's new."), GOLD_HEX))
-        table.insert(lines, BLUE_HEX .. "•|r  " .. string.format(L("The same buttons are at the top of the settings (%s/oxp|r or the minimap button)."), GOLD_HEX))
+        table.insert(lines, ACCENT_HEX .. "•|r  " .. L("Already leveling? Smart start finds where you are from your level, zone and quests."))
+        table.insert(lines, ACCENT_HEX .. "•|r  " .. string.format(L("%sRight-click the guide window|r for Find my place, Skipped quest chains and What's new."), GOLD_HEX))
+        table.insert(lines, ACCENT_HEX .. "•|r  " .. string.format(L("The same buttons are at the top of the settings (%s/oxp|r or the minimap button)."), GOLD_HEX))
     else
         table.insert(lines, GOLD_HEX .. L("What's new") .. "|r")
         for _, entry in ipairs(CHANGELOG) do
             if lastSeen and entry.version == lastSeen then break end
             table.insert(lines, "")
-            table.insert(lines, string.format(L("%sVersion %s|r  |cFF9EA0B2%s|r"), BLUE_HEX, entry.version, entry.date))
+            table.insert(lines, string.format(L("%sVersion %s|r  |cFF9EA0B2%s|r"), ACCENT_HEX, entry.version, entry.date))
             for _, change in ipairs(entry.changes) do
-                table.insert(lines, BLUE_HEX .. "•|r  " .. change)
+                table.insert(lines, ACCENT_HEX .. "•|r  " .. change)
             end
         end
     end
@@ -964,63 +950,45 @@ local function CreateWelcomeFrame()
     f:RegisterForDrag("LeftButton")
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
-    Backdrop(f, COLORS.bg, COLORS.gold)
+    Backdrop(f, C.bg, C.border)
     tinsert(_G.UISpecialFrames, "OpenXPWelcomeFrame") -- Escape closes it
 
     -- Header band
     local header = f:CreateTexture(nil, "BORDER")
-    header:SetPoint("TOPLEFT", 4, -4)
-    header:SetPoint("TOPRIGHT", -4, -4)
+    header:SetPoint("TOPLEFT", 1, -3)
+    header:SetPoint("TOPRIGHT", -1, -3)
     header:SetHeight(110)
-    header:SetColorTexture(1, 1, 1, 0.03)
+    header:SetColorTexture(unpack(C.header))
+
+    local topEdge = f:CreateTexture(nil, "ARTWORK")
+    topEdge:SetPoint("TOPLEFT", 1, -1)
+    topEdge:SetPoint("TOPRIGHT", -1, -1)
+    topEdge:SetHeight(2)
+    topEdge:SetColorTexture(unpack(C.gold))
 
     local divider = f:CreateTexture(nil, "ARTWORK")
     divider:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, 0)
     divider:SetPoint("TOPRIGHT", header, "BOTTOMRIGHT", 0, 0)
-    divider:SetHeight(1)
-    divider:SetColorTexture(COLORS.gold[1], COLORS.gold[2], COLORS.gold[3], 0.6)
+    divider:SetHeight(2)
+    divider:SetColorTexture(unpack(C.accent))
 
-    -- Glowing logo
-    local glow = f:CreateTexture(nil, "ARTWORK")
-    glow:SetTexture("Interface/Cooldown/star4")
-    glow:SetBlendMode("ADD")
-    glow:SetVertexColor(COLORS.blue[1], COLORS.blue[2], COLORS.blue[3], 0.35)
-    glow:SetSize(150, 150)
-    glow:SetPoint("LEFT", f, "TOPLEFT", -8, -58)
-
-    local pulse = glow:CreateAnimationGroup()
-    pulse:SetLooping("BOUNCE")
-    local a = pulse:CreateAnimation("Alpha")
-    a:SetFromAlpha(0.35)
-    a:SetToAlpha(0.9)
-    a:SetDuration(1.6)
-    a:SetSmoothing("IN_OUT")
-    pulse:Play()
-
-    local logo = f:CreateTexture(nil, "OVERLAY")
-    logo:SetTexture(LOGO)
-    logo:SetSize(84, 84)
-    logo:SetPoint("CENTER", glow, "CENTER")
+    local mark = addon.openxpStyle.Mark(f, 72)
+    mark:SetPoint("TOPLEFT", 22, -22)
 
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
-    title:SetPoint("TOPLEFT", f, "TOPLEFT", 128, -30)
-    title:SetText("OpenXP")
-    title:SetTextColor(1, 1, 1)
-    title:SetShadowOffset(2, -2)
+    title:SetPoint("TOPLEFT", f, "TOPLEFT", 112, -26)
+    title:SetText("OpenXP Ultimate")
+    title:SetTextColor(unpack(C.text))
 
     local subtitle = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -6)
     subtitle:SetText(L("Free leveling guides for WoW Forever"))
-    subtitle:SetTextColor(unpack(COLORS.text))
+    subtitle:SetTextColor(unpack(C.dim))
 
-    local badge = CreateFrame("Frame", nil, f, "BackdropTemplate")
-    badge:SetSize(70, 20)
-    badge:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -8)
-    Backdrop(badge, {16 / 255, 40 / 255, 70 / 255, 1}, COLORS.blue)
-    local badgeText = badge:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    badgeText:SetPoint("CENTER")
-    badgeText:SetText("v" .. OPENXP_VERSION)
-    badgeText:SetTextColor(unpack(COLORS.blue))
+    local version = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    version:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -8)
+    version:SetText("v" .. OPENXP_VERSION)
+    version:SetTextColor(unpack(C.gold))
 
     local close = CreateFrame("Button", nil, f, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", -2, -2)
@@ -1029,7 +997,7 @@ local function CreateWelcomeFrame()
     local panel = CreateFrame("Frame", nil, f, "BackdropTemplate")
     panel:SetPoint("TOPLEFT", f, "TOPLEFT", 16, -128)
     panel:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -16, 138)
-    Backdrop(panel, COLORS.panel, COLORS.goldDark)
+    Backdrop(panel, C.panel, C.border)
 
     local scroll = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", 10, -10)
@@ -1044,7 +1012,7 @@ local function CreateWelcomeFrame()
     body:SetJustifyH("LEFT")
     body:SetJustifyV("TOP")
     body:SetSpacing(3)
-    body:SetTextColor(unpack(COLORS.text))
+    body:SetTextColor(unpack(C.text))
     f.body, f.content = body, content
 
     -- Choices: the route line on the maps, its colour, and a Questie tip
@@ -1053,8 +1021,9 @@ local function CreateWelcomeFrame()
     route:SetPoint("TOPLEFT", panel, "BOTTOMLEFT", 0, -8)
     local routeText = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     routeText:SetPoint("LEFT", route, "RIGHT", 4, 0)
+    routeText:SetJustifyH("LEFT")
     routeText:SetText(L("Show route lines on the world map and minimap"))
-    routeText:SetTextColor(unpack(COLORS.text))
+    routeText:SetTextColor(unpack(C.text))
     route:SetScript("OnClick", function(self)
         local p = addon.settings and addon.settings.profile
         if p then p.openxpMapRoute = self:GetChecked() and true or false end
@@ -1062,12 +1031,13 @@ local function CreateWelcomeFrame()
 
     local swatch = CreateFrame("Button", nil, f, "BackdropTemplate")
     swatch:SetSize(36, 18)
-    swatch:SetPoint("LEFT", routeText, "RIGHT", 10, 0)
-    Backdrop(swatch, {0.72, 0.42, 1, 1}, COLORS.goldDark)
+    swatch:SetPoint("TOPRIGHT", panel, "BOTTOMRIGHT", 0, -11)
+    Backdrop(swatch, {0.72, 0.42, 1, 1}, C.border)
     local swatchText = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    swatchText:SetPoint("LEFT", swatch, "RIGHT", 6, 0)
+    swatchText:SetPoint("RIGHT", swatch, "LEFT", -6, 0)
     swatchText:SetText(L("Colour"))
-    swatchText:SetTextColor(unpack(COLORS.muted))
+    swatchText:SetTextColor(unpack(C.dim))
+    routeText:SetPoint("RIGHT", swatchText, "LEFT", -12, 0)
     local function ShowColor()
         local p = addon.settings and addon.settings.profile
         local c = p and p.openxpRouteColor or {0.72, 0.42, 1.0}
@@ -1168,9 +1138,9 @@ function welcome.Show(mode, lastSeen)
     frame.route:SetChecked(not (p and p.openxpMapRoute == false))
     frame.ShowColor()
     if _G.QuestieLoader then
-        frame.questie:SetText(BLUE_HEX .. L("Questie is installed.|r OpenXP uses it for spawn marks, quest chains and levels."))
+        frame.questie:SetText(ACCENT_HEX .. L("Questie is installed.|r OpenXP uses it for spawn marks, quest chains and levels."))
     else
-        frame.questie:SetText(BLUE_HEX .. L("Recommended: install the free Questie addon.|r OpenXP uses it to mark where your quest mobs spawn and to show quest chains and levels."))
+        frame.questie:SetText(ACCENT_HEX .. L("Recommended: install the free Questie addon.|r OpenXP uses it to mark where your quest mobs spawn and to show quest chains and levels."))
     end
     frame:Show()
 end
