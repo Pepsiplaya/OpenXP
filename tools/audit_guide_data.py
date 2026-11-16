@@ -120,6 +120,8 @@ def audit(db, guides, evidence, quests=()):
                 if len(targets) == 1 and npcs and not other_source and not targets.intersection(npcs):
                     findings.append(dict(ref, code="step_target_discrepancy", detail=
                         f"Step targets {next(iter(targets))}. Recorded {kind} NPCs are {sorted(npcs)}."))
+            elif index == 0:
+                continue  # guide uses the quest log's ready-to-turn-in state
             elif fact.get("objectives"):
                 if index is not None and index not in fact["objectives"]:
                     findings.append(dict(ref, code="reviewed_index_discrepancy", detail=

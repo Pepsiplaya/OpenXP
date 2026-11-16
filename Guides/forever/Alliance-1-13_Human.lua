@@ -21,12 +21,12 @@ step << !Human
     +You have selected a guide meant for Humans. You should choose the same starter zone that you start in
 step << Mage
     #completewith next
-    +Note that you have selected the single target Mage guide. Single target is a lot safer than AoE Mage, but a LOT slower
+    +Fight one enemy at a time. Open with Fireball from range until you learn Frostbolt. Use /oxp mage for training and wand advice as you level.
 step << !Human Mage
     #season 2
     #completewith next
     +In Season of Discovery, you should NOT start outside of your race's starter zone as a Mage, as you will be unable to get your first rune here (|T135844:0|t[Ice Lance])
-step
+step << !Mage
     #softcore << Warlock
     #optional
     #completewith Within
@@ -391,6 +391,7 @@ step << Mage
     .goto 1429/0,-188.23,-8851.58
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Khelden Bremen|r inside upstairs
     .turnin 3104 >> Turn in Glyphic Letter
+    >>At level 4, prioritize Frostbolt and Conjure Water when you speak to the trainer.
     .trainer >> Train your class spells
     .target Khelden Bremen
 step << Priest
@@ -1057,6 +1058,7 @@ step << Mage
 	>>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Zaldimar Wefhellt|r
 	.target Zaldimar Wefhellt
     .goto 1429/0,34.28,-9471.61
+    >>Catch up on Frostbolt and Conjure Water. Learn Conjure Food once you reach level 6.
     .trainer >> Train your class spells
 step << Priest
 	>>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Priestess Josetta|r

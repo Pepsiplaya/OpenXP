@@ -122,6 +122,8 @@ function addon.settings.ChatCommand(input)
         addon.settings:EnableFramePreviews()
     elseif input == "where" or input == "smartstart" then
         addon.smartStart.Run()
+    elseif input == "mage" then
+        addon.mageLeveling.Show()
     elseif input == "welcome" or input == "news" then
         addon.welcome.Show("update")
     elseif input == "steps" then

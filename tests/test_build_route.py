@@ -110,6 +110,13 @@ class QuestLogTests(unittest.TestCase):
 
 
 class BenchmarkTests(unittest.TestCase):
+    def test_breadcrumbs_from_one_hub_do_not_block_the_next_hub(self):
+        visit = builder()
+        first = {"q": route.Quest(101, {1: "Breadcrumb", 27: 102})}
+        followup = route.Quest(102, {1: "Follow-up"})
+        self.assertTrue(visit.breadcrumb_blocked(followup, {101: first}, {101}, set()))
+        self.assertFalse(visit.breadcrumb_blocked(followup, {}, {101}, set()))
+
     def test_travel_counts_once_for_committed_hops(self):
         def hub(key, area):
             return {"key": key, "zone": key, "area": area, "continent": "Kalimdor",

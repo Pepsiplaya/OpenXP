@@ -15,6 +15,16 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.68-beta",
+        date = "November 2026",
+        changes = {
+            "Alliance Mages can open Mage leveling from the guide menu or with /oxp mage. See available spell ranks, wand options, and city teleport trainers.",
+            "Human, Gnome, and Skyborne starts include Mage training and equipment guidance. Blackfathom Deeps now tracks the wand reward, and level-60 Mages can select Arcane Refreshment under Class Quests.",
+            "Research Access in Class Quests guides Alliance Mages to a library book and the Study unlock.",
+            "The Sleeper Has Awakened now uses the Horn given on acceptance. Eastern Plaguelands tower captures are available under OpenXP Extras, World PvP.",
+        },
+    },
+    {
         version = "1.3.67-beta",
         date = "November 2026",
         changes = {

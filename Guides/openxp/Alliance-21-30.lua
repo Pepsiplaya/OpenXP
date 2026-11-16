@@ -1047,16 +1047,16 @@ step
     >>Talk to |cRXP_FRIENDLY_Collin Mauren|r
     .turnin 1075 >>Turn in A Scroll from Mauren
     .target Collin Mauren
-step << Mage
+step << Human Mage/Gnome Mage
     .goto Stormwind City,49.56,85.80
     >>Talk to |cRXP_FRIENDLY_Jennea Cannon|r
     .accept 1939 >>Accept High Sorcerer Andromath
-    .target Jennea Cannon
-step << Mage
+    .target Jennea Cannon::5497
+step << Human Mage/Gnome Mage
     .goto Stormwind City,48.71,87.62
     >>Talk to |cRXP_FRIENDLY_High Sorcerer Andromath|r
     .turnin 1939 >>Turn in High Sorcerer Andromath
-    .target High Sorcerer Andromath
+    .target High Sorcerer Andromath::5694
 step << Warlock
     --oxp-class
     .goto Stormwind City,39.22,85.23
@@ -1471,6 +1471,7 @@ step
 step
     .goto Wetlands,38.18,50.89
     >>Talk to |cRXP_FRIENDLY_Ormer Ironbraid|r
+    >>Choose Excavation Rod if you need a wand upgrade. << Mage
     .turnin 296 >>Turn in Ormer's Revenge
     .target Ormer Ironbraid
 step

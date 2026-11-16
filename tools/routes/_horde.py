@@ -37,8 +37,9 @@ def home(zone, x, y, keeper, town):
 
 # Left out on purpose:
 # 338-342 Green Hills of Stranglethorn: the pages are rare drops from any mob
-# 9415, 9419, 9664 Silithyst: world PvP
-SKIP = {338, 339, 340, 341, 342, 9415, 9419, 9664}
+# 9415, 9419 Silithyst: world PvP
+# 9664 and 9665 Eastern Plaguelands tower captures: world PvP
+SKIP = {338, 339, 340, 341, 342, 9415, 9419, 9664, 9665}
 
 
 def sections_22_30():

@@ -145,11 +145,28 @@ step
     >>Talk to |cRXP_FRIENDLY_Argent Guard Manados|r
     .accept 1199 >> Accept Twilight Falls
     .target Argent Guard Manados
+step << Mage
+    #optional
+    .xp <18,1
+    .goto 1457,55.36,25.03
+    .accept 1198 >>Accept In Search of Thaelrid from Dawnwatcher Shaedlass.
+    .target Dawnwatcher Shaedlass::4786
+step << Mage
+    .xp <18,1
+    >>Inside Blackfathom Deeps, find Argent Guard Thaelrid before fighting Twilight Lord Kelris.
+    .turnin -1198 >>Turn in In Search of Thaelrid
+    .accept 1200 >>Accept Blackfathom Villainy
+    .target Argent Guard Thaelrid::4787
 step
     >>Run |cRXP_WARN_Blackfathom Deeps|r and finish these quests. Skip any you didn't pick up
     .complete -1275,1
     .complete -971,1
     .complete -1199,1
+step << Mage
+    .isOnQuest 1200
+    >>Loot the Head of Kelris from Twilight Lord Kelris.
+    .complete 1200,1
+    .mob Twilight Lord Kelris::4832
 step
     .goto 1439,38.33,43.04
     >>Talk to |cRXP_FRIENDLY_Gershala Nightwhisper|r
@@ -165,6 +182,12 @@ step
     >>Talk to |cRXP_FRIENDLY_Argent Guard Manados|r
     .turnin -1199 >> Turn in Twilight Falls
     .target Argent Guard Manados
+step << Mage
+    .isQuestComplete 1200
+    .goto 1457,56.16,24.39
+    >>Consider Gravestone Scepter if it upgrades your wand.
+    .turnin 1200 >>Turn in Blackfathom Villainy
+    .target Dawnwatcher Selgorm::4783
 ]])
 
 RXPGuides.RegisterGuide([[

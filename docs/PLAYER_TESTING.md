@@ -1,13 +1,28 @@
-# Player testing for OpenXP Ultimate 1.3.67-beta
+# Player testing for OpenXP Ultimate 1.3.68-beta
 
 ## Install the test build
 
 1. Close WoW Forever. Use a separate Forever installation or test profile if available.
 2. For a swap in your existing installation, move your existing `OpenXP` addon folder outside `Interface\AddOns`. Back up its `OpenXP.lua` and `OpenXP.lua.bak` files from the account and character `SavedVariables` directories, where present.
 3. Extract the test ZIP. Copy the extracted `OpenXP` folder into `World of Warcraft\_forever_\Interface\AddOns`. The file should be at `AddOns\OpenXP\OpenXP.toc`. Disable RestedXP Guides in the character selection AddOns menu while testing OpenXP.
-4. Log in and run `/oxp news`. Confirm the version is `1.3.67-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
+4. Log in and run `/oxp news`. Confirm the version is `1.3.68-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
 
-## What to test first
+## Fresh Alliance Mage
+
+Start at level 1. A Human starts in Northshire, a Gnome in Coldridge Valley, and a High-Order Skyborne on Zephras Isle.
+
+| When | What to check |
+| --- | --- |
+| First login | Smart Start selects the racial chapter. The guide menu shows **Mage leveling**. The panel identifies your starter route, current guide, and first spell milestones. |
+| First trainer and level 4 | Follow the waypoint and talk to the named trainer. Check Frostbolt and Conjure Water, then reopen the panel after training. The questing steps keep the Hearthstone for a Human or Gnome Mage. |
+| Levels 6–13 | Check Conjure Food at 6 and Polymorph at 8. A Skyborne sees the two trainer NPCs in the correct locations and the wand reward notes. Compare your first wand with the options in the panel. |
+| Westfall, Darkshore, and Ashenvale | Try the Sentinel Hill book and see if Garion offers Research Access. For the Kerlonian escort, record whether the Horn arrives on acceptance, where the log changes to ready, and the remaining time when you reach Maestra's Post. |
+| Level 20 onward | Check the Stormwind and Ironforge teleport offers and the rune requirement. Run one quest loop and one comparable dungeon or grinding segment. Keep elapsed time through travel, drinking, and group formation. |
+| Optional group quests | Blackfathom Deeps should lead to Argent Guard Thaelrid inside and Dawnwatcher Selgorm for Gravestone Scepter. At 60, Arcane Refreshment sends you from Lorekeeper Lydros to Hydrospawn in Dire Maul East and back. |
+
+For an optional timed sample, use the separate [Recorder beta](RECORDER.md) with `/oxprec start` and `/oxprec stop`, then log out or reload. The Mage guide and the recorder can be tested independently.
+
+## Other regression checks
 
 | Test | Starting conditions | Expected result |
 | --- | --- | --- |
@@ -20,6 +35,7 @@
 | Gelkis Valley of Bones | Level 35 or above, Honored Gelkis, quest 93034 active or already turned in. Select OpenXP Extras → Shen’dralas → Valley of Bones (Gelkis). | Hand 93034 to Nerlokh if active. Accept 93035 and 93037, then see separate kill and loot steps before the turn-ins. Check the southern Desolace approach and the eastbound waypoints. |
 | Magram Valley of Bones | Level 35 or above, Honored Magram, quest 92841 active or already turned in. Select the Magram chapter. | Orgrul offers 92844 and 92846 after the breadcrumb. Check the terrain approach, six Outcast kills, and the 426-bone objective. Note which piles and kills produce bones and how long the loop takes. |
 | Alliance main route | Finish 39–40 Desolace in the OpenXP 21–60 guide. | The next guide is 40–41 Ironforge. If you were playing the removed 40–41 Shen’dralas section, use `/oxp where` to resume the main guide or choose your clan chapter from OpenXP Extras. |
+| Plaguelands tower captures | Level 55 or above. Open the faction's tower quest under OpenXP Extras → World PvP. | Capture all four named towers. Record credit with the active quest and the layer's tower control. The shared 58–59 chapters continue through the other Eastern Plaguelands quests. |
 | Skyborne Herbalism | Accept 97968 with Herbalism trained. Check before and after reaching Herbalism 20 while still on Zephras Isle. | The step appears once turn-in is ready and leads to Halassa Fernbreeze in Shen’dar Village (43.01, 43.55). Check both faction routes if you have characters available. |
 | Alliance Priest | Gnome or Dwarf Priest at level 20 or above, around the Ironforge class stop in 22–23 Wetlands. | Mims offers or finishes Contingency Plan for a Gnome. Rohan offers Chastise for a Dwarf. Check that neither appears for the other race. If you already have 94819 or 94820, Mims can finish it. |
 | Alliance Warrior | The Affray (1719) from Klannoc on Fray Island. | The grate comes first. Defeat the challengers and Big Will, then return to Klannoc within the quest timer. |

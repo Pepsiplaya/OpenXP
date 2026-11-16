@@ -515,8 +515,9 @@ def season_of_discovery(qid, name, *, available_in_forever=False):
 
 
 class Builder:
-    def __init__(self, db, done_before, carried):
+    def __init__(self, db, done_before, carried, *, quest_allowed=Quest.for_faction):
         self.db = db
+        self.quest_allowed = quest_allowed
         self.done = set(done_before)        # quests turned in before this route
         self.accepted_before = set(carried) # quests in the log from earlier guides
         self.used = set()                   # quests already placed by this route
@@ -565,14 +566,13 @@ class Builder:
         return False
 
     def _breadcrumbs(self, cands):
-        key = id(cands)
-        if getattr(self, "_bc_key", None) != key:
+        if getattr(self, "_bc_candidates", None) is not cands:
             m = {}
             for qid, c in cands.items():
                 to = c["q"].breadcrumbFor
                 if to:
                     m.setdefault(to, []).append(qid)
-            self._bc_key, self._bc = key, m
+            self._bc_candidates, self._bc = cands, m
         return self._bc
 
     def objective_xp(self, q, kind):
@@ -864,7 +864,7 @@ class Builder:
         out = {}
         for q in self.quests():
             qid = q.id
-            if not q.for_faction() or not q.name:
+            if not self.quest_allowed(q) or not q.name:
                 continue
             if qid in self.done or qid in self.used:
                 continue
@@ -1932,6 +1932,17 @@ def main():
 DECISIONS = []
 
 
+def hub_anchors(hub, arriving_first=False):
+    """Network towns and estimated minutes between each town and a quest hub."""
+    if arriving_first and hub.get("first_anchors"):
+        return hub["first_anchors"]
+    if hub.get("anchors"):
+        return hub["anchors"]
+    if hub.get("has_fp"):
+        return [(fp_town(hub["town"]), 0)]
+    return []
+
+
 def plan_hubs(builder, route):
     hubs = route.HUBS
     areas = [h["area"] for h in hubs]
@@ -1943,26 +1954,17 @@ def plan_hubs(builder, route):
     net = travel_graph.Network(FACTION)
     known = builder.known_fps
 
-    def ends(h, arriving_first=False):
-        """(flight master town, minutes riding from there) for a hub."""
-        if arriving_first and h.get("first_anchors"):
-            return h["first_anchors"]
-        out = list(h.get("anchors") or [])
-        if h.get("has_fp") and not h.get("anchors"):
-            out.append((fp_town(h["town"]), 0))
-        return out
-
     def trip(frm, hub, first, lvl):
         """Fastest way from one hub to the next, in minutes, with the
         guide's text for it; (None, None) when the network doesn't know."""
         best = (None, None, False)
-        starts = [(a, ma, False) for a, ma in ends(frm)]
+        starts = [(a, ma, False) for a, ma in hub_anchors(frm)]
         # your Hearthstone, when it's off cooldown and home is a town on the network
         home = builder.home
         if home and home in net.pos and builder.minutes - builder.hearth_at >= HEARTH_COOLDOWN:
             starts.append((home, MINUTES_HEARTH, True))
         for a, ma, hs in starts:
-            for b, mb in ends(hub, first):
+            for b, mb in hub_anchors(hub, first):
                 have = known | {a}
                 m, legs = net.route(a, b, have, lvl)
                 if m is None:

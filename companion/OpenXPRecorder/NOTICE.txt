@@ -1,0 +1,7 @@
+OpenXP Recorder is part of OpenXP Ultimate.
+Copyright OpenXP contributors.
+
+Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
+https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+
+Project source: https://github.com/Pepsiplaya/OpenXP

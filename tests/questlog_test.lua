@@ -14,6 +14,7 @@ strlower = string.lower
 StaticPopupDialogs = {}
 
 local rows, rowsShown, totalQuests, onEvent
+local ready, turnedIn
 local readCount = 0
 CreateFrame = function()
     return {
@@ -23,7 +24,11 @@ CreateFrame = function()
 end
 
 local function loadFunctions(modern)
-    C_QuestLog = { IsOnQuest = function() return true end }
+    C_QuestLog = {
+        IsOnQuest = function() return true end,
+        IsComplete = function() return ready end,
+        IsQuestFlaggedCompleted = function() return turnedIn end,
+    }
     local function counts() return rowsShown, totalQuests end
     if modern then
         C_QuestLog.GetNumQuestLogEntries = counts
@@ -74,6 +79,28 @@ assert(addon.QuestLogIDs()[951] == "Mathystra Relics", "legacy tuple API remains
 setRows(1, 1, {{title = "Darkshore", isHeader = true, isCollapsed = true}})
 assert(addon.QuestLogIDs() == nil)
 print("quest log compatibility tests passed")
+
+addon.settings = {profile = {}}
+addon.icons = {complete = ""}
+addon.GetQuestName = function() return "Escort" end
+addon.GetQuestObjectives = function() error("whole-quest completion does not request objective rows") end
+addon.UpdateStepText = function() end
+addon.SetElementIncomplete = function(widget) widget.element.completed = false end
+addon.SetElementComplete = function(widget) widget.element.completed = true end
+local escort = {element = {tag = "complete", questId = 5321, obj = 0, flags = 0,
+                           rawtext = "Finish the escort", step = {active = true, index = 1}}}
+ready = -1
+addon.UpdateQuestCompletionData(escort)
+assert(not escort.element.completed and escort.element.text == "Finish the escort")
+ready = true
+escort.element.step.active = false -- only active steps announce completion
+addon.UpdateQuestCompletionData(escort)
+assert(escort.element.completed, "ready state completes a whole-quest objective")
+ready, turnedIn = nil, true
+addon.UpdateQuestCompletionData(escort)
+assert(escort.element.completed, "a turned-in quest stays complete without objective rows")
+ready, turnedIn = nil, nil
+print("whole-quest completion tests passed")
 
 local standing
 C_Reputation = {GetFactionDataByID = function(id)

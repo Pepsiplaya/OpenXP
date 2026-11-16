@@ -2330,6 +2330,7 @@ step
     #label BashalEnd
     .goto 1439/1,48.66,6748.71--c:1439,44.168,36.289
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Asterion|r
+    >>Elven Wand is a reward option if it upgrades your current wand. << Mage
     .turnin 957 >> Turn in Bashal'Aran
     .isOnQuest 957
     .target Asterion
@@ -6177,17 +6178,9 @@ step
     #optional
     .goto 1439/1,33.40,4996.11--c:1439,44.401,76.425
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kerlonian Evershade|r to start the escort
-    >>|cRXP_WARN_Skip this step if he is not there. It can take up to 25 minutes for him to respawn|r
-    >>|cRXP_WARN_This is a timed quest, you have to escort him to his bag in 20 minutes|r
+    >>The escort is timed and the quest gives you the Horn of Awakening. Skip this pickup if Kerlonian is away with another player.
     .accept 5321 >> Accept The Sleeper Has Awakened
     .target Kerlonian Evershade
-    .isQuestTurnedIn 731 --Only shows if Prospector was already escorted
-step
-    #optional
-    .isOnQuest 5321
-    .goto 1439/1,34.78,5001.570
-    >>Open |cRXP_PICK_Kerlonian's Chest|r. Loot it for the |T134229:0|t[|cRXP_LOOT_Horn of Awakening|r]
-    .complete 5321,1 -- Horn of Awakening (1)
     .isQuestTurnedIn 731 --Only shows if Prospector was already escorted
 step
     #sticky
@@ -6312,24 +6305,17 @@ step
 step
     .goto 1439/1,33.40,4996.11--c:1439,44.401,76.425
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kerlonian Evershade|r to start the escort
-    >>|cRXP_WARN_Skip this step if he is not there. It can take up to 25 minutes for him to respawn|r
-    >>|cRXP_WARN_This is a timed quest, you have to escort him to his bag in 20 minutes|r
+    >>The escort is timed and the quest gives you the Horn of Awakening. Skip this pickup if Kerlonian is away with another player.
     .accept 5321 >> Accept The Sleeper Has Awakened
     .target Kerlonian Evershade
-    .itemcount 13536,<1 --Horn of Awakening
-step
-    .isOnQuest 5321
-    .goto 1439/1,34.78,5001.570
-    >>Open |cRXP_PICK_Kerlonian's Chest|r. Loot it for the |T134229:0|t[|cRXP_LOOT_Horn of Awakening|r]
-    .complete 5321,1 -- Horn of Awakening (1)
-    .itemcount 13536,<1 --Horn of Awakening
 step
     #label Kerlonian
-    .goto 1439/1,206.400,4402.500
-    >>|cRXP_WARN_Escort |cRXP_FRIENDLY_Kerlonian|r to his bag |cRXP_WARN_in Darkshore|r|r
+    .goto 1439/1,206.400,4402.500,30,0
+    .goto 1440/1,-12.70,4150.17,30,0
+    .goto 1440/1,128.01,3305.31
+    >>Escort |cRXP_FRIENDLY_Kerlonian|r past his bag in Darkshore and south to Maestra's Post in Ashenvale.
     .use 13536 >> |cRXP_WARN_Use the|r |T134229:0|t[|cRXP_LOOT_Horn of Awakening|r] |cRXP_WARN_whenever |cRXP_FRIENDLY_Kerlonian|r falls asleep next to him|r
-    >>|cRXP_WARN_Avoid running on the main road as much as possible. Enemies will only spawn if you're on the road|r
-    .complete 5321,2
+    .complete 5321,0 >>Stay with Kerlonian until The Sleeper Has Awakened is ready to turn in.
     .isOnQuest 5321
 step
     #label AshenStart
@@ -7087,21 +7073,14 @@ step
 step
     .goto 1439/1,33.40,4996.11--c:1439,44.401,76.425
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kerlonian Evershade|r to start the escort
-    >>|cRXP_WARN_Skip this step if he is not there. It can take up to 25 minutes for him to respawn|r
-    >>|cRXP_WARN_This is a timed quest, you have to escort him to his bag in 20 minutes|r
+    >>The escort is timed and the quest gives you the Horn of Awakening. Skip this pickup if Kerlonian is away with another player.
     .accept 5321 >> Accept The Sleeper Has Awakened
     .target Kerlonian Evershade
 step
-    .goto 1439/1,34.78,5001.570
-    >>Open |cRXP_PICK_Kerlonian's Chest|r. Loot it for the |T134229:0|t[|cRXP_LOOT_Horn of Awakening|r]
-    .complete 5321,1 -- Horn of Awakening (1)
-    .isOnQuest 5321
-step
     #completewith volcorEnd
     .goto 1440/1,128.01,3305.31
-    +|cRXP_FRIENDLY_Kerlonian|r will follow you and occasionally help in combat. |cRXP_WARN_Make sure you don't lose him as he will stop moving when he falls asleep. You have 25 minutes to reach his bag and complete this quest|r
+    +Keep Kerlonian nearby. Wake him if he falls asleep on the way to his bag.
     .use 13536 >> |cRXP_WARN_Use the|r |T134229:0|t[|cRXP_LOOT_Horn of Awakening|r] |cRXP_WARN_whenever |cRXP_FRIENDLY_Kerlonian|r falls asleep while standing next to him to wake him up|r
-    >>|cRXP_WARN_Avoid running on the main road as much as possible. Enemies will only spawn if you're on the road|r
     .isOnQuest 5321
 step
     #completewith next
@@ -7129,11 +7108,12 @@ step
     .isOnQuest 995
 step
     #label KerlonianTwo
-    .goto 1439/1,206.400,4402.500
-    >>|cRXP_WARN_Escort |cRXP_FRIENDLY_Kerlonian|r to his bag |cRXP_WARN_in Darkshore|r|r
+    .goto 1439/1,206.400,4402.500,30,0
+    .goto 1440/1,-12.70,4150.17,30,0
+    .goto 1440/1,128.01,3305.31
+    >>Escort |cRXP_FRIENDLY_Kerlonian|r past his bag in Darkshore and south to Maestra's Post in Ashenvale.
     .use 13536 >> |cRXP_WARN_Use the|r |T134229:0|t[|cRXP_LOOT_Horn of Awakening|r] |cRXP_WARN_whenever |cRXP_FRIENDLY_Kerlonian|r falls asleep next to him|r
-    >>|cRXP_WARN_Avoid running on the main road as much as possible. Enemies will only spawn if you're on the road|r
-    .complete 5321,2
+    .complete 5321,0 >>Stay with Kerlonian until The Sleeper Has Awakened is ready to turn in.
     .isOnQuest 5321
 step
     #completewith tower

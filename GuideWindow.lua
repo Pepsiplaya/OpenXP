@@ -2883,6 +2883,13 @@ function RXPFrame:GenerateMenuTable(menu)
             func = function() addon:CloseMenu(); addon.smartStart.ShowCatchUp() end,
         })
     end
+    if addon.mageLeveling and addon.mageLeveling.IsAvailable() then
+        tinsert(menuList, {
+            text = L("Mage leveling"),
+            notCheckable = 1,
+            func = function() addon:CloseMenu(); addon.mageLeveling.Show() end,
+        })
+    end
     if addon.card and addon.card.MarkDone then
         tinsert(menuList, {
             text = L("Mark this step done"),

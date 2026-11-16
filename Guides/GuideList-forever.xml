@@ -21,4 +21,5 @@
     <Script file="Guides/openxp/Extras-Collectibles.lua"/>
     <Script file="Guides/openxp/Extras-ClassQuests.lua"/>
     <Script file="Guides/openxp/Extras-Shendralas.lua"/>
+    <Script file="Guides/openxp/Extras-Plaguelands.lua"/>
 </Ui>

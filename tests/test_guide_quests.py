@@ -20,6 +20,12 @@ def source(path):
     return path.read_text(encoding="utf-8")
 
 
+def class_quest(name):
+    body, = (body for body in GUIDE.findall(source(CLASS_QUESTS))
+             if f"\n#name {name}\n" in body)
+    return body
+
+
 class QuestEvidenceTests(unittest.TestCase):
     def test_finish_requires_an_objective_after_pickup(self):
         body = "step\n    .accept 92743\n    .turnin 92743\n"
@@ -43,7 +49,7 @@ class QuestEvidenceTests(unittest.TestCase):
     def test_mage_wand_routes_each_faction_through_both_prerequisites(self):
         manifest = source(GUIDES / "GuideList-forever.xml")
         self.assertIn('file="Guides/openxp/Extras-ClassQuests.lua"', manifest)
-        mage = GUIDE.findall(source(CLASS_QUESTS))[0]
+        mage = class_quest("Mage's Wand")
         self.assertIn("\n<< Mage\n", mage)
         for faction in ("Alliance", "Horde"):
             self.assertEqual(list(validate(mage, EVIDENCE, strict=True, faction=faction)), [])
@@ -59,7 +65,7 @@ class QuestEvidenceTests(unittest.TestCase):
         self.assertTrue(any("/beckon with NPC 6626" in error for error in validate(altered, EVIDENCE)))
 
     def test_horde_warrior_route_reaches_fray_island_before_arena_targets(self):
-        horde = GUIDE.findall(source(CLASS_QUESTS))[1]
+        horde = class_quest("The Islander and The Affray")
         self.assertIn("\n<< Horde Warrior\n", horde)
         self.assertEqual(list(validate(horde, EVIDENCE, strict=True, faction="Horde")), [])
         self.assertLess(horde.index(".subzone 720"), horde.index(".goto The Barrens,68.62,49.16"))
@@ -77,7 +83,7 @@ class QuestEvidenceTests(unittest.TestCase):
         self.assertTrue(any("needs quest item 268582" in error for error in validate(no_use, EVIDENCE)))
 
     def test_tempest_chapter_collects_the_four_totems_before_returning_to_prate(self):
-        shaman = GUIDE.findall(source(CLASS_QUESTS))[2]
+        shaman = class_quest("The Tempest's Weapons (Horde)")
         self.assertEqual(list(validate(shaman, EVIDENCE, strict=True, faction="Horde")), [])
         steps = STEP.split(shaman)
         collection = [(re.search(r"\.goto ([^,]+)", step)[1], int(index)) for step in steps
@@ -99,7 +105,7 @@ class QuestEvidenceTests(unittest.TestCase):
         self.assertIn(".accept 99260", valanaar)
 
     def test_verigans_fist_gets_the_two_rewards_before_registering_materials(self):
-        paladin, = (body for body in GUIDE.findall(source(CLASS_QUESTS)) if "#name Verigan's Fist" in body)
+        paladin = class_quest("Verigan's Fist")
         self.assertIn("\n<< Alliance Paladin\n", paladin)
         self.assertEqual(list(validate(paladin, EVIDENCE, strict=True, faction="Alliance")), [])
         self.assertLess(paladin.index(".accept 1654"), paladin.index(".accept 1655"))
@@ -109,6 +115,44 @@ class QuestEvidenceTests(unittest.TestCase):
         misplaced = paladin.replace(".complete 1654,2", "").replace(
             ".accept 1655", ".complete 1654,2\n    .accept 1655")
         self.assertTrue(any("needs the reward from quest 1655" in error for error in validate(misplaced, EVIDENCE)))
+
+    def test_arcane_refreshment_is_a_level_60_mage_chapter(self):
+        self.assertEqual(list(validate(class_quest("Arcane Refreshment"), EVIDENCE, strict=True)), [])
+
+    def test_research_access_follows_the_first_library_book_hand_in(self):
+        body = class_quest("Research Access")
+        self.assertIn("\n<< Alliance Mage\n", body)
+        self.assertFalse(list(validate(body, EVIDENCE, strict=True)))
+        self.assertLess(body.index(".collect 208860,1,79093"), body.index(".turnin 79093"))
+        self.assertLess(body.index(".turnin 79093"), body.index(".accept 97286"))
+        self.assertIn(".isQuestTurnedIn 79093", body)
+
+    def test_sleeper_escort_waits_for_the_quest_log_using_the_provided_horn(self):
+        text = source(GUIDES / "forever" / "Alliance-11-20.lua")
+        self.assertNotIn("Kerlonian's Chest", text)
+        self.assertNotRegex(text, r"\.complete 5321,[1-9]")
+        self.assertEqual(text.count(".complete 5321,0"), 2)
+        for body in GUIDE.findall(text):
+            for step in STEP.split(body)[1:]:
+                if ".complete 5321,0" in step:
+                    self.assertIn(".isOnQuest 5321", step)
+                    self.assertIn(".goto 1440/1,128.01,3305.31", step)
+                    self.assertIn(".use 13536", step)
+
+    def test_plaguelands_captures_are_optional_for_both_factions(self):
+        filename = "Guides/openxp/Extras-Plaguelands.lua"
+        self.assertIn(filename, source(GUIDES / "GuideList-forever.xml"))
+        alliance, horde = GUIDE.findall(source(ROOT / filename))
+        towers = ["Crownguard", "Eastwall", "Northpass", "Plaguewood"]
+        for faction, quest, body in (("Alliance", 9664, alliance), ("Horde", 9665, horde)):
+            with self.subTest(faction=faction):
+                self.assertFalse(list(validate(body, EVIDENCE, strict=True, faction=faction)))
+                self.assertIn(f"\n<< {faction}\n", body)
+                self.assertNotIn(".mob ", body)
+                for index, tower in enumerate(towers, 1):
+                    self.assertIn(f".complete {quest},{index} >>Capture {tower} Tower", body)
+                shared = source(GUIDES / "openxp" / f"{faction}-50-60.lua")
+                self.assertNotRegex(shared, rf"\.(accept|complete|turnin)\s+-?{quest}\b")
 
     def test_reviewed_quests_in_bundled_guides(self):
         files = [*GUIDES.glob("forever/*.lua"), *GUIDES.glob("openxp/*.lua")]

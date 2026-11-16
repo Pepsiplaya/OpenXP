@@ -27,6 +27,7 @@ H[L"What are command the line options?"] = L[[
 |cff909090/oxp feedback|r - Report a bug, suggest something, leave a comment or rate OpenXP
 |cff909090/oxp bugform|r - Full bug details to paste into a bug report
 |cff909090/oxp where|r - Smart start: jump to the right guide step for your character
+|cff909090/oxp mage|r - Show Alliance Mage training, class quests, and travel in WoW Forever
 |cff909090/oxp catchup|r - List quest chains Smart start skipped and where to get them
 |cff909090/oxp news|r - Show the OpenXP welcome and what's new window
 |cff909090/oxp path|r - Arrow paths through cave entrances and ramps (add, done, undo, clear, off/on). /oxp path to <zone> leads the arrow to a zone

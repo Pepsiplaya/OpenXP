@@ -18,7 +18,10 @@ RXPGuides.RegisterGuide([[
 step << !Gnome !Dwarf
     #completewith next
     +You have selected a guide meant for Gnomes and Dwarves. You should choose the same starter zone that you start in
-step << !Warlock !Warrior !Shaman
+step << Gnome Mage
+    #completewith next
+    +Use Fireball from range and drink between fights when needed. Check /oxp mage for your next spells and affordable wand options.
+step << !Warlock !Warrior !Shaman !Mage
     #softcore << Warlock
     #optional
     #completewith WolfMeat
@@ -526,8 +529,8 @@ step << Mage
     .goto 1426/0,388.17,-6056.10
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Marryk Nurribit|r inside
     .turnin 3114 >> Turn in Glyphic Memorandum << Gnome
-    .train 1459 >> Train |T135932:0|t[Arcane Intellect]
-    .train 116 >> Train |T135846:0|t[Frostbolt]
+    >>When you reach level 4, buy Frostbolt and Conjure Water before optional spells if funds are tight.
+    .trainer >>Open the Mage training list
     .target Marryk Nurribit
 step << Rogue
     #season 0,1
@@ -774,6 +777,7 @@ step << Priest
 step << Mage
     .goto 1426/0,-537.200,-5587.000
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Magis Sparkmantle|r inside upstairs
+    >>Catch up on Frostbolt and Conjure Water. Train Conjure Food at level 6 and refill before leaving Kharanos.
     .trainer >> Train your class spells
     .target Magis Sparkmantle
 step << Paladin

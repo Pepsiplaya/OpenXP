@@ -1685,28 +1685,35 @@ function addon.UpdateQuestCompletionData(self)
         return
     end
 
-    -- local skip
-    local objectives = addon.GetQuestObjectives(id, element.step.index)
-    local useCache
+    local wholeQuest = element.obj == 0
+    local objectives, useCache
+    if not wholeQuest then
+        objectives = addon.GetQuestObjectives(id, step.index)
 
-    if not (objectives and #objectives > 0) then
-        objectives = addon.GetQuestObjectives(id, element.step.index, true)
-        useCache = true
+        if not (objectives and #objectives > 0) then
+            objectives = addon.GetQuestObjectives(id, step.index, true)
+            useCache = true
 
-        element.requestFromServer = true
-        element.text = retrievingQuestData
-        element.tooltipText = nil
+            element.requestFromServer = true
+            element.text = retrievingQuestData
+            element.tooltipText = nil
 
-        addon.UpdateStepText(self)
+            addon.UpdateStepText(self)
 
-        return
+            return
+        end
     end
 
     local isQuestComplete = IsQuestTurnedIn(id) or IsQuestComplete(id)
     local objtext = " "
     local completed
 
-    if element.obj and element.obj <= #objectives then
+    if wholeQuest then
+        -- Objective zero waits for the quest log's ready-to-turn-in state.
+        -- A failed quest can report -1 through the legacy quest log API.
+        isQuestComplete = isQuestComplete == true or isQuestComplete == 1
+        objtext = element.rawtext or L("Complete the quest")
+    elseif element.obj and objectives[element.obj] then
         local obj = objectives[element.obj]
 
         obj.numFulfilled = obj.numFulfilled or 0
@@ -1757,7 +1764,7 @@ function addon.UpdateQuestCompletionData(self)
     end
 
 
-    if step.active and db and type(db.QueryQuest) == "function" and element.obj and
+    if not wholeQuest and step.active and db and type(db.QueryQuest) == "function" and element.obj and
         not isQuestComplete and not addon.skipPreReq[id] then
 
         local quest = db:GetQuest(id)
@@ -1817,7 +1824,7 @@ function addon.UpdateQuestCompletionData(self)
 
     local quest
 
-    if objectives then quest = addon.GetQuestName(id, element) end
+    if wholeQuest or objectives then quest = addon.GetQuestName(id, element) end
 
     if quest then
         element.title = quest

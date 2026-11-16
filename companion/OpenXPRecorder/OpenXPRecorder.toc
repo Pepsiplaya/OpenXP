@@ -1,0 +1,8 @@
+## Interface: 16001
+## Title: OpenXP Recorder
+## Notes: Optional local leveling measurements for World of Warcraft: Forever
+## Author: OpenXP contributors
+## Version: 0.1.0-beta
+## SavedVariablesPerCharacter: OpenXPRecorderData
+
+Recorder.lua [AllowLoadGameType camelot]

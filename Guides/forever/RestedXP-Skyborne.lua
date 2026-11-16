@@ -14,6 +14,9 @@ RXPGuides.RegisterGuide([[
 #next 9-13 Zephras Isle
 #defaultfor Skyborne
 
+step << Alliance Mage
+    #completewith next
+    +Start with Fireball from range. Check /oxp mage as you level for training and wand upgrades along the Zephras route.
 step
     .goto 2521,42.82,23.41
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Ailee Farheart::251362|r.
@@ -687,6 +690,7 @@ step << Alliance Mage
     .xp <4,1
     .goto 2521,41.55,23.67
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Dorii Brightwhisper::251379|r.
+    >>Learn Conjure Water when you can afford it after Frostbolt.
     .train 116 >>Train |T135846:0|t[Frostbolt]
     .skipgossipid 136807,1
     .target Dorii Brightwhisper::251379
@@ -1081,16 +1085,11 @@ step
     .target Constable Aonda::251523
 step << Mage
     .money <0.02
-    -- .money <0.03
     .xp <6,1
     .goto 2521,45.1,45.87
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Dorii Brightwhisper::251379|r.
-    .train 143 >>Train |T135812:0|t[Fireball (Rank 2)]
-    .train 2136 >>Train |T135807:0|t[Fire Blast]
-    -- .train 1296017 >>Train |T8188276:0|t[Comprehend Scroll]
-    --  Comprehend Scroll early can be good,if you get scrolls and don't go polymorphed
-    .skipgossipid 136807,1
-    .target Dorii Brightwhisper::251379
+    >>Talk to |cRXP_FRIENDLY_Shenaan Spellwind::254086|r. At level 6, look for Conjure Food and an upgrade to your main damage spell.
+    .trainer >>Open Mage training
+    .target Shenaan Spellwind::254086
 
 -- ============================================================================
 -- Alliance Shen'dar Village Introduction Branch
@@ -1329,16 +1328,11 @@ step << Druid
 --Class Trainer Backup
 step << Mage
     .money <0.02
-    -- .money <0.03
     .xp <6,1
     .goto 2521,45.1,45.87
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Dorii Brightwhisper::251379|r.
-    .train 143 >>Train |T135812:0|t[Fireball (Rank 2)]
-    .train 2136 >>Train |T135807:0|t[Fire Blast]
-    -- .train 1296017 >>Train |T8188276:0|t[Comprehend Scroll]
-    --  Comprehend Scroll early can be good,if you get scrolls and don't go polymorphed
-    .skipgossipid 136807,1
-    .target Dorii Brightwhisper::251379
+    >>Talk to |cRXP_FRIENDLY_Shenaan Spellwind::254086|r. At level 6, look for Conjure Food and an upgrade to your main damage spell.
+    .trainer >>Open Mage training
+    .target Shenaan Spellwind::254086
 step << Druid/Priest/Warlock/Mage
     .money <0.0125
     .isNotOnQuest 93319,92516 -- Pilfered Windstones / Hippogryph Harassment
@@ -1853,12 +1847,9 @@ step << Mage
     .money <0.03
     .xp <6,1
     .goto 2521,45.1,45.87
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Dorii Brightwhisper::251379|r.
-    .train 143 >>Train |T135812:0|t[Fireball (Rank 2)]
-    .train 2136 >>Train |T135807:0|t[Fire Blast]
-    .train 1296017 >>Train |T8188276:0|t[Comprehend Scroll]
-    .skipgossipid 136807,1
-    .target Dorii Brightwhisper::251379
+    >>Talk to |cRXP_FRIENDLY_Shenaan Spellwind::254086|r. Pick up Conjure Food or a damage spell you use if you have enough coin. Learn Comprehend Scroll when you want to decipher untranslated scrolls.
+    .trainer >>Open Mage training
+    .target Shenaan Spellwind::254086
 step << Horde
     .goto 2521,43.518,44.783
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Illaya Amberwind::251902|r.
@@ -2572,28 +2563,17 @@ step << Horde Shaman
     *Don't sell |T132832:0|t[Small Eggs] and |T133972:0|t[Strider Meat].
     .target Veena Vericloud::254358
 step << Mage
-    .money <0.06
     .xp <8,1
     .goto 2521,45.1,45.86
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Shenaan Spellwind::254086|r
-    .train 5143 >> Train |T136096:0|t[Arcane Missiles]
-    .train 205 >> Train |T135846:0|t[Frostbolt (Rank 2)]
-    .train 118 >> Train |T136071:0|t[Polymorph]
-    .skipgossipid 136807
-    .target Shenaan Spellwind::254086
-step << Mage
-    .money <0.02
-    .xp <8,1
-    .goto 2521,45.1,45.86
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Shenaan Spellwind::254086|r
-    .train 5143 >> Train |T136096:0|t[Arcane Missiles]
-    -- .train 205 >> Train |T135846:0|t[Frostbolt (Rank 2)]
-    -- .train 118 >> Train |T136071:0|t[Polymorph]
+    >>For solo Frost, prioritize Frostbolt rank 2, Polymorph, and any food or water spells you missed. Check /oxp mage for the level requirements.
+    .trainer >>Open the Mage training list
     .skipgossipid 136807
     .target Shenaan Spellwind::254086
 step << Alliance
     .goto 2521,44.979,46.365
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Rathiril Sunlance::251903|r.
+    >>Choose Dowsing Rod if you still need a wand. Use it to finish weakened enemies and save mana. << Mage
     .turnin 94413 >>Turn in A Magical Affront
     .target Rathiril Sunlance::251903
 step
@@ -4940,6 +4920,7 @@ step << Mage
     #label SkyhopperMultiClass
     .goto 2521,62.89,77.44
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Belann Windwood::256507|r.
+    >>Choose Windbough Wand if it upgrades your equipped wand. << Alliance
     .turnin 93797 >>Turn in Boughs in the Wind
     .target Belann Windwood::256507
 step << Mage

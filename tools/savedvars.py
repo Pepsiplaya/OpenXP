@@ -117,7 +117,8 @@ class _Parser:
 
 def load(path, only=None):
     """{globalName: value} for a SavedVariables file; `only` limits to one global."""
-    text = open(path, encoding="utf-8", errors="replace").read()
+    with open(path, encoding="utf-8", errors="replace") as source:
+        text = source.read()
     if only:
         m = re.search(r"^%s = " % re.escape(only), text, re.M)
         if not m:

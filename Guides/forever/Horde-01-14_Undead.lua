@@ -2276,7 +2276,7 @@ step << Mage
     .goto 1458/0,168.600,1662.900
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Owen Thadd|r
     .turnin 79095 >>Turn in The Apothecary's Metaphysical Primer
-    .target Owen Thadd
+    .target Owen Thadd::211022
     .itemcount 208185,1
 step << Mage
     #optional

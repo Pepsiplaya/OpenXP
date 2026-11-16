@@ -2084,20 +2084,10 @@ step
     #completewith next
     .zone Eastern Plaguelands >>Get to Light's Hope Chapel in Eastern Plaguelands: Fly to Light's Hope Chapel
 step
-    .goto Eastern Plaguelands,71.51,49.66
-    >>Talk to |cRXP_FRIENDLY_Emmisary Whitebeard|r
-    .accept 9664 >>Accept Establishing New Outposts
-    .target Emmisary Whitebeard
-step
     .goto Eastern Plaguelands,69.93,53.72
     >>Talk to |cRXP_FRIENDLY_Caretaker Alen|r
     .accept 5281 >>Accept The Restless Souls
     .target Caretaker Alen
-step
-    .goto Eastern Plaguelands,34.09,64.10
-    >>Kill |cRXP_ENEMY_<TXT>Crown Guard Capture Quest Doodad|r
-    .complete 9664,1 --Establishing New Outposts
-    .mob <TXT>Crown Guard Capture Quest Doodad
 step
     .goto Eastern Plaguelands,22.90,72.96
     >>Click the |cRXP_PICK_Torn Scroll|r
@@ -2108,35 +2098,15 @@ step
     .turnin 5281 >>Turn in The Restless Souls
     .target Egan
 step
-    .goto Eastern Plaguelands,18.16,25.06
-    >>Kill |cRXP_ENEMY_<TXT>Plaguewood Capture Quest Doodad|r
-    .complete 9664,4 --Establishing New Outposts
-    .mob <TXT>Plaguewood Capture Quest Doodad
-step
-    .goto Eastern Plaguelands,49.25,18.20
-    >>Kill |cRXP_ENEMY_<TXT>Northpass Capture Quest Doodad|r
-    .complete 9664,3 --Establishing New Outposts
-    .mob <TXT>Northpass Capture Quest Doodad
-step
     .goto Eastern Plaguelands,61.96,11.11
     >>Kill |cRXP_ENEMY_Infiltrator Hameya|r. Loot them for |cRXP_LOOT_Hameya's Key|r
     .complete 6024,1 --Hameya's Plea
     .mob Infiltrator Hameya
 step
-    .goto Eastern Plaguelands,59.04,39.41
-    >>Kill |cRXP_ENEMY_<TXT>Eastwall Capture Quest Doodad|r
-    .complete 9664,2 --Establishing New Outposts
-    .mob <TXT>Eastwall Capture Quest Doodad
-step
     .goto Eastern Plaguelands,71.90,48.41
     >>Talk to |cRXP_FRIENDLY_Lord Maxwell Tyrosus|r
     .turnin 8859 >>Turn in Secrets of the Colossus - Zora
     .target Lord Maxwell Tyrosus
-step
-    .goto Eastern Plaguelands,71.51,49.66
-    >>Talk to |cRXP_FRIENDLY_Emmisary Whitebeard|r
-    .turnin 9664 >>Turn in Establishing New Outposts
-    .target Emmisary Whitebeard
 step
     .goto Eastern Plaguelands,23.58,73.79
     >>Click the |cRXP_PICK_Mound of Dirt|r
@@ -2212,4 +2182,6 @@ step
     .accept 6183 >>Accept Honor the Dead
     .turnin 6183 >>Turn in Honor the Dead
     .target Master Mathias Shaw
+step << Mage
+    .xp 60 >>If you still need XP, finish open quests around Light's Hope Chapel or Everlook. With a level-appropriate group, pick 56-60 Stratholme or Scholomance under OpenXP Dungeons.
 ]])

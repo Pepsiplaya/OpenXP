@@ -62,8 +62,12 @@ python tools/class_steps.py --questiedb PATH\QuestieDB\src\corrections\Forever\c
 
 Class previews now resolve the Scarlet Monastery book to the Library approach and emit the Plucky interaction, Tabetha ritual delay, and Corrupted Totems item use. The playable class chapters group objectives across continents and use explicit handoffs. Draft placements still need review for travel cost, access, and consistency with the shared route.
 
+**1.3.68-beta audit.** The same 5,922-quest input now covers 23 loaded files and lists 16 findings for review. The Sleeper Has Awakened tracks quest readiness, so the deleted objective rows are no longer queried. Three library-book records are verified Forever quests despite their older ID range. Four seasonal-range IDs remain open. Eastern Plaguelands captures now live in optional guides and are excluded from the ordinary planner. See the [Mage visit comparisons](MAGE_ROUTE_COMPARISON.md) for the reproducible checkpoint inputs and travel estimates.
+
 ## Calibration
 
 Record game build, guide and step range, character level and class, XP before and after, time on travel legs, combat time, recovery time, group formation time, gold spent, deaths, waypoint errors, and skipped steps. Capture the same segment in the upstream build and this beta. Start with [Valley of Bones and Zephras Isle](PLAYER_TESTING.md).
+
+The optional [OpenXP Recorder](RECORDER.md) writes session time, XP, quest IDs, and activity samples to local SavedVariables. Its offline analyzer can compare a whole route or a recorded Mage visit whose start and hand-ins match a model checkpoint.
 
 Polestar’s separate trial replay, versioned references, and timed route comparison are useful design references. For OpenXP, keep measured leg data local and compare a matched character, route segment, and client build. [Polestar project](https://github.com/fitzforge/polestar)

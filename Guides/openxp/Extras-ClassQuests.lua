@@ -6,6 +6,33 @@ RXPGuides.RegisterGuide([[
 #version 1
 #group OpenXP Extras
 #subgroup Class Quests
+#name Research Access
+<< Alliance Mage
+
+step
+    .isQuestAvailable 97286
+    .goto Westfall,52.70,53.80
+    .collect 208860,1,79093 >>Loot the |cRXP_PICK_Gnomish Tome|r at Sentinel Hill. The same book is upstairs in the inn at Thelsamar if you pass there first.
+step
+    .isQuestAvailable 97286
+    .itemcount 208860,1
+    .goto Stormwind City,48.94,86.54
+    >>Show the book to |cRXP_FRIENDLY_Garion Wendell::211033|r in the Mage Tower.
+    .turnin 79093 >>Turn in Rumi of Gnomeregan: The Collected Works
+    .target Garion Wendell::211033
+step
+    .isQuestTurnedIn 79093
+    .goto Stormwind City,48.94,86.54
+    .accept 97286 >>Accept Research Access from |cRXP_FRIENDLY_Garion Wendell::211033|r
+    .turnin 97286 >>Turn in Research Access to unlock Study.
+    .target Garion Wendell::211033
+]])
+
+RXPGuides.RegisterGuide([[
+#forever
+#version 1
+#group OpenXP Extras
+#subgroup Class Quests
 #name Mage's Wand
 << Mage
 
@@ -91,6 +118,32 @@ step
     >>Wait for Tabetha's ritual to finish. Speak with her again to choose your wand.
     .turnin 1952 >>Turn in Mage's Wand
     .target Tabetha::6546
+]])
+
+RXPGuides.RegisterGuide([[
+#forever
+#version 1
+#group OpenXP Extras
+#subgroup Class Quests
+#name Arcane Refreshment
+<< Mage
+
+step
+    .xp 60 >>Reach level 60 before starting this quest.
+step << Mage
+    >>Form a Dire Maul group. Visit the Athenaeum library and speak with Lorekeeper Lydros before entering the east wing for Hydrospawn.
+    .accept 7463 >>Accept Arcane Refreshment
+    .target Lorekeeper Lydros::14368
+step << Mage
+    .isOnQuest 7463
+    >>Enter the Warpwood Quarter in Dire Maul East. Defeat Hydrospawn with your group and take the essence.
+    .complete 7463,1 --Hydrospawn Essence
+    .mob Hydrospawn::13280
+step << Mage
+    .isOnQuest 7463
+    >>Return to Lorekeeper Lydros in the Athenaeum to learn Conjure Water rank 7.
+    .turnin 7463 >>Turn in Arcane Refreshment
+    .target Lorekeeper Lydros::14368
 ]])
 
 RXPGuides.RegisterGuide([[

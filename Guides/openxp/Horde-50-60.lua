@@ -1616,11 +1616,6 @@ step
     #completewith next
     .zone Eastern Plaguelands >>Get to Light's Hope Chapel in Eastern Plaguelands: Use your Hearthstone to go back to Freewind Post, then fly to Orgrimmar, then take the zeppelin from Orgrimmar to Undercity, then fly to Light's Hope Chapel
 step
-    .goto Eastern Plaguelands,70.37,47.94
-    >>Talk to |cRXP_FRIENDLY_Emmisary Gormok|r
-    .accept 9665 >>Accept Bolstering Our Defenses
-    .target Emmisary Gormok
-step
     .goto Eastern Plaguelands,71.90,48.41
     >>Talk to |cRXP_FRIENDLY_Lord Maxwell Tyrosus|r
     .turnin 8859 >>Turn in Secrets of the Colossus - Zora
@@ -1651,30 +1646,15 @@ step
     .accept 6042 >>Accept Un-Life's Little Annoyances
     .target Nathanos Blightcaller
 step
-    .goto Eastern Plaguelands,34.09,64.10
-    >>Kill |cRXP_ENEMY_<TXT>Crown Guard Capture Quest Doodad|r
-    .complete 9665,1 --Bolstering Our Defenses
-    .mob <TXT>Crown Guard Capture Quest Doodad
-step
     .goto Eastern Plaguelands,42.29,52.27
     >>Kill |cRXP_ENEMY_Noxious Plaguebat|r
     .complete 6042,1 --Un-Life's Little Annoyances
     .mob Noxious Plaguebat
 step
-    .goto Eastern Plaguelands,59.04,39.41
-    >>Kill |cRXP_ENEMY_<TXT>Eastwall Capture Quest Doodad|r
-    .complete 9665,2 --Bolstering Our Defenses
-    .mob <TXT>Eastwall Capture Quest Doodad
-step
     .goto Eastern Plaguelands,61.96,11.11
     >>Kill |cRXP_ENEMY_Infiltrator Hameya|r. Loot them for |cRXP_LOOT_Hameya's Key|r
     .complete 6024,1 --Hameya's Plea
     .mob Infiltrator Hameya
-step
-    .goto Eastern Plaguelands,49.25,18.20
-    >>Kill |cRXP_ENEMY_<TXT>Northpass Capture Quest Doodad|r
-    .complete 9665,3 --Bolstering Our Defenses
-    .mob <TXT>Northpass Capture Quest Doodad
 step
     .goto Eastern Plaguelands,45.73,13.21
     >>Kill |cRXP_ENEMY_Ranger|r
@@ -1694,11 +1674,6 @@ step
     .complete 6042,2 --Un-Life's Little Annoyances
     .mob Monstrous Plaguebat
 step
-    .goto Eastern Plaguelands,18.16,25.06
-    >>Kill |cRXP_ENEMY_<TXT>Plaguewood Capture Quest Doodad|r
-    .complete 9665,4 --Bolstering Our Defenses
-    .mob <TXT>Plaguewood Capture Quest Doodad
-step
     .goto Eastern Plaguelands,11.36,26.60
     >>Talk to |cRXP_FRIENDLY_Egan|r
     .turnin 5281 >>Turn in The Restless Souls
@@ -1713,11 +1688,6 @@ step
     .goto Eastern Plaguelands,23.58,73.79
     >>Click the |cRXP_PICK_Mound of Dirt|r
     .turnin 6024 >>Turn in Hameya's Plea
-step
-    .goto Eastern Plaguelands,70.37,47.94
-    >>Talk to |cRXP_FRIENDLY_Emmisary Gormok|r
-    .turnin 9665 >>Turn in Bolstering Our Defenses
-    .target Emmisary Gormok
 ]])
 
 RXPGuides.RegisterGuide([[

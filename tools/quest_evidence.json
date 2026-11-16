@@ -1,4 +1,18 @@
 {
+  "1198": {
+    "name": "In Search of Thaelrid",
+    "delivery": true,
+    "accept_npc": 4786,
+    "turnin_npc": 4787,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1198"
+  },
+  "1200": {
+    "name": "Blackfathom Villainy",
+    "objectives": [1],
+    "accept_npc": 4787,
+    "turnin_npc": 4783,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1200"
+  },
   "1442": {
     "name": "Seeking the Kor Gem",
     "objectives": [1],
@@ -61,6 +75,14 @@
     "turnin_npc": 6181,
     "wait_for_event": "Wait by the forge while Jordan makes the weapon. Speak with him again for Verigan's Fist.",
     "source": "https://db.icy-veins.com/wow-forever/quests/1806"
+  },
+  "1939": {
+    "name": "High Sorcerer Andromath",
+    "delivery": true,
+    "tag": "Human Mage/Gnome Mage",
+    "accept_npcs": [5144, 5497],
+    "turnin_npc": 5694,
+    "source": "https://db.icy-veins.com/wow-forever/quests/1939"
   },
   "1947": {
     "name": "Journey to the Marsh",
@@ -132,6 +154,55 @@
     "accept_npc": 11406,
     "turnin_npc": 11406,
     "source": "https://db.icy-veins.com/wow-forever/quests/5641"
+  },
+  "7463": {
+    "name": "Arcane Refreshment",
+    "objectives": [1],
+    "tag": "Mage",
+    "level": 60,
+    "accept_npc": 14368,
+    "turnin_npc": 14368,
+    "source": "https://db.icy-veins.com/wow-forever/quests/7463"
+  },
+  "9664": {
+    "name": "Establishing New Outposts",
+    "objectives": [1, 2, 3, 4],
+    "level": 55,
+    "accept_npc": 17069,
+    "turnin_npc": 17069,
+    "source": "https://metabot.gg/en/wow-forever/quests/establishing-new-outposts-9664"
+  },
+  "9665": {
+    "name": "Bolstering Our Defenses",
+    "objectives": [1, 2, 3, 4],
+    "level": 55,
+    "accept_npc": 17072,
+    "turnin_npc": 17072,
+    "source": "https://metabot.gg/en/wow-forever/quests/bolstering-our-defenses-9665"
+  },
+  "79093": {
+    "name": "Rumi of Gnomeregan: The Collected Works",
+    "delivery": true,
+    "available_in_forever": true,
+    "accept_npcs": [211022, 211033],
+    "turnin_npcs": [211022, 211033],
+    "source": "https://db.icy-veins.com/wow-forever/quests/79093"
+  },
+  "79095": {
+    "name": "The Apothecary's Metaphysical Primer",
+    "delivery": true,
+    "available_in_forever": true,
+    "accept_npcs": [211022, 211033],
+    "turnin_npcs": [211022, 211033],
+    "source": "https://db.icy-veins.com/wow-forever/quests/79095"
+  },
+  "79096": {
+    "name": "Ataeric: On Arcane Curiosities",
+    "delivery": true,
+    "available_in_forever": true,
+    "accept_npcs": [211022, 211033],
+    "turnin_npcs": [211022, 211033],
+    "source": "https://db.icy-veins.com/wow-forever/quests/79096"
   },
   "79360": {
     "name": "Elemental Aid",
@@ -293,6 +364,13 @@
     "accept_npc": 259119,
     "turnin_npc": 5905,
     "source": "https://db.icy-veins.com/wow-forever/quests/96136"
+  },
+  "97286": {
+    "name": "Research Access",
+    "instant": true,
+    "accept_npcs": [211022, 211033],
+    "turnin_npcs": [211022, 211033],
+    "source": "https://db.icy-veins.com/wow-forever/quests/97286"
   },
   "97891": {
     "name": "Prompt Potion Runner",

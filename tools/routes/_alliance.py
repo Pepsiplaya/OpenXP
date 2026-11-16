@@ -4,9 +4,10 @@ quests left out on purpose, guide-step helpers and hub coordinates."""
 # Left out on purpose:
 # 338-342 Green Hills of Stranglethorn: the pages are rare drops from any mob
 # 9415, 9419 Silithyst: world PvP
+# 9664 Establishing New Outposts: optional world PvP tower captures
 # 2521, 2522, 3501, 3502 Kum'isha: repeatable item turn-ins
 # 2582, 2584, 2586, 2602, 2604 Blasted Lands buff turn-ins: repeatable
-SKIP = {338, 339, 340, 341, 342, 9415, 9419, 2521, 2522, 3501, 3502,
+SKIP = {338, 339, 340, 341, 342, 9415, 9419, 9664, 2521, 2522, 3501, 3502,
         2582, 2584, 2586, 2602, 2604}
 
 
