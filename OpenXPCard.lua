@@ -33,8 +33,16 @@ local fontStrings = setmetatable({}, {__mode = "k"})
 local function ApplyFont(fs, font, size, flags)
     fontStrings[fs] = true
     local ok, res = pcall(fs.SetFont, fs, font, size, flags or "")
-    if (not ok or res == false) and font ~= DEFAULT_FONT then
+    -- some clients return nil instead of false when the file won't load, so
+    -- also check that a font is really set
+    local okGet, set = pcall(fs.GetFont, fs)
+    if (not ok or res == false or (okGet and not set)) and font ~= DEFAULT_FONT then
         pcall(fs.SetFont, fs, DEFAULT_FONT, size, flags or "")
+    end
+    okGet, set = pcall(fs.GetFont, fs)
+    if okGet and not set then
+        -- last resort: a font object every client has
+        pcall(fs.SetFontObject, fs, _G.GameFontNormal)
     end
 end
 local WIDTH = 330 -- default; the card can be resized
@@ -678,8 +686,11 @@ function card.QuestInfoOf(id)
         local objs = {}
         local o = q.objectives
         if type(o) == "table" then
-            for _, e in ipairs(o[1] or {}) do tinsert(objs, SpotOf(QGet("NPC", e[1]), zone)) end
-            for _, e in ipairs(o[2] or {}) do tinsert(objs, SpotOf(QGet("Object", e[1]), zone)) end
+            -- SpotOf gives nothing for mobs with no map spot (dungeon mobs):
+            -- tinsert(objs, nil) is a Lua error, so only add real spots
+            local function add(spot) if spot then tinsert(objs, spot) end end
+            for _, e in ipairs(o[1] or {}) do add(SpotOf(QGet("NPC", e[1]), zone)) end
+            for _, e in ipairs(o[2] or {}) do add(SpotOf(QGet("Object", e[1]), zone)) end
             for _, e in ipairs(o[3] or {}) do
                 local item = QGet("Item", e[1])
                 local src = item and (item.npcDrops and item.npcDrops[1] and SpotOf(QGet("NPC", item.npcDrops[1]), zone) or
@@ -2454,7 +2465,7 @@ function card.BuildStepList()
     list:EnableMouse(true)
     list:EnableMouseWheel(true)
     list.offset = 0
-    list.title = list:CreateFontString(nil, "OVERLAY")
+    list.title = list:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     list.title:SetPoint("TOPLEFT", PAD, -9)
     list.title:SetTextColor(unpack(C.dim))
     list.close = MakeButton(list, "cross", L("Close"), function() list:Hide() end)
@@ -2468,13 +2479,13 @@ function card.BuildStepList()
         row.hl = row:CreateTexture(nil, "BACKGROUND")
         row.hl:SetAllPoints()
         row.hl:SetColorTexture(1, 1, 1, 0)
-        row.num = row:CreateFontString(nil, "OVERLAY")
+        row.num = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         row.num:SetPoint("LEFT", 6, 0)
         row.num:SetWidth(30)
         row.num:SetJustifyH("RIGHT")
         row.pill = MakePill(row)
         row.pill:SetPoint("RIGHT", -6, 0)
-        row.text = row:CreateFontString(nil, "OVERLAY")
+        row.text = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         row.text:SetPoint("LEFT", row.num, "RIGHT", 8, 0)
         row.text:SetPoint("RIGHT", row.pill, "LEFT", -6, 0)
         row.text:SetJustifyH("LEFT")
@@ -2500,8 +2511,8 @@ function card.FillStepList()
     local guide = addon.currentGuide
     local steps = VisibleSteps()
     list.count = #steps
-    list.title:SetText((StripCodes((guide and (guide.displayname or guide.name)) or ""):gsub("\n", " ")))
     SetFont(list.title, -1)
+    list.title:SetText((StripCodes((guide and (guide.displayname or guide.name)) or ""):gsub("\n", " ")))
     -- rows grow with the font size so big text doesn't overlap
     local rowH = math.max(18, FontSize(-1) + 6)
     if list.rowH ~= rowH then
