@@ -48,6 +48,20 @@ With fuller quest records, the model replaces some grinding with quests on both 
 
 The reviewed quest evidence validator finds five objective-less turn-ins in upstream OpenXP 1.3.64 and zero in 1.3.65-beta. This comparison covers the recorded quests. It does not estimate the number of issues across the entire guide.
 
+## Bundled guide audit
+
+Run the audit against the same QuestieDB 1.1.2 merged Forever export. Omit `--quest` to audit all guides loaded by the Forever manifest.
+
+```powershell
+python tools/audit_guide_data.py --questiedb PATH\QuestieDB\src\corrections\Forever\combined --out PATH\preview\audit.json
+python tools/audit_guide_data.py --questiedb PATH\QuestieDB\src\corrections\Forever\combined --quest 79366
+python tools/class_steps.py --questiedb PATH\QuestieDB\src\corrections\Forever\combined --output-dir PATH\preview Horde
+```
+
+**SIMULATED**. The audit read 5,922 quest records across 22 guide files. Two reported NPC mismatches led to a fix at the Valanaar handoff for 92850 and 99260. Reviewed evidence explains why three Horde Shaman quests from the old seasonal ID range are eligible in Forever. The remaining reports include the valley level and objective gaps, The Sleeper Has Awakened's unconfirmed second objective, the missing Prompt Potion Runner objective, the old Herbalism objective, and Tempest prerequisite records that mix factions. Review these against the client before changing steps.
+
+Class previews now resolve the Scarlet Monastery book to the Library approach and emit the Plucky interaction, Tabetha ritual delay, and Corrupted Totems item use. The playable class chapters group objectives across continents and use explicit handoffs. Draft placements still need review for travel cost, access, and consistency with the shared route.
+
 ## Calibration
 
 Record game build, guide and step range, character level and class, XP before and after, time on travel legs, combat time, recovery time, group formation time, gold spent, deaths, waypoint errors, and skipped steps. Capture the same segment in the upstream build and this beta. Start with [Valley of Bones and Zephras Isle](PLAYER_TESTING.md).

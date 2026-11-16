@@ -15,6 +15,17 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.66-beta",
+        date = "November 2026",
+        changes = {
+            "OpenXP Ultimate has a new guide card, waypoint dial and welcome screen. The card now shows your level and XP percentage.",
+            "OpenXP Extras has Class Quests for Mage's Wand, The Islander and The Affray for Horde Warriors, and The Tempest's Weapons for Orc, Troll and Tauren Shamans.",
+            "Get the Scoop tells Mages how to get the secret phrase from Plucky. Mage's Wand includes the group trip to Scarlet Monastery Library.",
+            "Windshaper Shamans begin Call of Air with Alaana Stormwalker. Heed My Call explains how to use the Corrupted Totems and loot the Eye of the Tempest.",
+            "The Missing Scholar sends Skyborne players to the right Fillion Flamebreeze in Valanaar for the hand-in and follow-up.",
+        },
+    },
+    {
         version = "1.3.65-beta",
         date = "November 2026",
         changes = {

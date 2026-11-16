@@ -1,16 +1,21 @@
-# Player testing for OpenXP 1.3.65-beta
+# Player testing for OpenXP Ultimate 1.3.66-beta
 
 ## Install the test build
 
 1. Close WoW Forever. Use a separate Forever installation or test profile if available.
 2. For a swap in your existing installation, move your existing `OpenXP` addon folder outside `Interface\AddOns`. Back up its `OpenXP.lua` and `OpenXP.lua.bak` files from the account and character `SavedVariables` directories, where present.
 3. Extract the test ZIP. Copy the extracted `OpenXP` folder into `World of Warcraft\_forever_\Interface\AddOns`. The file should be at `AddOns\OpenXP\OpenXP.toc`. Disable RestedXP Guides in the character selection AddOns menu while testing OpenXP.
-4. Log in and run `/oxp news`. Confirm the version is `1.3.65-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
+4. Log in and run `/oxp news`. Confirm the version is `1.3.66-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
 
 ## What to test first
 
 | Test | Starting conditions | Expected result |
 | --- | --- | --- |
+| Guide card and welcome | Open `/oxp news`. Open the guide card at its normal size, then resize to 200 pixels and try the 20-point font and one-line mode. | The header and step counter remain usable, the counter opens the step list, and the XP line shows the correct level and percentage. Confirm max-level hides the XP line. Expand the card, then check both waypoint directions and the green arrival check. |
+| Mage's Wand | Mage at level 30 or higher. Select OpenXP Extras → Class Quests → Mage's Wand. Try a fresh chain and one with a prior quest in the log. | `/beckon` and speak to Plucky. Gather Jade and the bramble, collect the book in Scarlet Monastery Library, hand in both quests, and wait for Tabetha's ritual. Record dungeon entry and objective tracking if you load the chapter inside. |
+| Horde Warrior | Level 30 or 31. Select The Islander and The Affray in OpenXP Extras → Class Quests. Test from Ratchet and with The Islander already handed in. | The shoreline directions lead to Fray Island. The grate activates the event, Big Will gives credit, and Klannoc hands out the stance and Intercept. Record the level of each offer. |
+| Shaman Call of Air and Heed My Call | Level 30 Windshaper Shaman for 96136. Use an Orc, Troll, or Tauren Shaman with Elemental Aid done to try The Tempest's Weapons in OpenXP Extras. | Alaana starts the Windshaper delivery to Prate. In the weapon chapter each totem increments the correct objective. Corrupted Totems start the ritual, and Rau turns in the Eye before Bath'rah's delivery. Confirm the Alliance ritual also awards the Eye. |
+| Valanaar handoff | Alliance Skyborne with The Missing Scholar Part 2 (92850). | Pick it up at the Shriekling Den. Return to Valanaar with the head, hand it to Fillion (253285), and pick up Fillion's Mission. |
 | Gelkis Valley of Bones | Level 35 or above, Honored Gelkis, quest 93034 active or already turned in. Select OpenXP Extras → Shen’dralas → Valley of Bones (Gelkis). | Hand 93034 to Nerlokh if active. Accept 93035 and 93037, then see separate kill and loot steps before the turn-ins. Check the southern Desolace approach and the eastbound waypoints. |
 | Magram Valley of Bones | Level 35 or above, Honored Magram, quest 92841 active or already turned in. Select the Magram chapter. | Orgrul offers 92844 and 92846 after the breadcrumb. Check the terrain approach, six Outcast kills, and the 426-bone objective. Note which piles and kills produce bones and how long the loop takes. |
 | Alliance main route | Finish 39–40 Desolace in the OpenXP 21–60 guide. | The next guide is 40–41 Ironforge. If you were playing the removed 40–41 Shen’dralas section, use `/oxp where` to resume the main guide or choose your clan chapter from OpenXP Extras. |
