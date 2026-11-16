@@ -594,5 +594,21 @@ do
     reset()
 end
 
+-- A player who returns to the shared guide from Shen'dralas still gets a route.
+do
+    reset()
+    state.level, state.zone = 40, "Shen'dralas"
+    state.onQuest[92844] = true
+    local pick = SS.PickGuide(guides, state.level, state.zone)
+    check(pick and pick.name:match("^4%d%-%d+"), "level 40 in Shen'dralas finds a shared leveling section")
+
+    local clanGuides = parseGuides(readfile(ROOT .. "/Guides/openxp/Extras-Shendralas.lua"))
+    check(#clanGuides == 2, "both standalone clan chapters parse")
+    for _, clanGuide in ipairs(clanGuides) do
+        check(not names[clanGuide.name], "the clan chapter needs to be selected from OpenXP Extras")
+    end
+    reset()
+end
+
 print(string.format("%d passed, %d failed", passes, failures))
 return failures

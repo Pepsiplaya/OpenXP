@@ -6,6 +6,11 @@
     "tag": "Warrior",
     "source": "https://db.icy-veins.com/wow-forever/quests/1719"
   },
+  "5064": {
+    "name": "Grimtotem Spying",
+    "objectives": [1, 2, 3],
+    "source": "https://db.icy-veins.com/wow-forever/quests/5064"
+  },
   "5641": {
     "name": "Chastise",
     "instant": true,

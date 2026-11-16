@@ -1,7 +1,7 @@
 """The shared 21-60 route is frozen (players follow it live). This checks
 that, with the class steps (--oxp-class) taken out, every route file is
-byte for byte what it was when it was frozen. To change the shared route on
-purpose (only with Matt's OK), update the hashes: python3 tests/route_frozen.py --update
+byte for byte what it was when it was frozen. After reviewing an intentional
+shared route change, update the hashes: python3 tests/route_frozen.py --update
 """
 import hashlib
 import json

@@ -307,7 +307,7 @@ step
     .target Valstag Ironjaw
 step
     .goto Wetlands,11.50,52.17
-    >>Talk to |cRXP_FRIENDLY_Tarrel Rockweaver|r
+    >>In Menethil Harbor, talk to |cRXP_FRIENDLY_Tarrel Rockweaver|r.
     .accept 305 >>Accept In Search of The Excavation Team
     .target Tarrel Rockweaver
 step
@@ -421,7 +421,7 @@ step
     .target James Halloran
 step
     .goto Wetlands,11.50,52.17
-    >>Talk to |cRXP_FRIENDLY_Tarrel Rockweaver|r
+    >>Return to |cRXP_FRIENDLY_Tarrel Rockweaver|r in Menethil Harbor.
     .turnin 306 >>Turn in In Search of The Excavation Team
     .target Tarrel Rockweaver
 step

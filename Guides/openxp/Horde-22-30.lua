@@ -1131,7 +1131,7 @@ step
     .target Hagar Lightninghoof
 step
     .goto Thousand Needles,33.76,39.99
-    >>Loot the |cRXP_PICK_Secret Note #2|r
+    >>On your way west to Highperch, open the |cRXP_PICK_Document Chest|r for |cRXP_LOOT_Secret Note #2|r.
     .complete 5064,2 --Grimtotem Spying
 step
     .goto Thousand Needles,17.89,40.57
