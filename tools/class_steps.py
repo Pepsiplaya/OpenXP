@@ -222,7 +222,7 @@ def objectives(db, q):
 
     for entry in B.as_list(B.li(obj, 1)):
         idx += 1
-        n = db["n"].get(entry[0])
+        n = db["n"].get(B.li(entry, 1))
         if not n:
             continue
         z, p = best(spawn_zones(n, 7))
@@ -234,16 +234,17 @@ def objectives(db, q):
                         [B.li(n, 1)], dz, dp, True))
     for entry in B.as_list(B.li(obj, 2)):
         idx += 1
-        o = db["o"].get(entry[0])
+        o = db["o"].get(B.li(entry, 1))
         if not o:
             continue
         z, p = best(spawn_zones(o, 4))
-        label = entry[1] if len(entry) > 1 and entry[1] else B.li(o, 1)
+        label = B.li(entry, 2) or B.li(o, 1)
         if z:
             out.append((idx, "use", label, [], z, p, False))
     for entry in B.as_list(B.li(obj, 3)):
         idx += 1
-        item = db["i"].get(entry[0])
+        item_id = B.li(entry, 1)
+        item = db["i"].get(item_id)
         if not item:
             continue
         zones, names, elite = {}, {}, True
@@ -274,8 +275,8 @@ def objectives(db, q):
                 d = None
             if d:
                 continue
-        if not z and entry[0] in ITEM_PLACES:
-            z, p, label = ITEM_PLACES[entry[0]]
+        if not z and item_id in ITEM_PLACES:
+            z, p, label = ITEM_PLACES[item_id]
             out.append((idx, "do", label, [], z, p, False))
             continue
         if z:
@@ -283,13 +284,13 @@ def objectives(db, q):
     for entry in B.as_list(B.li(obj, 5)):
         idx += 1
         zones, names = {}, {}
-        for nid in B.as_list(entry[0]):
+        for nid in B.as_list(B.li(entry, 1)):
             n = db["n"].get(nid)
             for z, pts in (spawn_zones(n, 7) if n else {}).items():
                 zones.setdefault(z, []).extend(pts)
                 names.setdefault(z, []).append(B.li(n, 1))
         z, p = best(zones)
-        label = entry[2] if len(entry) > 2 and entry[2] else (names.get(z) or ["target"])[0]
+        label = B.li(entry, 3) or (names.get(z) or ["target"])[0]
         if z:
             out.append((idx, "credit", label, names.get(z, [])[:3], z, p, False))
     if q.triggerEnd:

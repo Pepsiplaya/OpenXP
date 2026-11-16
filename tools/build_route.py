@@ -29,6 +29,7 @@ import argparse
 import copy
 import glob
 import importlib.util
+import json
 import math
 import os
 import pickle
@@ -251,18 +252,31 @@ def _lua_to_py(v):
     return v
 
 
-def _load_table(path, var):
-    text = open(path, encoding="utf-8").read()
-    body = re.search(r"QuestieDB\.%s = \[\[(.*)\]\]" % var, text, re.S).group(1)
+def _load_table(path, var, inline=False):
+    with open(path, encoding="utf-8") as file:
+        text = file.read()
+    if inline:
+        # QuestieDB's offline exporter writes one positional assignment per ID.
+        prefix = var.removesuffix("Data")
+        body = text
+    else:
+        prefix = ""
+        match = re.search(r"QuestieDB\.%s = \[\[(.*)\]\]" % var, text, re.S)
+        if not match:
+            raise ValueError(f"{path}: expected the QuestieDB {var} table")
+        body = match[1]
+    pattern = re.compile(prefix + r"\[(\d+)\]\s*=\s*(\{.*\}),?\s*$")
     rt = lupa.LuaRuntime(unpack_returned_tuples=True)
     parse = rt.eval('function(s) return assert(loadstring("return " .. s))() end')
     out = {}
     for line in body.split("\n"):
-        m = re.match(r"^\[(\d+)\] = (\{.*\}),?\s*$", line)
+        m = pattern.match(line)
         if m:
             row = parse(m.group(2))
             n = max(row.keys()) if len(list(row.keys())) else 0
             out[int(m.group(1))] = [_lua_to_py(row[i]) if i in row else None for i in range(1, n + 1)]
+    if not out:
+        raise ValueError(f"{path}: no {var} rows found")
     return out
 
 
@@ -273,22 +287,21 @@ GAME = "Forever"
 FACTION = "Alliance"
 
 
+def inline_export(questiedb, game):
+    return game == "Forever" and os.path.isfile(os.path.join(questiedb, "foreverQuestDB.lua"))
+
+
 def load_db(questiedb, game=None):
+    """Read raw QuestieDB tables or a separate merged Forever export directory."""
     game = game or GAME
-    suffix = "" if game == "Forever" else "-" + game.lower()
-    cache = os.path.join(questiedb, ".openxp-cache%s.pkl" % suffix)
-    if os.path.exists(cache):
-        return pickle.load(open(cache, "rb"))
-    d = os.path.join(questiedb, "data", game)
+    inline = inline_export(questiedb, game)
+    d = questiedb if inline else os.path.join(questiedb, "data", game)
     pre = game.lower()
-    db = {
-        "q": _load_table(os.path.join(d, pre + "QuestDB.lua"), "questData"),
-        "n": _load_table(os.path.join(d, pre + "NpcDB.lua"), "npcData"),
-        "o": _load_table(os.path.join(d, pre + "ObjectDB.lua"), "objectData"),
-        "i": _load_table(os.path.join(d, pre + "ItemDB.lua"), "itemData"),
+    return {
+        entity[0]: _load_table(os.path.join(d, pre + entity.capitalize() + "DB.lua"),
+                               entity + "Data", inline=inline)
+        for entity in ("quest", "npc", "object", "item")
     }
-    pickle.dump(db, open(cache, "wb"))
-    return db
 
 
 def load_dump(path):
@@ -490,6 +503,8 @@ class Builder:
         self.xp = 0.0
         self.xp_from = {"quests": 0.0, "kills": 0.0}
         self.minutes = 0.0
+        self.travel_minutes = 0.0
+        self.grind_minutes = 0.0
         self._cache = {}
         self._quests = None
         self.alts = {}                      # (quest, zone, objective) -> dense spots
@@ -505,10 +520,11 @@ class Builder:
     _STATE = ("done", "used", "accepted_before", "objectives_done", "carried_ready", "xp_from")
 
     def snapshot(self):
-        return {k: copy.copy(getattr(self, k)) for k in self._STATE}, (self.xp, self.minutes)
+        return ({k: copy.copy(getattr(self, k)) for k in self._STATE},
+                (self.xp, self.minutes, self.travel_minutes, self.grind_minutes))
 
     def restore(self, saved):
-        state, (self.xp, self.minutes) = saved
+        state, (self.xp, self.minutes, self.travel_minutes, self.grind_minutes) = saved
         for k, v in state.items():
             setattr(self, k, v)
 
@@ -652,31 +668,34 @@ class Builder:
         idx = 0
         for entry in as_list(li(obj, 1)):  # creatures
             idx += 1
-            n = self.npc(entry[0])
+            nid = li(entry, 1)
+            n = self.npc(nid)
             if not n or (li(n, 6) or 0) in (1, 2, 3):  # elite / rare elite / boss
                 return None
             pt, place = locate(lambda z: spawns_in(n, z, 7))
             if not pt:
                 return None
             sites.append((idx, "kill", li(n, 1), [li(n, 1)], pt, place))
-            need = fq.get("mobs", {}).get(entry[0])
-            info.append(dict(ids=frozenset([entry[0]]), kills=float(need or KILLS["kill"]),
+            need = fq.get("mobs", {}).get(nid)
+            info.append(dict(ids=frozenset([nid]), kills=float(need or KILLS["kill"]),
                              known=bool(need), mob_level=self.mob_level(n)))
         for entry in as_list(li(obj, 2)):  # objects
             idx += 1
-            o = self.db["o"].get(entry[0])
+            oid = li(entry, 1)
+            o = self.db["o"].get(oid)
             pt, place = locate(lambda z: spawns_in(o, z, 4))
             if not pt:
                 return None
-            label = entry[1] if len(entry) > 1 and entry[1] else (li(o, 1) or "object")
+            label = li(entry, 2) or li(o, 1) or "object"
             sites.append((idx, "use", label, [], pt, place))
-            need = fq.get("mobs", {}).get(entry[0])
-            info.append(dict(ids=frozenset([("o", entry[0])]), kills=float(need or KILLS["use"]),
+            need = fq.get("mobs", {}).get(oid)
+            info.append(dict(ids=frozenset([("o", oid)]), kills=float(need or KILLS["use"]),
                              known=bool(need), click=True, mob_level=0,
-                             respawn=(FACTS or {}).get("obj_respawn", {}).get(entry[0])))
+                             respawn=(FACTS or {}).get("obj_respawn", {}).get(oid)))
         for entry in as_list(li(obj, 3)):  # items
             idx += 1
-            item = self.db["i"].get(entry[0])
+            item_id = li(entry, 1)
+            item = self.db["i"].get(item_id)
             if not item:
                 return None
             droppers = [self.npc(nid) for nid in as_list(li(item, 2))]
@@ -722,7 +741,7 @@ class Builder:
             mobs = [nm for c, nm in sorted(near, key=lambda t: -t[0]) if c > 0]
             mobs = mobs or [li(n, 1) for n in droppers if spawns_in(n, area, 7)]
             sites.append((idx, "loot", li(item, 1), mobs[:3], pt, place))
-            info.append(self._loot_info(q, entry[0], droppers, objs, area, spot, fq))
+            info.append(self._loot_info(q, item_id, droppers, objs, area, spot, fq))
             if buy:
                 info[-1].update(buy=True, kills=1.0, known=True, chance=None, mob_level=0)
         # reputation (4) objectives are never part of a leveling route
@@ -730,7 +749,9 @@ class Builder:
             return None
         for entry in as_list(li(obj, 5)):  # kill credit
             idx += 1
-            creditors = [self.npc(nid) for nid in as_list(entry[0])]
+            credit_ids = as_list(li(entry, 1))
+            ids = frozenset(credit_ids)
+            creditors = [self.npc(nid) for nid in credit_ids]
             creditors = [n for n in creditors if n]
 
             def credit_pts(z):
@@ -743,9 +764,8 @@ class Builder:
                 return None
             area = zone if place is None else next(a for a, zn, _ in nearby if zn == place[0])
             mobs = [li(n, 1) for n in creditors if spawns_in(n, area, 7)]
-            label = entry[2] if len(entry) > 2 and entry[2] else (mobs[0] if mobs else "target")
+            label = li(entry, 3) or (mobs[0] if mobs else "target")
             sites.append((idx, "credit", label, mobs[:3], pt, place))
-            ids = frozenset(as_list(entry[0]))
             need = next((fq.get("mobs", {}).get(i) for i in ids if fq.get("mobs", {}).get(i)), None)
             info.append(dict(ids=ids, kills=float(need or KILLS["credit"]), known=bool(need),
                              mob_level=max([self.mob_level(n) for n in creditors] or [0])))
@@ -1006,7 +1026,9 @@ class Builder:
             x = TRAVEL_KILLS * math.dist(pos, where) * mob_xp(int(lvl), lvl)
             self.xp += x
             self.xp_from["kills"] += x
-            self.minutes += math.dist(pos, where) * (MINUTES_PER_UNIT_MOUNTED if lvl >= 40 else MINUTES_PER_UNIT)
+            travel = math.dist(pos, where) * (MINUTES_PER_UNIT_MOUNTED if lvl >= 40 else MINUTES_PER_UNIT)
+            self.minutes += travel
+            self.travel_minutes += travel
             pos = where
             if kind != "obj":
                 self.minutes += MINUTES_TALK
@@ -1047,6 +1069,7 @@ class Builder:
             elif cands[qid]["finish_later"] and not objectives_left[qid]:
                 self.accepted_before.add(qid)
                 self.carried_ready.add(qid)
+        self.accepted_before.difference_update(turned_in)
         self.used |= turned_in
         self.done |= turned_in
         return actions, turned_in
@@ -1117,6 +1140,7 @@ class Builder:
             return t.cost(a, b, None, arrow=ARROW_COSTS) / unit
 
         st = dict(pos=start_pos, xp=self.xp, minutes=self.minutes, kills=0.0, quests=0.0,
+                  travel=0.0,
                   accepted=self.accepted_before.copy(),
                   left={qid: set(s[0] for s in c["sites"]) for qid, c in cands.items()},
                   turned=set(), actions=[])
@@ -1215,7 +1239,9 @@ class Builder:
             x = TRAVEL_KILLS * d * mob_xp(int(lvl), lvl)
             st["xp"] += x
             st["kills"] += x
-            st["minutes"] += d * MINUTES_PER_UNIT
+            travel = d * MINUTES_PER_UNIT
+            st["minutes"] += travel
+            st["travel"] += travel
             st["pos"] = where
             if kind != "obj":
                 st["minutes"] += MINUTES_TALK
@@ -1237,7 +1263,7 @@ class Builder:
                 il = int(lvl)
                 group = [(qid, i)]
                 # everything else in your log that can be done right here
-                for q2 in sorted(st["accepted"]):
+                for q2 in sorted(st["accepted"].intersection(st["left"])):
                     for i2 in sorted(st["left"][q2]):
                         if (q2, i2) != (qid, i) and any(math.dist(p, where) <= self.SHARE for p in spots[(q2, i2)]):
                             group.append((q2, i2))
@@ -1245,6 +1271,7 @@ class Builder:
 
         def clone(st):
             return dict(pos=st["pos"], xp=st["xp"], minutes=st["minutes"], kills=st["kills"],
+                        travel=st["travel"],
                         quests=st["quests"], accepted=set(st["accepted"]),
                         left={k: set(v) for k, v in st["left"].items()},
                         turned=set(st["turned"]), actions=None)
@@ -1295,6 +1322,7 @@ class Builder:
             acts, _saved = self.improve_order(st["actions"], cands, spots, start_pos, xp0, t, level_of(xp0))
             st["actions"] = acts
         self.xp, self.minutes = st["xp"], st["minutes"]
+        self.travel_minutes += st["travel"]
         self.xp_from["kills"] += st["kills"]
         self.xp_from["quests"] += st["quests"]
         turned_in = st["turned"]
@@ -1304,6 +1332,7 @@ class Builder:
             elif cands[qid]["finish_later"] and not st["left"][qid]:
                 self.accepted_before.add(qid)
                 self.carried_ready.add(qid)
+        self.accepted_before.difference_update(turned_in)
         self.used |= turned_in
         self.done |= turned_in
         return st["actions"], turned_in
@@ -1657,6 +1686,9 @@ def render_section(builder, section, cands, actions, group, nxt):
 
     for t in section.get("outro", []):
         lines.append(t)
+    if section.get("_finish_grind_to"):
+        goal = section["_finish_grind_to"]
+        lines.extend(["step", f"    .xp {goal} >>Kill level-appropriate mobs or run an on-level dungeon until you reach level {goal}."])
     lines.append("]])")
     return "\n".join(lines)
 
@@ -1743,13 +1775,24 @@ def section_name(section, start, end):
     return "%d-%d %s" % (a, b, section.get("label", section["zone"]))
 
 
+def write_route(path, output_dir, lines):
+    root = output_dir or ROOT
+    full = os.path.join(root, path)
+    os.makedirs(os.path.dirname(full), exist_ok=True)
+    with open(full, "w", encoding="utf-8") as file:
+        file.write("\n".join(lines))
+    print("wrote", full)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--questiedb", required=True)
+    ap.add_argument("--questiedb", required=True, help="QuestieDB checkout or merged Forever export directory")
     ap.add_argument("--dump", help="OpenXP.lua saved variables with /oxp questdump data")
     ap.add_argument("--log", help="write every zone choice and its numbers to this JSON file")
     ap.add_argument("--facts", help="tools/route_facts.py output: kill counts, drop chances, "
                                     "respawn times and quest XP (optional)")
+    ap.add_argument("--output-dir", help="write draft guides below this directory, outside the live guide tree")
+    ap.add_argument("--benchmark", help="write a JSON summary of a simulated hub route")
     ap.add_argument("routes", nargs="+",
                     help="route files, in level order; they're built as one run so "
                          "your level carries from one file into the next")
@@ -1772,6 +1815,8 @@ def main():
         db = merge_db(db, load_dump_cached(args.dump, args.questiedb))
     if hasattr(first, "HUBS"):
         return main_hubs(first, args, db)
+    if args.benchmark:
+        ap.error("--benchmark requires a hub route such as tools/routes/alliance.py")
     outputs = {os.path.abspath(os.path.join(ROOT, r.OUTPUT)) for r in routes}
     if len(routes) == 1:
         accepted, turned = free_guide_quests(os.path.join(ROOT, first.OUTPUT))
@@ -1836,9 +1881,6 @@ def main():
         plan.append([r, section, cands, actions])
         report.append("%-36s %3d quests %5.1f -> %5.1f%s" % (
             name, len(done), start, end, ("   grind %.1f lv" % grind) if grind else ""))
-        # carried quests that got turned in are no longer carried
-        builder.accepted_before -= done
-
     for r in routes:
         builder.file_accepted = set()
         out = [r.HEADER.rstrip(), ""]
@@ -1851,10 +1893,7 @@ def main():
                 nxt = getattr(r, "NEXT", None)
             out.append(render_section(builder, section, cands, actions, r.GROUP, nxt))
             out.append("")
-        path = os.path.join(ROOT, r.OUTPUT)
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        open(path, "w", encoding="utf-8").write("\n".join(out))
-        print("wrote", os.path.relpath(path, ROOT))
+        write_route(r.OUTPUT, args.output_dir, out)
     print("\n".join(report))
     total = sum(1 for p in plan for a in p[3] if a[0] == "turnin")
     print("%d turn-ins, level %.1f -> %.1f; XP from quests %.0fk, kills %.0fk; %.1f levels of grinding" % (
@@ -1950,15 +1989,8 @@ def plan_hubs(builder, route):
             section["_hearth"] = way[2]
             section["_hearth_min"] = builder.minutes
         section["grind"] = False
-        builder.rollouts = commit  # the slow, careful ordering only for the visit you take
-        before_xp, before_min = builder.xp, builder.minutes
-        start = builder.level()
-        cands = builder.candidates(section, areas, carry_ahead=0)
-        actions, done = builder.simulate(section, cands, section["start"])
-        worth = len({qid for qid in (a[1] if a[0] != "obj" else a[1][0] for a in actions if a[0] != "accept")
-                     if not cands[qid]["q"].class_tag()})
         if way[0] is not None:
-            # the real trip: flights, boats and rides, in minutes
+            # Estimated flights, boats and rides to the hub.
             hop = way[0] + (MINUTES_CITY_INSIDE if hub.get("city") else 0)
         else:
             hop = 0.0 if frm is None or frm["key"] == hub["key"] else (
@@ -1966,7 +1998,16 @@ def plan_hubs(builder, route):
             hop += hub.get("ride", 0) if first else 0
             if hub.get("city") and hop:
                 hop = max(hop, MINUTES_CITY)
-        spent = hop + builder.minutes - before_min
+        builder.rollouts = commit  # the slow, careful ordering only for the visit you take
+        before_xp, before_min = builder.xp, builder.minutes
+        builder.minutes += hop
+        builder.travel_minutes += hop
+        start = builder.level()
+        cands = builder.candidates(section, areas, carry_ahead=0)
+        actions, done = builder.simulate(section, cands, section["start"])
+        worth = len({qid for qid in (a[1] if a[0] != "obj" else a[1][0] for a in actions if a[0] != "accept")
+                     if not cands[qid]["q"].class_tag()})
+        spent = builder.minutes - before_min
         gain = builder.xp - before_xp
         rate = gain / spent if spent > 0 else 0
         visit.last = (gain, spent)
@@ -1974,7 +2015,7 @@ def plan_hubs(builder, route):
 
     first_hub = next(h for h in hubs if h["key"] == route.FIRST)
     steps = 0
-    while builder.level() < MAX_LEVEL - 0.02 and steps < 200:
+    while builder.level() < MAX_LEVEL and steps < 200:
         steps += 1
         if cur is None:
             options = [first_hub]
@@ -2078,7 +2119,9 @@ def plan_hubs(builder, route):
             # Nothing worth a trip at this level: level up a bit first.
             lvl = builder.level()
             target = xp_at_level(lvl + 0.5)
-            builder.minutes += (target - builder.xp) / (GRIND_KILLS_PER_MINUTE * mob_xp(int(lvl), lvl))
+            grind_minutes = (target - builder.xp) / (GRIND_KILLS_PER_MINUTE * mob_xp(int(lvl), lvl))
+            builder.minutes += grind_minutes
+            builder.grind_minutes += grind_minutes
             builder.xp = target
             pending_grind += 0.5
             builder.xp_from["grind"] = builder.xp_from.get("grind", 0) + 0.5
@@ -2100,9 +2143,14 @@ def plan_hubs(builder, route):
         log["quests"] = [(a[1], cands[a[1]]["q"].name, cands[a[1]]["q"].level)
                          for a in actions if a[0] == "turnin"]
         log["start"], log["end"] = start, builder.level()
-        builder.accepted_before -= done
         pending_grind = 0.0
         cur = hub
+
+    if pending_grind and plan:
+        goal = int(builder.level())
+        if goal > int(plan[-1]["end"]):
+            plan[-1]["section"]["_finish_grind_to"] = goal
+            plan[-1]["end"] = builder.level()
 
     # Quests picked up but never finished on the route: leave them out.
     turned = set()
@@ -2178,6 +2226,25 @@ def free_guide_fps():
     return out
 
 
+def replay_quest_log(plan, carried):
+    """Check the emitted plan's quest state and return peak slot use."""
+    held = set(carried)
+    peak = len(held)
+    for visit in plan:
+        for kind, ref, _ in visit["actions"]:
+            qid = ref[0] if kind == "obj" else ref
+            if kind == "accept":
+                if qid in held or len(held) >= QUEST_LOG_LIMIT:
+                    raise ValueError(f"quest {qid}: pickup would duplicate or overfill the log")
+                held.add(qid)
+                peak = max(peak, len(held))
+            elif qid not in held:
+                raise ValueError(f"quest {qid}: {kind} before pickup")
+            elif kind == "turnin":
+                held.remove(qid)
+    return peak
+
+
 def main_hubs(route, args, db):
     accepted, turned = free_guide_quests(
         skip_all={os.path.abspath(os.path.join(ROOT, o[1])) for o in route.OUTPUTS})
@@ -2188,10 +2255,12 @@ def main_hubs(route, args, db):
     print("flight paths from the 1-20 guides:", ", ".join(sorted(builder.known_fps)))
     builder.used |= set(getattr(route, "SKIP", ()))
     builder.xp = xp_at_level(route.START_LEVEL)
+    DECISIONS.clear()
     plan, report = plan_hubs(builder, route)
+    peak_log = replay_quest_log(plan, accepted - turned)
     if args.log:
-        import json
-        json.dump(DECISIONS, open(args.log, "w"), indent=1)
+        with open(args.log, "w", encoding="utf-8") as file:
+            json.dump(DECISIONS, file, indent=1)
     # Split into files by the level each section starts at.
     files = []
     for top, path, header in route.OUTPUTS:
@@ -2207,11 +2276,39 @@ def main_hubs(route, args, db):
             nxt = order[i + 1]["section"]["name"] if i + 1 < len(order) else None
             out.append(render_section(builder, p["section"], p["cands"], p["actions"], route.GROUP, nxt))
             out.append("")
-        full = os.path.join(ROOT, path)
-        open(full, "w", encoding="utf-8").write("\n".join(out))
-        print("wrote", path, "(%d sections)" % len(ps))
+        write_route(path, args.output_dir, out)
     print("\n".join(report))
     total = sum(len(p["done"]) for p in plan)
+    if args.benchmark:
+        gained = builder.xp - xp_at_level(route.START_LEVEL)
+        summary = {
+            "status": "SIMULATED",
+            "game": GAME,
+            "faction": FACTION,
+            "start_level": route.START_LEVEL,
+            "end_level": round(builder.level(), 2),
+            "reaches_max_level": builder.level() >= MAX_LEVEL,
+            "final_grind_to": plan[-1]["section"].get("_finish_grind_to") if plan else None,
+            "quest_log_limit": QUEST_LOG_LIMIT,
+            "initial_quests_held": len(accepted - turned),
+            "peak_quests_held": peak_log,
+            "turnins": total,
+            "visits": len(plan),
+            "quest_rows": len(db["q"]),
+            "quest_db_source": "merged_export" if inline_export(args.questiedb, GAME) else "raw_tables",
+            "quest_dump": bool(args.dump),
+            "reward_facts": bool(args.facts),
+            "estimated_xp_per_hour": round(gained * 60 / builder.minutes) if builder.minutes else None,
+            "minutes": {
+                "total": round(builder.minutes, 1),
+                "travel": round(builder.travel_minutes, 1),
+                "objectives_and_interactions": round(builder.minutes - builder.travel_minutes - builder.grind_minutes, 1),
+                "grind": round(builder.grind_minutes, 1),
+            },
+        }
+        with open(args.benchmark, "w", encoding="utf-8") as file:
+            json.dump(summary, file, indent=2)
+            file.write("\n")
     print("%d turn-ins, level %.1f -> %.1f; XP from quests %.0fk, kills %.0fk; %.1f levels of grinding; %.0f hours" % (
         total, route.START_LEVEL, builder.level(), builder.xp_from["quests"] / 1000,
         builder.xp_from["kills"] / 1000, builder.xp_from.get("grind", 0), builder.minutes / 60))
