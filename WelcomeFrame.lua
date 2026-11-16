@@ -15,6 +15,19 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.65-beta",
+        date = "November 2026",
+        changes = {
+            "Shen'dralas has separate Valley of Bones guides for the Magram and Gelkis. Pick your clan under OpenXP Extras after you receive its Valley of Bones quest.",
+            "The shared Desolace guides continue without the clan detours or premature A Conqueror's Crown turn-in.",
+            "Skyborne Herbalists hand in Camping 101: Herbalism to Halassa Fernbreeze in Shen'dar Village.",
+            "Alliance Priests can learn Contingency Plan or Chastise at the Ironforge class stop.",
+            "Alliance Warriors step onto the grate before fighting the challengers in The Affray.",
+            "Wetlands names Menethil Harbor for Tarrel Rockweaver, and Thousand Needles points out the Document Chest for Secret Note #2.",
+            "OpenXP reads the active quest log on the Forever client.",
+        },
+    },
+    {
         version = "1.3.64",
         date = "November 2026",
         changes = {

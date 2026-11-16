@@ -11,11 +11,12 @@ endorsed by RestedXP. Like the original, OpenXP is free and non-commercial, and 
 1. Download this repository (Code → Download ZIP) and unzip it.
 2. Rename the unzipped folder to exactly `OpenXP`.
 3. Move it into your WoW Forever AddOns folder, for example
-   `World of Warcraft\_classic_era_\Interface\AddOns\OpenXP` (use the folder for the Forever client).
+   `World of Warcraft\_forever_\Interface\AddOns\OpenXP`.
 4. Disable **RestedXP Guides** if you have it installed. Both addons share some internal names, so they shouldn't run at the same time.
 5. Start the game, enable OpenXP on the character select AddOns screen, and log in.
 
 See [NOTICE.md](NOTICE.md) for attribution and the list of changes from RestedXP Guides.
+See [player testing](https://github.com/Pepsiplaya/OpenXP/blob/codex/openxp-ultimate/docs/PLAYER_TESTING.md) for the fork’s installation steps.
 
 ## Features
 
@@ -52,9 +53,7 @@ Keep one copy of the repo on your PC and point the game at it, so edits show up 
 
 ## Versions
 
-OpenXP is in beta, so versions end in `-beta` (for example `1.1.5-beta`). The version lives in one place, the
-`## Version:` line of `OpenXP.toc` and `OpenXP_Vanilla.toc`. For a new version, change both, and add a matching entry at the
-top of the changelog in `WelcomeFrame.lua`.
+The version lives in the `## Version:` line of `OpenXP.toc`. For a test build, use a `-beta` version and add a matching entry at the top of the changelog in `WelcomeFrame.lua`.
 
 ## Build a release zip
 
@@ -79,7 +78,7 @@ OpenXP reads the installed Questie while you play.
    (`/oxp questdump clear` removes it again).
 3. `python tools/audit_guides.py --questiedb PATH\QuestieDB --questie "PATH\AddOns\Questie" --dump PATH\OpenXP.lua`
    lists, zone by zone, the quests each faction can do that no guide picks up.
-4. `python tools/build_route.py --questiedb PATH\QuestieDB --dump PATH\OpenXP.lua tools/routes/alliance.py` (or `horde.py`) builds the 21-60 route; the builder picks the zone order by XP per minute.
+4. `python tools/build_route.py --questiedb PATH\QuestieDB --dump PATH\OpenXP.lua --output-dir PATH\draft --benchmark PATH\summary.json tools/routes/alliance.py` (or `horde.py`) previews the route and records its estimated time. See [route optimization](docs/ROUTE_OPTIMIZATION.md) for data and measurement limits.
 
 ## Tests
 

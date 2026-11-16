@@ -1,0 +1,22 @@
+# Forever zone research
+
+## Current coverage
+
+| Zone | Shipped coverage and evidence | Open measurements |
+| --- | --- | --- |
+| Zephras Isle | Both Skyborne faction routes share the island and branch for class and faction quests. Camping 101: Herbalism (97968) now points to Halassa Fernbreeze at 43.01, 43.55 in Shen’dar Village. **VERIFIED BY GAME DATA**. [November hotfixes](https://news.blizzard.com/en-us/article/24315281/wow-forever-hotfixes-november-13-2026) | Verify that reaching Herbalism 20 makes the turn-in ready on both faction variants. |
+| Shen’dralas | Blizzard confirms entry from southern Desolace via the Valley of Bones. The fork ships separate opt-in Magram and Gelkis chapters of that valley, each starting with its own Valley of Bones handoff. **VERIFIED BY GAME DATA** for objectives and pins. [Blizzard zone introduction](https://news.blizzard.com/en-us/article/24304071/world-of-warcraft-forever-found-photos-panel-recap) | Walk the entrance, time the objectives, and record corpse runs and hazards. The rest of the zone and both prerequisite routes are **UNVERIFIED** as OpenXP routes. |
+| Riverglades | Official mid-30s to mid-40s zone with more than 150 quests. No named Riverglades section in the shipped shared routes. **VERIFIED BY GAME DATA** for announced content. [Blizzard zone preview](https://news.blizzard.com/en-us/article/24303862/world-of-warcraft-forever-whats-next-panel-recap) | Verify safe entry from adjacent zones, first hubs, and transport. Route a neutral quest cluster before evaluating a full visit. |
+| Mount Hyjal | Blizzard places access through Darkwhisper Gorge. No named Mount Hyjal section in the current shared routes. **VERIFIED BY GAME DATA** for announced access. [Blizzard zone preview](https://news.blizzard.com/en-us/article/24303862/world-of-warcraft-forever-whats-next-panel-recap) | Check live gate requirements, access at 55–60, and which loops earn experience efficiently. |
+| Original Eastern Kingdoms and Kalimdor | Shared guides for both factions and selected existing dungeon routes. | Catalogue coverage by faction, level bracket, and quest clusters, with priority on verified dead ends and travel discontinuities. |
+
+## Valley of Bones
+
+- **Magram, faction 93.** Start after Warug offers Valley of Bones (92841), following A Conqueror’s Crown (92743). Turn in to Orgrul, then accept Mountain of Bones (92844) and Outcast Necromancers (92846). Gather 426 Gently Cursed Bones and kill six Outcast Necromancers while Honored. Completing both leads to Corrupting Tears (92847), which requires Petrified Bark and Imbued Tears. Live tree positions and the additional travel loop are still needed. [Quest chain and objective records](https://www.wowhead.com/forever/quest=92844/mountain-of-bones)
+- **Gelkis, faction 92.** Start after Uthek the Wise offers Valley of Bones (93034), following Ongeku (1373). Turn in to Nerlokh, then kill six Undead Ravagers for 93035 and loot one Necromantic Garb from Outcast Necromancers for 93037 while Honored. Completing both leads to Facing the Truth (93041), a separate quest that provides Gelkis Necromantic Garb and requires an Accursed Skull. The approximate skull location is player-reported and needs a route test. [Quest chain and objective records](https://www.wowhead.com/forever/quest=93041/facing-the-truth)
+
+A Conqueror’s Crown sends you to a crypt in the Badlands for the helm. The former guide asked players to hand it back to Warug immediately. Both faction backbones drop that instruction. Before adding the crown as an optional detour, walk the crypt approach and verify the entrance, object placement, and whether it is worth a cross-continent trip. [Crown quest and approach reports](https://www.wowhead.com/forever/quest=92743/a-conquerors-crown)
+
+## Forever-exclusive leveling dungeons
+
+Blizzard’s published ranges are Hall of Thanes 13–18, Ruins of Lordaeron 15–20, Excavation Site 24–29, City of Dalaran 28–33, Drowned City 35–40, Krol’dok Stronghold 40–45, Alcaz Prison 48–53, Blackmaw Hold 55–60, and Shaper’s Terrace 58–60. Neither bundled dungeon list has a named chapter for these nine. City of Dalaran has faction-specific attunement. Verify dungeon access, group setup, quest handoffs, and the party’s actual kill XP before inserting dungeon visits. [Blizzard dungeon guide](https://news.blizzard.com/en-us/article/24301455/explore-the-new-dungeons-of-world-of-warcraft-forever)

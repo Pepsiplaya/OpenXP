@@ -31,6 +31,15 @@ RestedXP name were written by RestedXP and are kept here with credit.
 - Rebuilt the Active Targets frame as a "Quest Targets" list in OpenXP's style, with key bindings to target a quest mob or NPC.
 - Added step history to the guide card with Done / Skipped / Chain missed tags, and made manual step changes stick.
 
+## OpenXP Ultimate development fork
+
+This fork starts from OpenXP 1.3.64 by OpenXP contributors
+(`9940a0b5c2c0e38828446e0e4a5ddb0b76bfe63e`). It retains the underlying
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 license and notices.
+Changes include Forever quest-log support, optional Valley of Bones chapters,
+corrections to class and Skyborne quests, and off-client route validation.
+See the [fork’s research sources](https://github.com/Pepsiplaya/OpenXP/blob/codex/openxp-ultimate/docs/RESEARCH_SOURCES.md).
+
 ## Bundled fonts
 
 The `Fonts/` folder holds fonts under the SIL Open Font License 1.1. Each license is in `Fonts/licenses/`.
