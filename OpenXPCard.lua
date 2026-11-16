@@ -440,7 +440,8 @@ local function StepKind(step)
     local textAll = ""
     for _, e in ipairs(step.elements or {}) do
         if e.tag then has[e.tag] = true end
-        if e.textOnly and e.text then textAll = textAll .. " " .. StripCodes(e.text):lower() end
+        local t = e.textEn or e.text -- English words below, even on other clients
+        if e.textOnly and t then textAll = textAll .. " " .. StripCodes(t):lower() end
     end
     if has.accept then return "accept" end
     if has.turnin then return "turnin" end
@@ -457,9 +458,22 @@ local function StepKind(step)
     return "travel"
 end
 
+-- Accept / turn in steps in the player's language: the guide's English
+-- "Accept Quest Name" becomes the translated verb with the quest's name as
+-- the game (or Questie) gives it, once the step has looked it up.
+local function QuestStepText(e, text)
+    if not addon.guidePhrases or (e.tag ~= "accept" and e.tag ~= "turnin") then return text end
+    local verb, name = text:match("^(Accept) (.+)$")
+    if not verb then verb, name = text:match("^(Turn in) (.+)$") end
+    if not verb then return text end
+    if e.title and e.title ~= "" then name = e.title end
+    return fmt(L(verb == "Accept" and "Accept %s" or "Turn in %s"), name)
+end
+
 local function ElementText(e)
     local text = e.text
     if not text or text == "" or text == " " then return end
+    text = QuestStepText(e, text)
     if addon.ReplaceNpcIds then text = addon.ReplaceNpcIds(L(text), e and e.step and e or nil) end
     return text
 end

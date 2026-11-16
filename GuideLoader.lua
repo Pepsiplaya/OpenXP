@@ -1025,6 +1025,19 @@ local function parseLine(linetext,step,parsingLogic)
         if t ~= "" then text = t end
         return ""
     end)
+    -- OpenXP: step text in the player's language (Locale.lua GuideText).
+    -- Accept and turn in steps get the quest's own name later (OpenXPCard),
+    -- and macro text is game commands, so those stay as they are.
+    local textEn
+    if text and addon.guidePhrases and text:sub(1, 1) ~= "/" then
+        local tag = line:match("^%.(%S+)")
+        if tag ~= "accept" and tag ~= "turnin" and tag ~= "macro" then
+            local translated = addon.locale.GuideText(text)
+            if translated ~= text then
+                textEn, text = text, translated
+            end
+        end
+    end
 
     line:gsub("^%.(%S+)%s*(.*)", function(tag, args)
         local t = {}
@@ -1075,6 +1088,7 @@ local function parseLine(linetext,step,parsingLogic)
         -- else
         -- error('Error parsing guide at line '..linenumber..'/ '..guide.name)
     end
+    if element and textEn then element.textEn = textEn end
     if element and (element.text and not element.textOnly or element.dynamicText) then
         addon.lastObjective = element
     end

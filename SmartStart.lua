@@ -15,6 +15,7 @@
 --      accepts B does it right after turning in A, B is treated as needing A.
 
 local addonName, addon = ...
+local function L(s) return addon.locale and addon.locale.Get and addon.locale.Get(s) or s end
 
 local SS = {}
 addon.smartStart = SS
@@ -568,7 +569,7 @@ function SS.Run(quiet)
     end
     if not guide then
         if not quiet then
-            Print("Smart start couldn't find a guide section for your level.")
+            Print(L("Smart start couldn't find a guide section for your level."))
         end
         return
     end
@@ -597,14 +598,14 @@ function SS.Run(quiet)
         for _ in pairs(blocked) do nBlocked = nBlocked + 1 end
         local skipped = 0
         for _ in pairs(skip) do skipped = skipped + 1 end
-        Print(string.format("Smart start: %s, step %d. %d of %d quests already done.",
+        Print(string.format(L("Smart start: %s, step %d. %d of %d quests already done."),
             SS.api.GuideName(current) or "?", start, info.done, info.total))
         if nGray > 0 then
-            Print(string.format("Skipped %d steps with quests too low for you (gray). Type /oxp catchup to see them.", nGray))
+            Print(string.format(L("Skipped %d steps with quests too low for you (gray). Type /oxp catchup to see them."), nGray))
         end
         if nBlocked > 0 then
             Print(string.format(
-                "Skipped %d steps for %d quests whose earlier chain quests you haven't done. Type /oxp catchup to see them.",
+                L("Skipped %d steps for %d quests whose earlier chain quests you haven't done. Type /oxp catchup to see them."),
                 skipped, nBlocked))
         end
     end
@@ -657,26 +658,26 @@ end
 function SS.ShowCatchUp()
     local list = SS.SkippedChains()
     if #list == 0 then
-        Print("No skipped quests or quest chains in your current guide section.")
+        Print(L("No skipped quests or quest chains in your current guide section."))
         return
     end
-    Print(string.format("%d skipped quest(s) in this guide section:", #list))
+    Print(string.format(L("%d skipped quest(s) in this guide section:"), #list))
     for _, entry in ipairs(list) do
         local parts = {}
         for _, q in ipairs(entry.missing or {}) do
             local where = ""
             local entries = addon.pickUpList and addon.pickUpList[q]
             if entries and entries[1] then
-                where = string.format(" (picked up in %s)", entries[1].name or "?")
+                where = string.format(L(" (picked up in %s)"), entries[1].name or "?")
             end
             table.insert(parts, QName(q) .. where)
         end
-        local why = entry.status == "chain" and "chain missed" or "skipped"
+        local why = entry.status == "chain" and L("chain missed") or L("skipped")
         if #parts > 0 then
-            Print(string.format("Step %d, %s (%s). Needs first: %s", entry.step, QName(entry.quest), why,
+            Print(string.format(L("Step %d, %s (%s). Needs first: %s"), entry.step, QName(entry.quest), why,
                 table.concat(parts, ", ")))
         else
-            Print(string.format("Step %d, %s (%s). Click the step counter on the guide card to go back to it.",
+            Print(string.format(L("Step %d, %s (%s). Click the step counter on the guide card to go back to it."),
                 entry.step, QName(entry.quest), why))
         end
     end
@@ -730,7 +731,7 @@ function SS.OnLogin(attempt)
             SS.Run(false)
         elseif not SS.hinted then
             SS.hinted = true
-            Print("You're above this section's level. Type /oxp where to jump to the right section.")
+            Print(L("You're above this section's level. Type /oxp where to jump to the right section."))
         end
         return
     end
@@ -761,7 +762,7 @@ end
 function SS.EnsureGuide()
     if HasGuide() then return true end
     if #CandidateGuides() == 0 then
-        Print("Guides are still loading, one moment...")
+        Print(L("Guides are still loading, one moment..."))
         if C_Timer then
             C_Timer.After(RETRY_DELAY, function()
                 if #CandidateGuides() > 0 then SS.EnsureGuide() end

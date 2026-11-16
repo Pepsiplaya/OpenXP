@@ -10,6 +10,7 @@ local addonName, addon = ...
 local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata
 local OPENXP_VERSION = (GetAddOnMetadata and GetAddOnMetadata(addonName, "Version")) or "dev"
 addon.openxpVersion = OPENXP_VERSION
+local function L(s) return addon.locale and addon.locale.Get and addon.locale.Get(s) or s end
 
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
@@ -17,6 +18,7 @@ local CHANGELOG = {
         version = "1.3.63",
         date = "November 2026",
         changes = {
+            "OpenXP now speaks Spanish (esES and esMX): menus, settings, the guide card and nearly every guide step. Quest and NPC names show in Spanish too. Item and some place names stay in English for now",
             "Junk deleting and selling never touch quest items anymore (quest items, items that start a quest, and anything your guide uses or collects), even if you marked one as junk by hand",
             "Level-up messages to party and guild no longer end with a note about the addon",
             "Horde Hillsbrad (22-23): Blood of Innocents only shows up if you have Journey to Tarren Mill from Thunder Bluff",
@@ -897,20 +899,19 @@ end
 local function BuildBody(mode, lastSeen)
     local lines = {}
     if mode == "welcome" then
-        table.insert(lines, GOLD_HEX .. "Welcome, adventurer!|r")
+        table.insert(lines, GOLD_HEX .. L("Welcome, adventurer!") .. "|r")
         table.insert(lines, "")
-        table.insert(lines, "OpenXP is a free, community-made leveling guide for WoW Forever. " ..
-            "Follow the arrow and the steps, and it takes you from quest to quest by the fastest route.")
+        table.insert(lines, L("OpenXP is a free, community-made leveling guide for WoW Forever. Follow the arrow and the steps, and it takes you from quest to quest by the fastest route."))
         table.insert(lines, "")
-        table.insert(lines, BLUE_HEX .. "•|r  Already leveling? Smart start finds where you are from your level, zone and quests.")
-        table.insert(lines, BLUE_HEX .. "•|r  " .. GOLD_HEX .. "Right-click the guide window|r for Find my place, Skipped quest chains and What's new.")
-        table.insert(lines, BLUE_HEX .. "•|r  The same buttons are at the top of the settings (" .. GOLD_HEX .. "/oxp|r or the minimap button).")
+        table.insert(lines, BLUE_HEX .. "•|r  " .. L("Already leveling? Smart start finds where you are from your level, zone and quests."))
+        table.insert(lines, BLUE_HEX .. "•|r  " .. string.format(L("%sRight-click the guide window|r for Find my place, Skipped quest chains and What's new."), GOLD_HEX))
+        table.insert(lines, BLUE_HEX .. "•|r  " .. string.format(L("The same buttons are at the top of the settings (%s/oxp|r or the minimap button)."), GOLD_HEX))
     else
-        table.insert(lines, GOLD_HEX .. "What's new|r")
+        table.insert(lines, GOLD_HEX .. L("What's new") .. "|r")
         for _, entry in ipairs(CHANGELOG) do
             if lastSeen and entry.version == lastSeen then break end
             table.insert(lines, "")
-            table.insert(lines, string.format("%sVersion %s|r  |cFF9EA0B2%s|r", BLUE_HEX, entry.version, entry.date))
+            table.insert(lines, string.format(L("%sVersion %s|r  |cFF9EA0B2%s|r"), BLUE_HEX, entry.version, entry.date))
             for _, change in ipairs(entry.changes) do
                 table.insert(lines, BLUE_HEX .. "•|r  " .. change)
             end
@@ -976,7 +977,7 @@ local function CreateWelcomeFrame()
 
     local subtitle = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -6)
-    subtitle:SetText("Free leveling guides for WoW Forever")
+    subtitle:SetText(L("Free leveling guides for WoW Forever"))
     subtitle:SetTextColor(unpack(COLORS.text))
 
     local badge = CreateFrame("Frame", nil, f, "BackdropTemplate")
@@ -1019,7 +1020,7 @@ local function CreateWelcomeFrame()
     route:SetPoint("TOPLEFT", panel, "BOTTOMLEFT", 0, -8)
     local routeText = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     routeText:SetPoint("LEFT", route, "RIGHT", 4, 0)
-    routeText:SetText("Show route lines on the world map and minimap")
+    routeText:SetText(L("Show route lines on the world map and minimap"))
     routeText:SetTextColor(unpack(COLORS.text))
     route:SetScript("OnClick", function(self)
         local p = addon.settings and addon.settings.profile
@@ -1032,7 +1033,7 @@ local function CreateWelcomeFrame()
     Backdrop(swatch, {0.72, 0.42, 1, 1}, COLORS.goldDark)
     local swatchText = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     swatchText:SetPoint("LEFT", swatch, "RIGHT", 6, 0)
-    swatchText:SetText("Colour")
+    swatchText:SetText(L("Colour"))
     swatchText:SetTextColor(unpack(COLORS.muted))
     local function ShowColor()
         local p = addon.settings and addon.settings.profile
@@ -1080,7 +1081,7 @@ local function CreateWelcomeFrame()
     -- one for you. With a guide already loaded it only closes the window and
     -- shows the guide, so an update never moves you off the step you were on.
     -- Smart start already placed new players on login; /oxp where re-runs it.
-    local start = MakeButton(f, "Start leveling", true)
+    local start = MakeButton(f, L("Start leveling"), true)
     start:SetPoint("BOTTOMRIGHT", f, "BOTTOM", -6, 16)
     start:SetScript("OnClick", function()
         f:Hide()
@@ -1097,7 +1098,7 @@ local function CreateWelcomeFrame()
     end)
     f.start = start
 
-    local later = MakeButton(f, "Close", false)
+    local later = MakeButton(f, L("Close"), false)
     later:SetPoint("BOTTOMLEFT", f, "BOTTOM", 6, 16)
     later:SetScript("OnClick", function() f:Hide() end)
 
@@ -1128,15 +1129,15 @@ function welcome.Show(mode, lastSeen)
     frame.body:SetText(BuildBody(mode or "welcome", lastSeen))
     local ss = addon.smartStart
     local hasGuide = ss and ss.HasGuide and ss.HasGuide()
-    frame.start.label:SetText(hasGuide and "Continue leveling" or "Start leveling")
+    frame.start.label:SetText(hasGuide and L("Continue leveling") or L("Start leveling"))
     frame.content:SetHeight(frame.body:GetStringHeight() + 10)
     local p = addon.settings and addon.settings.profile
     frame.route:SetChecked(not (p and p.openxpMapRoute == false))
     frame.ShowColor()
     if _G.QuestieLoader then
-        frame.questie:SetText(BLUE_HEX .. "Questie is installed.|r OpenXP uses it for spawn marks, quest chains and levels.")
+        frame.questie:SetText(BLUE_HEX .. L("Questie is installed.|r OpenXP uses it for spawn marks, quest chains and levels."))
     else
-        frame.questie:SetText(BLUE_HEX .. "Recommended: install the free Questie addon.|r OpenXP uses it to mark where your quest mobs spawn and to show quest chains and levels.")
+        frame.questie:SetText(BLUE_HEX .. L("Recommended: install the free Questie addon.|r OpenXP uses it to mark where your quest mobs spawn and to show quest chains and levels."))
     end
     frame:Show()
 end

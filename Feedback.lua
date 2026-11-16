@@ -9,6 +9,7 @@
 -- Open it with /oxp feedback, /oxp bug, or "Feedback and bugs" in the menus.
 
 local addonName, addon = ...
+local function L(s) return addon.locale and addon.locale.Get and addon.locale.Get(s) or s end
 
 local GITHUB = "https://github.com/mjared123/OpenXP"
 -- The project number keeps working if the page name changes; CurseForge
@@ -146,7 +147,7 @@ local function MakeLinkBox(parent)
     box:SetScript("OnKeyUp", function(self, key)
         if key == "C" and IsControlKeyDown and IsControlKeyDown() then
             if addon.comms and addon.comms.PrettyPrint then
-                addon.comms.PrettyPrint("Link copied. Paste it into your web browser.")
+                addon.comms.PrettyPrint(L("Link copied. Paste it into your web browser."))
             end
             self:ClearFocus()
         end
@@ -203,7 +204,7 @@ local function CreateFeedbackFrame()
 
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("LEFT", logo, "RIGHT", 10, 0)
-    title:SetText("Feedback")
+    title:SetText(L("Feedback"))
     title:SetTextColor(1, 1, 1)
 
     local close = CreateFrame("Button", nil, f, "UIPanelCloseButton")
@@ -214,8 +215,7 @@ local function CreateFeedbackFrame()
     hint:SetPoint("RIGHT", f, "RIGHT", -16, 0)
     hint:SetJustifyH("LEFT")
     hint:SetTextColor(unpack(COLORS.muted))
-    hint:SetText("WoW can't open web pages, so click a link, press " .. ACCENT_HEX ..
-                     "Ctrl+C|r to copy it, and paste it into your web browser.")
+    hint:SetText(string.format(L("WoW can't open web pages, so click a link, press %sCtrl+C|r to copy it, and paste it into your web browser."), ACCENT_HEX))
 
     f.boxes = {}
     local anchor = hint
@@ -228,7 +228,7 @@ local function CreateFeedbackFrame()
 
         local head = panel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         head:SetPoint("TOPLEFT", 10, -9)
-        head:SetText(s.title)
+        head:SetText(L(s.title))
         head:SetTextColor(unpack(COLORS.accent))
 
         local body = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
@@ -236,18 +236,18 @@ local function CreateFeedbackFrame()
         body:SetPoint("RIGHT", panel, "RIGHT", -10, 0)
         body:SetJustifyH("LEFT")
         body:SetTextColor(unpack(COLORS.text))
-        body:SetText(s.text)
+        body:SetText(L(s.text))
 
         local box = MakeLinkBox(panel)
         box:SetPoint("BOTTOMLEFT", 10, 9)
         if s.button then
-            local b = MakeButton(panel, s.button, 110)
+            local b = MakeButton(panel, L(s.button), 110)
             b:SetPoint("BOTTOMRIGHT", -10, 9)
             b:SetScript("OnClick", s.onClick)
             b:HookScript("OnEnter", function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                GameTooltip:SetText(s.button, 1, 1, 1)
-                GameTooltip:AddLine(s.tip, nil, nil, nil, true)
+                GameTooltip:SetText(L(s.button), 1, 1, 1)
+                GameTooltip:AddLine(L(s.tip), nil, nil, nil, true)
                 GameTooltip:Show()
             end)
             b:HookScript("OnLeave", function() GameTooltip:Hide() end)
@@ -261,7 +261,7 @@ local function CreateFeedbackFrame()
 
     local footer = f:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
     footer:SetPoint("BOTTOM", 0, 12)
-    footer:SetText("Thanks for helping make OpenXP better!")
+    footer:SetText(L("Thanks for helping make OpenXP better!"))
 
     f:Hide()
     return f

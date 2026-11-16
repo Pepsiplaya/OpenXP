@@ -232,6 +232,62 @@ else
     addon.locale.Get = noop
 end
 
+---------------------------------------------------------------------------
+-- Guide step text in the player's language
+---------------------------------------------------------------------------
+-- The guides are written in English. A language's locale\<loc>_guide.lua
+-- sets addon.guidePhrases: English step text -> translation, keyed by a
+-- "skeleton" where names, icons, [item] links and numbers are {A}, {B}, ...
+-- so one sentence covers every step that only differs in those. Friendly
+-- and enemy names are swapped for the client's own names (NPCnames.lua).
+-- Text with no translation stays English. tools/locale/guide_skeleton.py
+-- builds the same keys: change both together.
+
+local guideTextCache = {}
+local NAME_KINDS = {FRIENDLY = true, ENEMY = true, LOOT = true, PICK = true}
+
+local function LocalName(raw)
+    return (raw:gsub("^|cRXP_(%u+)_(.-)|r$", function(kind, name)
+        if (kind == "FRIENDLY" or kind == "ENEMY") and addon.GetCreatureName then
+            return "|cRXP_" .. kind .. "_" .. addon.GetCreatureName(name) .. "|r"
+        end
+    end))
+end
+
+function addon.locale.GuideText(text)
+    local phrases = addon.guidePhrases
+    if not phrases or type(text) ~= "string" or text == "" then return text end
+    local cached = guideTextCache[text]
+    if cached then return cached end
+    local result = text
+    local body, suffix = text:match("^(.-)(%s*<<.*)$")
+    if not body then body, suffix = text, "" end
+    body = body:gsub("%s+$", "")
+    local slots, n = {}, 0
+    local function slot(s)
+        n = n + 1
+        slots[n] = s
+        if n > 26 then return s end
+        return "{" .. string.char(64 + n) .. "}"
+    end
+    local key = body:gsub("(|cRXP_(%u+)_.-|r)", function(all, kind)
+        if NAME_KINDS[kind] then return slot(all) end
+    end)
+    key = key:gsub("|T.-|t", slot)
+    key = key:gsub("%[.-%]", slot)
+    key = key:gsub("%d+%.%d+", slot)
+    key = key:gsub("%d+", slot)
+    local tr = n <= 26 and phrases[key]
+    if tr then
+        result = tr:gsub("{(%u)}", function(c)
+            local s = slots[c:byte() - 64]
+            if s then return LocalName(s) end
+        end) .. suffix
+    end
+    guideTextCache[text] = result
+    return result
+end
+
 function addon.locale.AddGenericTranslation(source,translation)
     if source == getForeign(source) then
         lazyTranslationCache[source] = translation
