@@ -1,0 +1,59 @@
+{
+  "92743": {
+    "name": "A Conqueror's Crown",
+    "objectives": [1],
+    "source": "https://www.wowhead.com/forever/quest=92743/a-conquerors-crown"
+  },
+  "92841": {
+    "name": "Valley of Bones",
+    "delivery": true,
+    "turnin_npc": 253136,
+    "source": "https://www.wowhead.com/forever/quest=92841/valley-of-bones"
+  },
+  "92844": {
+    "name": "Mountain of Bones",
+    "objectives": [1],
+    "requires": [92841],
+    "level": 35,
+    "reputation": 93,
+    "accept_npc": 253136,
+    "turnin_npc": 253136,
+    "source": "https://www.wowhead.com/forever/quest=92844/mountain-of-bones"
+  },
+  "92846": {
+    "name": "Outcast Necromancers",
+    "objectives": [1],
+    "requires": [92841],
+    "level": 35,
+    "reputation": 93,
+    "accept_npc": 253136,
+    "turnin_npc": 253136,
+    "source": "https://www.wowhead.com/forever/quest=92846/outcast-necromancers"
+  },
+  "93034": {
+    "name": "Valley of Bones",
+    "delivery": true,
+    "turnin_npc": 253177,
+    "source": "https://www.wowhead.com/forever/quest=93034/valley-of-bones"
+  },
+  "93035": {
+    "name": "Ravaging Ravagers",
+    "objectives": [1],
+    "requires": [93034],
+    "level": 35,
+    "reputation": 92,
+    "accept_npc": 253177,
+    "turnin_npc": 253177,
+    "source": "https://www.wowhead.com/forever/quest=93035/ravaging-ravagers"
+  },
+  "93037": {
+    "name": "Outing Outcasts",
+    "objectives": [1],
+    "requires": [93034],
+    "level": 35,
+    "reputation": 92,
+    "accept_npc": 253177,
+    "turnin_npc": 253177,
+    "source": "https://www.wowhead.com/forever/quest=93037/outing-outcasts"
+  }
+}

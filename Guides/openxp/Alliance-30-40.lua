@@ -1456,11 +1456,6 @@ step
     .accept 5943 >>Accept Gizelton Caravan
     .target Rigger Gizelton
 step
-    .goto Desolace,36.22,79.25
-    >>Talk to |cRXP_FRIENDLY_Uthek the Wise|r
-    .accept 93034 >>Accept Valley of Bones
-    .target Uthek the Wise
-step
     .goto Desolace,55.69,67.79
     >>Escort Gizelton Caravan past Mannoroc Coven
     .complete 5943,1 --Gizelton Caravan
@@ -2360,7 +2355,7 @@ RXPGuides.RegisterGuide([[
 #group RestedXP Forever Guide (A)
 #subgroup OpenXP 21-60
 #name 39-40 Desolace
-#next 40-41 Shen'dralas
+#next 40-41 Ironforge
 
 step
     #completewith next
@@ -2437,13 +2432,6 @@ step
     .complete 6134,1 --Ghost-o-plasm Round Up
     .mob Undead Ravager
     .mob Magrami Spectre
-step
-    .goto Desolace,74.97,68.16
-    >>Talk to |cRXP_FRIENDLY_Warug|r
-    .accept 92841 >>Accept Valley of Bones
-    .accept 92743 >>Accept A Conqueror's Crown
-    .turnin 92743 >>Turn in A Conqueror's Crown
-    .target Warug
 step << Warlock
     --oxp-class
     .goto Desolace,80.47,77.84

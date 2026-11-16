@@ -1918,12 +1918,6 @@ step
     .accept 5501 >>Accept Bone Collector
     .target Bibbly F'utzbuckle
 step
-    .goto Desolace,74.97,68.16
-    >>Talk to |cRXP_FRIENDLY_Warug|r
-    .accept 92743 >>Accept A Conqueror's Crown
-    .turnin 92743 >>Turn in A Conqueror's Crown
-    .target Warug
-step
     .goto Desolace,64.18,91.63
     >>Kill |cRXP_ENEMY_Magrami Spectre|r. Loot them for |cRXP_LOOT_Ghost-o-plasm|r
     .complete 6134,1 --Ghost-o-plasm Round Up

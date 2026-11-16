@@ -10,6 +10,7 @@ QUEST_ITEMS_NEEDED = "%s: %d/%d"
 CreateVector2D = function(x, y) return {x = x, y = y} end
 LibStub = function() return {} end
 strupper = string.upper
+strlower = string.lower
 StaticPopupDialogs = {}
 
 local rows, rowsShown, totalQuests, onEvent
@@ -73,3 +74,26 @@ assert(addon.QuestLogIDs()[951] == "Mathystra Relics", "legacy tuple API remains
 setRows(1, 1, {{title = "Darkshore", isHeader = true, isCollapsed = true}})
 assert(addon.QuestLogIDs() == nil)
 print("quest log compatibility tests passed")
+
+local standing
+C_Reputation = {GetFactionDataByID = function(id)
+    assert(id == 93)
+    if standing then
+        local threshold = standing >= 6 and 9000 or 0
+        return {reaction = standing, currentReactionThreshold = threshold,
+                nextReactionThreshold = threshold + 3000, currentStanding = threshold}
+    end
+end}
+addon.repStandingID = {honored = 6}
+addon.settings = {profile = {}}
+local gate = addon.functions.reputation("parse", nil, "93", "Honored", "<0", "skip")
+gate.step = {active = true}
+addon.functions.reputation({element = gate})
+assert(not gate.step.completed, "unknown reputation leaves the step intact")
+standing = 6
+addon.functions.reputation({element = gate})
+assert(not gate.step.completed, "Honored satisfies the pickup gate")
+standing = 4
+addon.functions.reputation({element = gate})
+assert(gate.step.completed, "Neutral skips the clan pickup")
+print("reputation gate tests passed")

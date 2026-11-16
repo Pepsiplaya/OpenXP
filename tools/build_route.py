@@ -55,6 +55,9 @@ ALL_CLASSES = sum(CLASS_BITS.values())
 # See docs/RESEARCH_SOURCES.md for the client build and source.
 QUEST_LOG_LIMITS = {"Forever": 40, "Classic": 20}
 QUEST_LOG_LIMIT = QUEST_LOG_LIMITS["Forever"]
+# These clan quests require reputation even when the source omits that field.
+# Valley of Bones has a separate, opt-in guide for each clan.
+FOREVER_CENTAUR_QUESTS = {92743, 92841, 92844, 92846, 92847, 93034, 93035, 93037, 93041}
 # Quests whose objectives are in another zone are picked up only when the
 # route reaches that zone within this many sections.
 CARRY_AHEAD = 6
@@ -829,6 +832,8 @@ class Builder:
             if qid in self.done or qid in self.used:
                 continue
             if q.specialFlags & 1 or q.reqSkill or q.reqRep:  # 1: repeatable
+                continue
+            if GAME == "Forever" and qid in FOREVER_CENTAUR_QUESTS:
                 continue
             if q.zone in EVENT_SORTS:
                 continue  # holiday and world-event quests

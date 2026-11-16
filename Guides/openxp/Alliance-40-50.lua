@@ -13,37 +13,6 @@ RXPGuides.RegisterGuide([[
 << Alliance
 #group RestedXP Forever Guide (A)
 #subgroup OpenXP 21-60
-#name 40-41 Shen'dralas
-#next 40-41 Ironforge
-
-step
-    #completewith next
-    .zone Shen'dralas >>Get to Shen'dralas: Ride to Shen'dralas
-step
-    .goto Shen'dralas,35.60,12.00
-    >>Talk to |cRXP_FRIENDLY_Orgrul|r
-    .turnin -92841 >>Turn in Valley of Bones
-    .accept 92844 >>Accept Mountain of Bones
-    .turnin 92844 >>Turn in Mountain of Bones
-    .target Orgrul
-step
-    .goto Shen'dralas,21.20,23.20
-    >>Talk to |cRXP_FRIENDLY_Nerlokh|r
-    .accept 93035 >>Accept Ravaging Ravagers
-    .turnin 93035 >>Turn in Ravaging Ravagers
-    .accept 93037 >>Accept Outing Outcasts
-    .turnin 93037 >>Turn in Outing Outcasts
-    .turnin -93034 >>Turn in Valley of Bones
-    .target Nerlokh
-]])
-
-RXPGuides.RegisterGuide([[
-#forever
-#disabledungeons
-#version 1
-<< Alliance
-#group RestedXP Forever Guide (A)
-#subgroup OpenXP 21-60
 #name 40-41 Ironforge
 #next 40-41 Hillsbrad/Alterac
 

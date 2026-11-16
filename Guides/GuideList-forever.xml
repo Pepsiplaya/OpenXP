@@ -19,4 +19,5 @@
     <Script file="Guides/openxp/Dungeons-Alliance.lua"/>
     <Script file="Guides/openxp/Dungeons-Horde.lua"/>
     <Script file="Guides/openxp/Extras-Collectibles.lua"/>
+    <Script file="Guides/openxp/Extras-Shendralas.lua"/>
 </Ui>

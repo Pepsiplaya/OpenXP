@@ -36,6 +36,7 @@ addon.GetFactionInfoByID = _G.GetFactionInfoByID or function(factionID)
     local name, description, standingID, barMin, barMax, barValue
 
     local factionData = C_Reputation.GetFactionDataByID(factionID);
+    if not factionData then return end
     name = factionData.name
     standingID = factionData.reaction
     barValue = factionData.currentStanding
@@ -3823,6 +3824,7 @@ function addon.functions.reputation(self, ...)
     local step = element.step
     local _, _, standing, bottomValue, topValue, earnedValue =
         addon.GetFactionInfoByID(element.faction)
+    if not (standing and bottomValue and topValue and earnedValue) then return end
     local relativeValue = earnedValue
     if addon.settings.profile.debug then
         element.tooltip = element.faction
