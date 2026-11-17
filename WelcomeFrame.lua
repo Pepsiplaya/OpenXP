@@ -15,6 +15,13 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.72-beta",
+        date = "November 2026",
+        changes = {
+            "Mages walk to Kharanos. The guide names Eric Brighthammer, marks his campfire, and tells you to stay seated until you gain Boosted Rest.",
+        },
+    },
+    {
         version = "1.3.71-beta",
         date = "November 2026",
         changes = {

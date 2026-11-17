@@ -59,3 +59,9 @@
 - Reproduced the icon-only objective in Lua by supplying an item objective with an empty description. The guide now keeps its own instruction visible until the game provides usable objective text. A missing description without a guide instruction shows a loading message. Progress and completion still use the quest data.
 - Put Grik'nir's name and the journal loot instruction directly on The Stolen Journal objective. The quest log regression covers missing and empty rows, later progress, and stale fallback data.
 - Windows validation passed the Lua suites, 58 Python tests, 270 Smart Start checks, and the coordinate, label, and frozen-route checks.
+
+### 1.3.72-beta
+
+- A player screenshot showed the Spirit Healer shortcut above Eric's quest pickup, along with a blank hand-in and icon-only objectives. In both modes the Mage route now walks to Kharanos in its own step. For the other normal-mode routes the shortcut clears on arrival.
+- Verified the supply bundle delivery, Eric's quest endpoints, and the campfire pin in the Forever data. The guide shows the bundle hand-in if held, the pickup, the campfire, and the return separately. The campfire step waits for quest credit. Record the time to credit during the next live run.
+- Windows validation passed 59 Python tests, 270 Smart Start checks, all Lua suites, and the coordinate, label, and frozen-route checks. Compared the line-based saved step IDs after Eric against the prior build. The pinned audit found nothing to review for these three quests and kept the overall total at 16 findings.

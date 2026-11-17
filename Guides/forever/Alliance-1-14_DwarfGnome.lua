@@ -711,33 +711,33 @@ step
 --xx 410 the adventurer
 --xx 410 the great outdoors
 step
-    #hardcore
-    #completewith next
+    #hardcore << !Mage
     .goto 1426/0,-499.17,-5644.37
-    .subzone 131 >> Travel to Kharanos
-    .mob Crag Boar
-step
+    .subzone 131 >>Follow the road to Kharanos.
+step << !Mage
     #softcore
-    #completewith next
+    #completewith KharanosCampfire
+    .subzoneskip 131
     >>|cRXP_WARN_Make sure your subzone is NOT Coldridge Pass|r
     .deathskip >> Die and respawn at the |cRXP_FRIENDLY_Spirit Healer|r
     .target Spirit Healer
 step
     .goto 1426/0,-498.400,-5648.400
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Eric Brighthammer::265813|r
+    .turnin -96628 >>Give the Supply Bundle to |cRXP_FRIENDLY_Eric Brighthammer::265813|r to finish The Adventurer.
     .target Eric Brighthammer::265813
-    .turnin 96628 >>Turn in The Adventurer
-    .accept 96608 >>Accept The Great Outdoors
+step
+    #label KharanosCampfire
+    .goto 1426/0,-498.400,-5648.400
+    .accept 96608 >>Ask |cRXP_FRIENDLY_Eric Brighthammer::265813|r for The Great Outdoors.
+    .target Eric Brighthammer::265813
+step
+    .isOnQuest 96608
+    .goto Dun Morogh,46.68,53.84
+    .complete 96608,0 >>Type /sit beside Eric's Basic Campfire. Stay seated until you gain Boosted Rest and the quest is ready to turn in.
 step
     .goto 1426/0,-498.400,-5648.400
-    >>|cRXP_WARN_Type "/sit" in chat and wait for one minute around the campfire|r
-    .complete 96608,1 -- /sit emote in chat 1/1
-    .complete 96608,2 -- Gain boosted rest buff 1/1
-step
-    .goto 1426/0,-498.400,-5648.400
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Eric Brighthammer::265813|r
+    .turnin 96608 >>Return to |cRXP_FRIENDLY_Eric Brighthammer::265813|r to finish The Great Outdoors.
     .target Eric Brighthammer::265813
-    .turnin 96608 >>Turn in The Great Outdoors
     .accept 96629 >>Accept Camping 101: Cooking
 step
     #label SenirEnd

@@ -47,37 +47,40 @@ def mage_chapters(race):
     return loaded
 
 
+def playable_steps(body, player, hardcore):
+    excluded = "#softcore" if hardcore else "#hardcore"
+    for step in STEP.split(body)[1:]:
+        header, _, content = step.partition("\n")
+        if not applies(header.partition("<<")[2], player):
+            continue
+        lines = []
+        for row in content.splitlines():
+            value, _, tag = row.partition("<<")
+            if applies(tag, player):
+                lines.append(value.strip())
+        if excluded not in lines:
+            yield lines
+
+
 class MageRouteTests(unittest.TestCase):
+    def step_for(self, active, command):
+        matches = [i for i, step in enumerate(active)
+                   if any(line.startswith(command) for line in step)]
+        self.assertEqual(len(matches), 1, command)
+        return matches[0]
+
     def test_gnome_mage_hands_in_the_journal_before_the_level_four_delivery(self):
         _, body = mage_chapters("Gnome")["1-5 Coldridge Valley"]
         player = {"Alliance", "Mage", "Gnome"}
         for hardcore in (False, True):
             with self.subTest(hardcore=hardcore):
-                active = []
-                for step in STEP.split(body)[1:]:
-                    header, _, content = step.partition("\n")
-                    if not applies(header.partition("<<")[2], player):
-                        continue
-                    lines = []
-                    for row in content.splitlines():
-                        value, _, tag = row.partition("<<")
-                        if applies(tag, player):
-                            lines.append(value.strip())
-                    if ("#softcore" if hardcore else "#hardcore") not in lines:
-                        active.append(lines)
-
-                def step_for(command):
-                    matches = [i for i, step in enumerate(active)
-                               if any(line.startswith(command) for line in step)]
-                    self.assertEqual(len(matches), 1, command)
-                    return matches[0]
-
-                cave = step_for(".complete 218,1 ")
-                journal = step_for(".turnin 218 ")
-                level = step_for(".xp 4 ")
-                brew = step_for(".accept 3364 ")
-                delivery = step_for(".turnin 3364 ")
-                mug = step_for(".turnin 3365 ")
+                active = list(playable_steps(body, player, hardcore))
+                cave = self.step_for(active, ".complete 218,1 ")
+                journal = self.step_for(active, ".turnin 218 ")
+                level = self.step_for(active, ".xp 4 ")
+                brew = self.step_for(active, ".accept 3364 ")
+                delivery = self.step_for(active, ".turnin 3364 ")
+                mug = self.step_for(active, ".turnin 3365 ")
                 self.assertEqual([cave, journal, level, brew, delivery, mug],
                                  sorted({cave, journal, level, brew, delivery, mug}))
                 self.assertIn(".mob Frostmane Troll Whelp::706", active[level])
@@ -86,6 +89,31 @@ class MageRouteTests(unittest.TestCase):
                 self.assertTrue(any(line.startswith(".accept 3365 ") for line in active[delivery]))
                 self.assertFalse(any(line.startswith(".deathskip ")
                                      for step in active[cave:brew] for line in step))
+
+    def test_gnome_mage_walks_to_kharanos_and_finishes_the_campfire_quest(self):
+        _, body = mage_chapters("Gnome")["5-11 Dun Morogh"]
+        player = {"Alliance", "Mage", "Gnome"}
+        for hardcore in (False, True):
+            with self.subTest(hardcore=hardcore):
+                active = list(playable_steps(body, player, hardcore))
+                bundle = self.step_for(active, ".turnin -96628 ")
+                road = self.step_for(active[:bundle], ".subzone 131 ")
+                offer = self.step_for(active, ".accept 96608 ")
+                campfire = self.step_for(active, ".complete 96608,0 ")
+                handoff = self.step_for(active, ".turnin 96608 ")
+                self.assertEqual([road, bundle, offer, campfire, handoff],
+                                 sorted({road, bundle, offer, campfire, handoff}))
+                self.assertIn(".goto Dun Morogh,46.68,53.84", active[campfire])
+                self.assertIn(".isOnQuest 96608", active[campfire])
+                self.assertRegex("\n".join(active[campfire]), r"\.complete 96608,0 >>.*?/sit.*Boosted Rest")
+                self.assertEqual(handoff, self.step_for(active, ".accept 96629 "))
+                self.assertFalse(any(line.startswith(".deathskip ")
+                                     for step in active[:handoff] for line in step))
+
+        active = list(playable_steps(body, {"Alliance", "Warrior", "Dwarf"}, hardcore=False))
+        offer = self.step_for(active, ".accept 96608 ")
+        shortcut = self.step_for(active[:offer], ".deathskip ")
+        self.assertIn(".subzoneskip 131", active[shortcut])
 
     def test_fresh_starters_reach_the_shared_level_cap_chapter(self):
         starts = {

@@ -1,11 +1,11 @@
-# Player testing for OpenXP Ultimate 1.3.71-beta
+# Player testing for OpenXP Ultimate 1.3.72-beta
 
 ## Install the test build
 
 1. Close WoW Forever. Use a separate Forever installation or test profile if available.
 2. For a swap in your existing installation, move your existing `OpenXP` addon folder outside `Interface\AddOns`. Back up its `OpenXP.lua` and `OpenXP.lua.bak` files from the account and character `SavedVariables` directories, where present.
 3. Extract the test ZIP. Copy the extracted `OpenXP` folder into `World of Warcraft\_forever_\Interface\AddOns`. The file should be at `AddOns\OpenXP\OpenXP.toc`. Disable RestedXP Guides in the character selection AddOns menu while testing OpenXP.
-4. Log in and run `/oxp news`. Confirm the version is `1.3.71-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
+4. Log in and run `/oxp news`. Confirm the version is `1.3.72-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
 
 ## Fresh Alliance Mage
 
@@ -16,6 +16,7 @@ Start at level 1. A Human starts in Northshire, a Gnome in Coldridge Valley, and
 | First login | Smart Start selects the racial chapter. The guide menu shows **Mage leveling**. The panel identifies your starter route, current guide, and first spell milestones. |
 | First trainer and level 4 | Follow the waypoint and talk to the named trainer. Check Frostbolt and Conjure Water, then reopen the panel after training. The questing steps keep the Hearthstone for a Human or Gnome Mage. |
 | Gnome Mage in Coldridge Valley | The journal objective names Grik'nir the Cold and the journal. Turn it in to Grelin before starting Nori's delivery. If the hand-in leaves you below level 4, the next step points to the whelps near the cave. At level 4, take the brew straight to Durnan in Anvilmar and return the empty mug to Nori when the guide next sends you past her. |
+| Kharanos arrival | In normal and Hardcore modes the Mage guide directs you to walk to town. Deliver The Adventurer to Eric Brighthammer if it is active, then accept The Great Outdoors from him. The next step pins his campfire at 46.68, 53.84 and asks you to `/sit` until Boosted Rest and quest credit. Return to Eric to finish and start Camping 101: Cooking. |
 | Levels 6–13 | Check Conjure Food at 6 and Polymorph at 8. A Skyborne sees the two trainer NPCs in the correct locations and the wand reward notes. Compare your first wand with the options in the panel. |
 | Optional equipment at 10 and 15 | Check the Mirror Lake or Mage-tastic Gizmonitor offer without the introductory quest. On Skyborne, check the direct Mirror Lake offer. A Human or Gnome can also try Manaweave Robe at 15 and confirm the coffer objectives, gem crate credit, and final hand-in. |
 | Westfall, Darkshore, and Ashenvale | Try the Sentinel Hill book and see if Garion offers Research Access. For the Kerlonian escort, record whether the Horn arrives on acceptance, where the log changes to ready, and the remaining time when you reach Maestra's Post. |
