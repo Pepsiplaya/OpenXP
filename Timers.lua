@@ -186,34 +186,42 @@ local nodeHash = {}
 flightInfo.nodeHash = nodeHash
 local flightUpdate = 0
 
-function addon:TAXIMAP_OPENED()
-    -- OpenXP: the flight paths you know are only readable from an open
-    -- flight map; the travel directions say so until this has happened once
-    if OXPCData then OXPCData.openxpTaxiSeen = true end
-    local mapID = C_Map.GetBestMapForUnit("player")
+function addon:TAXIMAP_OPENED(event)
+    local planned = event == "TAXIMAP_OPENED" and addon.travel.Current()
+    local mapID = GetTaxiMapID and GetTaxiMapID()
+    if not mapID or mapID <= 0 then mapID = C_Map.GetBestMapForUnit("player") end
     local cTime = GetTime()
-    if mapID and cTime - flightUpdate > 1 then
+    if mapID and (event or not flightInfo.currentFP or cTime - flightUpdate > 1) then
+        local states = Enum and Enum.FlightPathState
+        local getNodes = C_TaxiMap and C_TaxiMap.GetAllTaxiNodes
+        local FPList = states and getNodes and getNodes(mapID)
+        if not (FPList and #FPList > 0) then return end
         flightUpdate = cTime
         table.wipe(nodeHash)
         table.wipe(flightInfo)
         flightInfo.nodeHash = nodeHash
-        local FPList = C_TaxiMap.GetAllTaxiNodes(mapID)
-        for _, v in pairs(FPList) do
-            local id = v.nodeID
-            --print(id)
-            if id and v.state ~= Enum.FlightPathState.Unreachable then
-                local hash = addon.GetFlightHash(v.slotIndex)
-                flightInfo.nodeHash[hash] = id
+        flightInfo.reachable = {}
+        flightInfo.slots = {}
+        for _, v in ipairs(FPList) do
+            local id = not v.isMapLayerTransition and v.nodeID
+            if id and v.state == states.Unreachable then
+                flightInfo.reachable[id] = false
+            elseif id and (v.state == states.Current or v.state == states.Reachable) then
                 OXPCData.flightPaths[id] = v.name
-                flightInfo[v.slotIndex] = v.nodeID
-                --print(v.nodeID,v.name,hash)
-                if v.state == Enum.FlightPathState.Current then
-                    flightInfo.currentFP = id
+                if v.slotIndex and v.slotIndex > 0 then
+                    local hash = addon.GetFlightHash(v.slotIndex)
+                    if hash then flightInfo.nodeHash[hash] = id end
+                    flightInfo[v.slotIndex] = id
+                    flightInfo.slots[id] = v.slotIndex
                 end
+                if v.state == states.Current then flightInfo.currentFP = id end
             end
         end
+        if flightInfo.currentFP then OXPCData.openxpTaxiSeen = true end
+        addon.travel.Invalidate()
     end
     flightInfo.MapID = mapID
+    if planned then addon.travel.TakeRecommendedFlight(flightInfo, planned) end
 end
 
 function addon:PLAYER_CONTROL_LOST()
@@ -252,7 +260,7 @@ function addon.GetFlightHash(index,level)
     else
         x,y = TaxiNodePosition(index)
     end
-    --print('h:',x,y)
+    if not (x and y) then return end
     return math.floor(x*4096)+math.floor(y*4096)*4096
 end
 

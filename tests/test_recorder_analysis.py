@@ -29,6 +29,20 @@ def benchmark(start, end, faction="Alliance"):
 
 
 class RecorderTests(unittest.TestCase):
+    def test_timed_trip_compares_the_starting_estimate_with_the_observed_elapsed_time(self):
+        recording = session(sample(0, 8, 10, 2500, "moving"),
+                            sample(5000, 8, 10, 2500, "taxi"),
+                            sample(12000, 8, 10, 2500, "moving", map_id=1439))
+        recording["trip"] = {"mode": "fly", "seconds": 10, "map_id": 1439,
+                             "flight_from": 26, "flight_to": 28}
+        result = recorder.summarize(recording)["travel"]
+        self.assertEqual(result["recorded_seconds"], 12)
+        self.assertEqual(result["elapsed_minus_estimated_seconds"], 2)
+        self.assertEqual((result["flight_from"], result["flight_to"]), (26, 28))
+        self.assertTrue(result["taxi_observed"])
+        recording["end_reason"] = "logout"
+        self.assertIsNone(recorder.summarize(recording)["travel"]["recorded_seconds"])
+
     def test_rollover_total_and_quest_rewards_are_separate(self):
         result = recorder.summarize(session(
             sample(0, 1, 75, 100, "stationary"),

@@ -11,6 +11,12 @@ OpenXP Recorder is an optional companion for WoW Forever. It uses the game's pub
 
 The recorder stores the client build, class, faction, level and XP snapshots, activity and instance flags, and quest IDs with times relative to the session. Optional positions are rounded to one tenth of one percent of the map. It retains four sessions per character and stops a session at 8,192 events. Copy sessions you want to keep before rotation. The file contents use session IDs, and the path WoW gives the file includes account and character directories.
 
+## Time one trip
+
+With OpenXP 1.3.75-beta or newer, select the guide waypoint and run `/oxprec start travel` before moving. Run `/oxprec stop` as soon as you reach that waypoint, then log out or reload to write the recording. The recorder saves the guide's starting estimate, destination map, and the IDs of the first recommended flight when one is present. The analyzer compares that estimate with the time between your two commands and reports whether a taxi sample was observed. Stop at the original destination even if you take a different route. The measurement includes time spent waiting.
+
+Use `/oxprec start` for a matched trip or quest segment with RestedXP. Test each guide separately from the same starting position and character state. Compare elapsed time and the actions each guide presented. Share only the Recorder session you want reviewed.
+
 ## Summarize a session
 
 Read the character's `WTF/Account/<account>/<realm>/<character>/SavedVariables/OpenXPRecorder.lua` from the Forever game folder. Keep the source file local. The analyzer accepts a literal SavedVariables table and emits aggregate results.
@@ -37,7 +43,7 @@ Use a `tools/build_route.py --benchmark` summary for a whole route or select one
 The recorder is a separate addon folder. To build the optional ZIP from a committed revision, run this from the repository after creating `dist`.
 
 ```powershell
-git archive --format=zip --prefix=OpenXPRecorder/ --output=dist/OpenXPRecorder-0.1.0-beta.zip HEAD:companion/OpenXPRecorder
+git archive --format=zip --prefix=OpenXPRecorder/ --output=dist/OpenXPRecorder-0.1.1-beta.zip HEAD:companion/OpenXPRecorder
 ```
 
 **VERIFIED BY GAME DATA** from the generated API documentation for Forever 1.60.1.70938, reviewed November 16, 2026. Use the one-argument quest acceptance event, the quest hand-in event with XP, and the public player XP and map snapshots. [Quest log](https://github.com/reckhou/WoWBlzCode/blob/21ec933bce345f004617343c112a1169710be14a/Forever/BlizzardInterfaceCode/Interface/AddOns/Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua#L1239), [Map API](https://github.com/reckhou/WoWBlzCode/blob/21ec933bce345f004617343c112a1169710be14a/Forever/BlizzardInterfaceCode/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua#L411), [XP and event index](https://github.com/reckhou/WoWBlzCode/tree/21ec933bce345f004617343c112a1169710be14a/index/Forever)

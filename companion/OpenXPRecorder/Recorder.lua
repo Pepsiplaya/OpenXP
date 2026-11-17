@@ -105,6 +105,7 @@ local events = {
     "PLAYER_XP_UPDATE", "PLAYER_LEVEL_UP", "QUEST_ACCEPTED", "QUEST_TURNED_IN",
     "PLAYER_DEAD", "PLAYER_ALIVE", "PLAYER_UNGHOST", "PLAYER_REGEN_DISABLED", "PLAYER_REGEN_ENABLED",
     "PLAYER_MAP_CHANGED", "ZONE_CHANGED_NEW_AREA", "PLAYER_LEAVING_WORLD", "PLAYER_ENTERING_WORLD", "PLAYER_LOGOUT",
+    "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
 }
 
 frame:SetScript("OnEvent", function(_, event, value, xpReward)
@@ -132,7 +133,7 @@ frame:SetScript("OnEvent", function(_, event, value, xpReward)
     end
 end)
 
-local function Start(positions)
+local function Start(positions, travel)
     if session then
         Say("A session is already recording. Use /oxprec stop to finish it.")
         return
@@ -157,7 +158,7 @@ local function Start(positions)
         id = previous and previous.id + 1 or 1,
         build = tonumber(build), interface = interface,
         class = Public(select(2, UnitClass("player"))), faction = Public(UnitFactionGroup("player")),
-        positions = positions, elapsed_ms = 0, events = {},
+        positions = positions, trip = travel, elapsed_ms = 0, events = {},
     }
     while #history >= MAX_SESSIONS do table.remove(history, 1) end
     history[#history + 1] = session
@@ -168,7 +169,25 @@ local function Start(positions)
         if session == active and not loading then Sample() end
     end)
     Sample(0)
-    Say(positions and "Recording with coarse positions." or "Recording with map IDs only.")
+    if travel then
+        Say(("Timing one trip. Guide estimate %d seconds (%s). Stop at the destination with /oxprec stop.")
+            :format(travel.seconds, travel.mode))
+    else
+        Say(positions and "Recording with coarse positions." or "Recording with map IDs only.")
+    end
+end
+
+local function StartTrip()
+    local guide = OpenXPGetTravelEstimate and OpenXPGetTravelEstimate()
+    local seconds = guide and Positive(guide.seconds)
+    local map = guide and Positive(guide.map_id)
+    local mode = guide and guide.mode
+    if not (seconds and map and (mode == "walk" or mode == "fly" or mode == "transport")) then
+        Say("Set an active OpenXP guide waypoint before timing a trip.")
+        return
+    end
+    Start(false, {seconds = seconds, map_id = map, mode = mode,
+                  flight_from = Positive(guide.flight_from), flight_to = Positive(guide.flight_to)})
 end
 
 SLASH_OPENXPRECORDER1 = "/oxprec"
@@ -176,6 +195,8 @@ SlashCmdList.OPENXPRECORDER = function(message)
     local command = message:lower():match("^%s*(.-)%s*$")
     if command == "start" or command == "start positions" then
         Start(command == "start positions")
+    elseif command == "start travel" then
+        StartTrip()
     elseif command == "stop" and session then
         Sample()
         if session then Finish("stopped") end
@@ -183,6 +204,6 @@ SlashCmdList.OPENXPRECORDER = function(message)
         Say(session and ("Recording session %d. %d events collected so far."):format(session.id, #session.events)
             or "Recorder is stopped.")
     else
-        Say("/oxprec start, /oxprec start positions, /oxprec stop, /oxprec status")
+        Say("/oxprec start, /oxprec start positions, /oxprec start travel, /oxprec stop, /oxprec status")
     end
 end

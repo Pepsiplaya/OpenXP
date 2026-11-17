@@ -15,6 +15,14 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.75-beta",
+        date = "November 2026",
+        changes = {
+            "OpenXP remembers learned flight paths for each character and compares the whole trip with walking, including within the same zone.",
+            "With Flight Path automation enabled, open the recommended flight master to board the guide's selected flight. Hold Shift to choose a flight yourself.",
+        },
+    },
+    {
         version = "1.3.74-beta",
         date = "November 2026",
         changes = {

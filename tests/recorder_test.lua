@@ -1,7 +1,7 @@
 local root = ...
 local frames, callbacks, messages = {}, {}, {}
 local time, level, xp, xpMax, map = 0, 1, 75, 100, 1429
-local moving, combat, dead, grouped, party = false, false, false, false, false
+local moving, combat, dead, grouped, party, taxi = false, false, false, false, false, false
 local positionReads = 0
 local secret = {}
 
@@ -44,7 +44,7 @@ function UnitXP(unit) assert(unit == "player"); return xp end
 function UnitXPMax(unit) assert(unit == "player"); return xpMax end
 function UnitIsDeadOrGhost(unit) assert(unit == "player"); return dead end
 function UnitAffectingCombat(unit) assert(unit == "player"); return combat end
-function UnitOnTaxi(unit) assert(unit == "player"); return false end
+function UnitOnTaxi(unit) assert(unit == "player"); return taxi end
 function UnitIsAFK(unit) assert(unit == "player"); return secret end
 function GetUnitSpeed(unit) assert(unit == "player"); return moving and 5 or 0 end
 function IsInGroup() return grouped end
@@ -129,5 +129,23 @@ for i = 1, 8192 do signal("QUEST_ACCEPTED", i) end
 assert(#sessions == 4 and sessions[4].id == 6)
 assert(sessions[4].end_reason == "limit" and #sessions[4].events == 8192 and timer.cancelled)
 assert(next(frames[1].events) == nil)
+
+command("start travel")
+assert(sessions[4].id == 6, "travel timing requires an estimate from the active guide")
+local estimate = {seconds = 120, map_id = 1439, mode = "fly", flight_from = 26, flight_to = 28}
+OpenXPGetTravelEstimate = function() return estimate end
+time = 20
+command("start travel")
+local trip = sessions[4]
+assert(trip.id == 7 and trip.trip.seconds == 120 and trip.trip.mode == "fly")
+assert(trip.trip.map_id == 1439 and trip.trip.flight_from == 26 and trip.trip.flight_to == 28)
+estimate.seconds = 15
+time, taxi = 25, true
+signal("PLAYER_CONTROL_LOST")
+nextUpdate()
+assert(trip.events[2].state == "taxi" and trip.trip.seconds == 120)
+time, taxi = 148, false
+command("stop")
+assert(trip.elapsed_ms == 128000 and trip.end_reason == "stopped" and not trip.positions)
 console("recorder tests passed")
 return 0

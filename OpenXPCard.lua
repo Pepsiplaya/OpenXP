@@ -1189,15 +1189,27 @@ local function LayoutBlock(b, step, first)
         if here and step.index == here.index then
             tinsert(lines, 1, {text = "|cFFF2C35C" .. fmt(L("You're right here, so do this first. Then back to step %d."), here.from) .. "|r", plain = true})
         end
-        -- the step is in another zone: how to get there
+        -- Lead with the next travel action when the waypoint needs an itinerary.
         local tv = addon.travel
         local plan = tv and tv.Current and tv.Current()
         local travel = plan and plan.target and plan.target.step == step and tv.Lines()
         if travel and #travel > 0 then
-            tinsert(lines, {text = "|cFFB36BFF" .. L("Getting there:") .. "|r", plain = true})
-            for _, t in ipairs(travel) do
+            local riding = plan.boarding and UnitOnTaxi and UnitOnTaxi("player")
+            local nextAction = riding and fmt(L("In flight to %s"), plan.boarding.to.name) or travel[1]
+            local action = "|cFFB36BFF" .. nextAction .. "|r"
+            if not riding and plan.legs[1].kind == "fly" and (Profile() or {}).enableFPAutomation then
+                action = action .. "\n" .. L("Open the flight map to board.")
+            end
+            if plan.seconds then
+                local minutes = math.max(1, math.ceil(plan.seconds / 60))
+                action = action .. "\n|cFF9EA3B3" .. fmt(L("About %d min total"), minutes) .. "|r"
+            end
+            tinsert(lines, 1, {text = action, plain = true})
+            for i = 2, #travel do
                 if #lines >= MAX_LINES then break end
-                tinsert(lines, {text = t, plain = true})
+                if not riding or plan.legs[i] ~= plan.boarding then
+                    tinsert(lines, {text = travel[i], plain = true})
+                end
             end
         end
     end

@@ -74,6 +74,7 @@ def summarize(session):
     previous_sample = previous_point = last_point = first_point = last_map = None
     first_point_at = last_point_at = None
     last_at = 0
+    taxi_observed = False
 
     for row in rows:
         if not isinstance(row, dict):
@@ -98,6 +99,7 @@ def summarize(session):
             state = row.get("state")
             if state not in STATES:
                 raise ValueError("Invalid activity in recorder data")
+            taxi_observed = taxi_observed or state == "taxi"
             map_id = integer(row, "map_id", minimum=1, optional=True)
             if map_id is not None:
                 if last_map is not None and map_id != last_map:
@@ -157,7 +159,7 @@ def summarize(session):
     if not isinstance(player_class, str) or not player_class.isascii() or not player_class.isalpha() or not player_class.isupper():
         player_class = None
     faction = session.get("faction")
-    return {
+    result = {
         "status": "RECORDED",
         "session": session_id,
         "build": integer(session, "build", minimum=1, optional=True),
@@ -188,6 +190,23 @@ def summarize(session):
         "maps": {key: {"sampled_seconds": row["observed_ms"] / 1000,
                        "observed_xp": row["observed_xp"]} for key, row in sorted(by_map.items())},
     }
+    trip = session.get("trip")
+    if trip is not None:
+        if not isinstance(trip, dict) or trip.get("mode") not in ("walk", "fly", "transport"):
+            raise ValueError("Invalid travel estimate in recorder data")
+        estimate = integer(trip, "seconds", minimum=1)
+        measured = result["elapsed_seconds"] if result["end_reason"] == "stopped" else None
+        result["travel"] = {
+            "mode": trip["mode"],
+            "target_map": integer(trip, "map_id", minimum=1),
+            "flight_from": integer(trip, "flight_from", minimum=1, optional=True),
+            "flight_to": integer(trip, "flight_to", minimum=1, optional=True),
+            "estimated_seconds": estimate,
+            "recorded_seconds": measured,
+            "elapsed_minus_estimated_seconds": round(measured - estimate, 3) if measured is not None else None,
+            "taxi_observed": taxi_observed,
+        }
+    return result
 
 
 def comparison(recorded, estimate, *, hub=None, transport="ordinary"):
@@ -268,6 +287,15 @@ def print_summary(result):
           f"reported turn-in XP {result['reported_turnin_xp']} | deaths {result['deaths']}")
     print("Sampled minutes | " + " | ".join(f"{state} {seconds / 60:.1f}"
                                              for state, seconds in result["activity_seconds"].items()))
+    if "travel" in result:
+        trip = result["travel"]
+        print(f"Guide travel estimate {trip['estimated_seconds']} seconds ({trip['mode']}) "
+              f"to map {trip['target_map']}.")
+        if trip["recorded_seconds"] is not None:
+            print(f"Recorded {trip['recorded_seconds']:.1f} seconds "
+                  f"({trip['elapsed_minus_estimated_seconds']:+.1f} versus estimate).")
+        if trip["taxi_observed"]:
+            print("The recorder observed a flight path.")
     if "benchmark" in result:
         compared = result["benchmark"]
         visit_name = f"{compared['hub']} ({compared['transport']}) | " if compared["hub"] else ""

@@ -964,7 +964,7 @@ function addon.settings:CreateAceOptionsPanel()
                     enableFPAutomation = {
                         name = L("Flight Path automation"),
                         desc =
-                            L"Allows the guide to automatically fly you to your destination",
+                            L"Opening the recommended flight master selects the guide's flight. Hold Shift to choose a flight yourself.",
                         type = "toggle",
                         width = optionsWidth,
                         order = 4.5
@@ -3333,8 +3333,8 @@ function addon.settings:CreateAceOptionsPanel()
                         order = 5.5126,
                     },
                     openxpTravel = {
-                        name = L("Show the way to other zones"),
-                        desc = L("When the next step is in another zone, the arrow, the route line and the guide show how to get there: which flight master, boat, tram or road to take, and your Hearthstone when it's ready"),
+                        name = L("Plan walks and flights"),
+                        desc = L("Guide navigation compares walking with travel using your learned flight paths, boats, trams, and your ready Hearthstone."),
                         type = "toggle",
                         width = optionsWidth,
                         order = 5.5127,

@@ -76,6 +76,7 @@ local FPS = {
     [7] = {"Menethil Harbor, Wetlands", 1437, 9.5, 59.7},
     [26] = {"Auberdine, Darkshore", 1439, 36.3, 45.6},
     [28] = {"Astranaar, Ashenvale", 1440, 34.4, 48.0},
+    [80] = {"Far Camp, Darkshore", 1439, 92.0, 45.6}, -- same-zone fixture
 }
 addon.taxiPos = {[0] = {}, [1] = {}}
 addon.FPDB = {Alliance = {}}
@@ -86,6 +87,7 @@ for id, f in pairs(FPS) do
 end
 local function Flight(a, b, secs) addon.FPDB.Alliance[a][b] = secs; addon.FPDB.Alliance[b][a] = secs end
 Flight(12, 7, 300); Flight(12, 2, 120); Flight(2, 6, 180); Flight(6, 7, 150); Flight(26, 28, 150)
+Flight(26, 80, 40)
 
 assert(loadfile(ROOT .. "/DB/travel.lua"))("OpenXP", addon)
 assert(loadfile(ROOT .. "/Travel.lua"))("OpenXP", addon)
@@ -131,7 +133,7 @@ try("Duskwood to Stonetalon: fly, boat, fly, then the Talondeep Path", function(
     assert(a.instance == 0)
     -- and the card lists the legs in order
     local lines = tv.Lines()
-    assert(lines[1] == "1. Fly to Stormwind", lines[1])
+    assert(lines[1] == "Fly to Stormwind", lines[1])
 end)
 
 try("flight paths you haven't learned aren't used", function()
@@ -172,6 +174,121 @@ try("same zone: nothing to plan, the arrow goes straight", function()
     at(1442, 70.0, 40.0)
     assert(tv.PlanFor(albagorm) == nil)
     assert(tv.ArrowTarget(albagorm) == nil)
+end)
+
+local farCamp = target(1439, 96, 45.6)
+try("compares the walks at both ends of a flight in the same zone", function()
+    know(26, 80)
+    at(1439, 32, 45.6)
+    local plan = tv.PlanFor(farCamp)
+    assert(plan and #plan.legs == 3, texts(plan))
+    assert(plan.legs[1].text == "Go to the Auberdine flight master", texts(plan))
+    assert(plan.legs[2].text == "Fly to Far Camp", texts(plan))
+    assert(plan.legs[3].text == "Walk the rest of the way", texts(plan))
+    assert(plan.seconds > 60, "includes walking to and from the masters")
+    addon.arrowFrame = {element = farCamp}
+    local estimate = OpenXPGetTravelEstimate()
+    assert(estimate.mode == "fly" and estimate.seconds == plan.seconds and estimate.flight_to == 80)
+    addon.arrowFrame = nil
+
+    at(1439, 80, 45.6)
+    assert(tv.PlanFor(farCamp) == nil and tv.estimate.mode == "walk", "walking wins from closer to the target")
+end)
+
+try("learned nodes without a verified flight time do not create a shortcut", function()
+    know(26, 80)
+    Flight(26, 80, nil)
+    at(1439, 36.3, 45.6)
+    local plan = tv.PlanFor(farCamp)
+    Flight(26, 80, 40)
+    assert(plan == nil and tv.estimate.mode == "walk")
+end)
+
+try("world map discovery preserves saved nodes and skips locked or hostile stops", function()
+    know(12)
+    Enum = {FlightPathFaction = {Neutral = 0, Horde = 1, Alliance = 2}}
+    C_TaxiMap = {GetTaxiNodesForMap = function(map)
+        if map == 1439 then
+            return {
+                {nodeID = 26, name = "Auberdine", faction = 2, isUndiscovered = false},
+                {nodeID = 80, name = "Far Camp", faction = 2, isUndiscovered = true},
+                {nodeID = 999, name = "Enemy camp", faction = 1, isUndiscovered = false},
+            }
+        end
+    end}
+    tv.SyncFlightPaths()
+    C_TaxiMap, Enum = nil, nil
+    assert(OXPCData.flightPaths[12] and OXPCData.flightPaths[26] == "Auberdine")
+    assert(not OXPCData.flightPaths[80] and not OXPCData.flightPaths[999])
+end)
+
+try("boards only the recommended reachable flight from the right master", function()
+    know(26, 80)
+    at(1439, 32, 45.6)
+    local plan = assert(tv.PlanFor(farCamp))
+    local taken, shift, reachable
+    TakeTaxiNode = function(slot) taken = slot end
+    IsShiftKeyDown = function() return shift end
+    TaxiNodeGetType = function() return reachable and "REACHABLE" or "DISTANT" end
+    addon.settings.profile.enableFPAutomation = true
+    addon.arrowFrame = {element = farCamp}
+    local slots = {[80] = 3}
+    tv.TakeRecommendedFlight({currentFP = 28, slots = slots}, plan)
+    assert(not taken)
+    local map = {currentFP = 26, slots = slots}
+    tv.TakeRecommendedFlight(map, plan)
+    assert(not taken)
+    reachable, shift = true, true
+    tv.TakeRecommendedFlight(map, plan)
+    assert(not taken)
+    shift = false
+    addon.RXPFrame = {activeSteps = {{elements = {{tag = "fly"}}}}}
+    tv.TakeRecommendedFlight(map, plan)
+    assert(not taken, "authored flights retain their handler")
+    addon.RXPFrame = nil
+    tv.TakeRecommendedFlight(map, plan)
+    assert(taken == 3, "selected the live slot for the planned flight")
+    taken = nil
+    tv.TakeRecommendedFlight(map, plan)
+    assert(not taken, "send a planned flight only once")
+    addon.settings.profile.enableFPAutomation = nil
+    addon.arrowFrame, TakeTaxiNode, IsShiftKeyDown, TaxiNodeGetType = nil, nil, nil, nil
+end)
+
+try("opening the live flight map saves its nodes and selects the planned slot", function()
+    know(26, 80)
+    at(1439, 36.3, 45.6)
+    addon.arrowFrame = {element = farCamp}
+    addon.settings.profile.enableFPAutomation = true
+    assert(tv.PlanFor(farCamp))
+    local taken
+    GetTaxiMapID = function() return 1414 end
+    TaxiNodePosition = function(slot) return slot / 10, 0.5 end
+    TaxiNodeGetType = function() return "REACHABLE" end
+    TakeTaxiNode = function(slot) taken = slot end
+    Enum = {FlightPathState = {Current = 0, Reachable = 1, Unreachable = 2}}
+    C_TaxiMap = {GetAllTaxiNodes = function(map)
+        assert(map == 1414, "use the flight map ID")
+        return {
+            {nodeID = 26, state = 0, slotIndex = 1, name = "Auberdine"},
+            {nodeID = 80, state = 1, slotIndex = 5, name = "Far Camp"},
+            {nodeID = 28, state = 2, slotIndex = 6, name = "Astranaar"},
+            {nodeID = 900, state = 1, slotIndex = 7, isMapLayerTransition = true, name = "Other map"},
+        }
+    end}
+    local noop = function() end
+    table.wipe = function(t) for k in pairs(t) do t[k] = nil end end
+    CreateFrame = function() return {ClearAllPoints = noop, SetPoint = noop} end
+    hooksecurefunc = noop
+    addon.RXPFrame = {}
+    assert(loadfile(ROOT .. "/Timers.lua"))("OpenXP", addon)
+    addon:TAXIMAP_OPENED("TAXIMAP_OPENED")
+    assert(taken == 5 and OXPCData.flightPaths[80] == "Far Camp")
+    assert(not OXPCData.flightPaths[28] and not OXPCData.flightPaths[900])
+    assert(addon.flightInfo.reachable[28] == false and tv.plan.boarding.to.fp == 80)
+    addon.settings.profile.enableFPAutomation = nil
+    addon.RXPFrame, addon.arrowFrame, addon.flightInfo = nil, nil, nil
+    TakeTaxiNode, TaxiNodePosition, TaxiNodeGetType, GetTaxiMapID, C_TaxiMap, Enum = nil, nil, nil, nil, nil, nil
 end)
 
 try("the setting turns it off", function()

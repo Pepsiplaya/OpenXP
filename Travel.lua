@@ -1,9 +1,7 @@
--- Getting there from another zone
+-- Travel to the active guide waypoint
 --
--- When the next step is in another zone (or on the other continent), the
--- arrow and the purple route line used to give up. This works out the way
--- there from the flight paths you know, boats, zeppelins, the tram, your
--- Hearthstone and walking from zone to zone (DB/travel.lua), and:
+-- Compares walking with learned flight paths, boats, zeppelins, the tram,
+-- and your Hearthstone using the transport network in DB/travel.lua.
 --   * the arrow points at the next leg (the flight master, the dock, the
 --     road into the next zone) and says what to do there,
 --   * the card lists the legs ("Fly to Menethil Harbor", "Take the boat to
@@ -39,6 +37,7 @@ local REPLAN = 2            -- seconds between working the way out again
 ---------------------------------------------------------------------------
 
 local nodes, links  -- nodes[i] = {wx, wy, inst, zones = {[map] = true}, name, kind, fp}
+local lastAt, lastKey = 0, nil
 local function World(p)
     if not (p and HBD.GetWorldCoordinatesFromZone) then return end
     return HBD:GetWorldCoordinatesFromZone(p[2] / 100, p[3] / 100, p[1])
@@ -123,9 +122,41 @@ local function Build()
 end
 tv.Build = Build
 
+function tv.Invalidate()
+    lastKey = nil
+    tv.plan, tv.estimate = nil, nil
+end
+
 function tv.Reset()
     nodes, links = nil, nil
-    tv.plan = nil
+    tv.Invalidate()
+end
+
+function tv.SyncFlightPaths()
+    local getNodes = C_TaxiMap and C_TaxiMap.GetTaxiNodesForMap
+    if not (OXPCData and getNodes) then return end
+    Build()
+    local maps = {[1414] = true, [1415] = true}
+    for _, node in pairs(tv.fps) do
+        for map in pairs(node.zones) do maps[map] = true end
+    end
+    local factions = Enum and Enum.FlightPathFaction
+    local playerFaction = factions and factions[Faction()]
+    local known = OXPCData.flightPaths or {}
+    OXPCData.flightPaths = known
+    local changed
+    for map in pairs(maps) do
+        for _, node in ipairs(getNodes(map) or {}) do
+            local id = node.nodeID
+            if id and node.isUndiscovered == false and
+                (tv.fps[id] or (factions and (node.faction == playerFaction or node.faction == factions.Neutral))) and
+                not known[id] then
+                known[id] = node.name
+                changed = true
+            end
+        end
+    end
+    if changed then tv.Invalidate() end
 end
 
 local function Dist(a, b)
@@ -135,8 +166,12 @@ local function Dist(a, b)
 end
 
 local function Speed()
-    local level = UnitLevel and UnitLevel("player") or 1
-    return level >= 40 and 10 or 7
+    local _, runSpeed
+    if GetUnitSpeed then _, runSpeed = GetUnitSpeed("player") end
+    if (not issecretvalue or not issecretvalue(runSpeed)) and type(runSpeed) == "number" and runSpeed > 0 then
+        return runSpeed
+    end
+    return 7
 end
 
 local function KnownFp(id)
@@ -151,11 +186,11 @@ local function ShareZone(a, b)
 end
 
 local function FlightSecs(a, b)
+    local info = addon.flightInfo
+    if info and info.currentFP == a.fp and info.reachable and info.reachable[b.fp] == false then return end
     local db = addon.FPDB and addon.FPDB[Faction()]
     local t = db and (db[a.fp] and db[a.fp][b.fp] or db[b.fp] and db[b.fp][a.fp])
     if t then return t + FLY_EXTRA end
-    local d = Dist(a, b)
-    return d and d / 25 + FLY_EXTRA * 2
 end
 
 -- Where your Hearthstone takes you: where you stood when you last set it,
@@ -187,12 +222,11 @@ end
 -- The way: cheapest path through the network (Dijkstra; ~150 nodes)
 ---------------------------------------------------------------------------
 
-local function Search(from, to)
+local function Search(from, to, speed, sameZone)
     Build()
-    local speed = Speed()
     local all = {from, to}
     for _, n in ipairs(nodes) do all[#all + 1] = n end
-    local hearth = HearthReady() and HearthNode() or nil
+    local hearth = not sameZone and HearthReady() and HearthNode() or nil
     if hearth then all[#all + 1] = hearth end
 
     local best, prev, how, done = {[from] = 0}, {}, {}, {}
@@ -305,7 +339,7 @@ local function Legs(path, target)
                 elseif nextLeg and nextLeg.kind == "tram" then
                     leg.text = L("Go to the Deeprun Tram")
                 elseif n == target then
-                    local zone = ZoneName(target.map)
+                    local zone = not ShareZone(leg.pts[1], target) and ZoneName(target.map)
                     leg.text = zone and fmt(L("Head into %s"), zone) or L("Walk the rest of the way")
                 else
                     leg.text = fmt(L("Walk to %s"), n.name or "?")
@@ -337,36 +371,50 @@ end
 -- The plan for the arrow's target
 ---------------------------------------------------------------------------
 
-local lastAt, lastKey = 0, nil
-
 -- Works out (at most every REPLAN seconds) how to get to `target` (an arrow
--- element with wx, wy, instance, zone) when it's in another zone. Returns
--- the plan or nil when the arrow can go straight there.
+-- element with wx, wy, instance, zone). A direct walk keeps the local arrow.
 function tv.PlanFor(target)
-    if not (target and target.wx and target.zone) then tv.plan = nil return end
+    if not (target and target.wx and target.wy and target.zone and target.instance) then tv.Invalidate() return end
     local px, py, pinst = HBD:GetPlayerWorldPosition()
     local _, _, pmap = HBD:GetPlayerZonePosition()
     if not px then return tv.plan end
     if UnitOnTaxi and UnitOnTaxi("player") then return tv.plan end -- keep the plan while flying
-    if pmap == target.zone then tv.plan = nil return end
     local now = GetTime and GetTime() or 0
-    local key = fmt("%s:%d:%d", tostring(target.zone), floor(target.wx), floor(target.wy))
+    local key = fmt("%s:%s:%s:%d:%d", tostring(pmap), tostring(pinst), tostring(target.zone),
+                    floor(target.wx), floor(target.wy))
     if key == lastKey and now - lastAt < REPLAN then return tv.plan end
     lastKey, lastAt = key, now
 
     local from = {wx = px, wy = py, inst = pinst, zones = {[pmap or 0] = true}, name = L("you"), kind = "you"}
     local to = {wx = target.wx, wy = target.wy, inst = target.instance, zones = {[target.zone] = true},
                 name = target.title, kind = "target", map = target.zone}
-    local path = Search(from, to)
-    if not path then tv.plan = nil return end
+    local sameZone = pmap == target.zone and pinst == target.instance
+    local speed = Speed()
+    local direct = sameZone and Dist(from, to) * WALK_FACTOR / speed
+    tv.plan, tv.estimate = nil, nil
+    if direct and (direct <= FLY_EXTRA or not (OXPCData and next(OXPCData.flightPaths or {}))) then
+        tv.estimate = {map_id = target.zone, mode = "walk", seconds = floor(direct + 0.5)}
+        return
+    end
+    local path, seconds = Search(from, to, speed, sameZone)
+    if not path then return end
     local legs = Legs(path, to)
-    -- just walking over the border with nothing in between: the arrow
-    -- copes with that by itself
-    if #legs == 0 or (#legs == 1 and legs[1].kind == "walk" and #legs[1].pts <= 2) then
+    local estimate = {map_id = target.zone, mode = "walk", seconds = floor(seconds + 0.5)}
+    for _, leg in ipairs(legs) do
+        if leg.kind == "fly" then
+            estimate.mode, estimate.flight_from, estimate.flight_to = "fly", leg.from.fp, leg.to.fp
+            break
+        elseif leg.kind ~= "walk" then
+            estimate.mode = "transport"
+        end
+    end
+    tv.estimate = estimate
+    -- A direct walk uses the normal terrain arrow.
+    if #legs == 0 or (#legs == 1 and legs[1].kind == "walk" and (sameZone or #legs[1].pts <= 2)) then
         tv.plan = nil
         return
     end
-    tv.plan = {legs = legs, target = target, at = now, from = from}
+    tv.plan = {legs = legs, target = target, at = now, from = from, seconds = estimate.seconds}
     return tv.plan
 end
 
@@ -414,6 +462,41 @@ function tv.IsOn()
     return not (p and p.openxpTravel == false)
 end
 
+local function UsesTravelArrow()
+    return tv.IsOn() and not addon.isHidden and (not addon.pathHints or addon.pathHints.IsOn())
+end
+
+function tv.TakeRecommendedFlight(info, plan)
+    if plan.boarding or not (UsesTravelArrow() and TakeTaxiNode and info.currentFP and info.slots and
+        addon.settings.profile.enableFPAutomation and addon.arrowFrame and
+        plan.target == addon.arrowFrame.element) or (IsShiftKeyDown and IsShiftKeyDown()) or
+        (UnitOnTaxi and UnitOnTaxi("player")) then return end
+
+    -- The guide's authored .fly step already has its own selection handler.
+    for _, step in ipairs(addon.RXPFrame and addon.RXPFrame.activeSteps or {}) do
+        for _, element in ipairs(step.elements) do
+            if element.tag == "fly" and not element.completed and not element.skip then return end
+        end
+    end
+    local leg = plan.legs[1]
+    if leg and leg.kind == "walk" then leg = plan.legs[2] end
+    if not (leg and leg.kind == "fly" and leg.from.fp == info.currentFP) then return end
+    local slot = info.slots[leg.to.fp]
+    if slot and (not TaxiNodeGetType or TaxiNodeGetType(slot) == "REACHABLE") then
+        if TaxiNodeCost and GetMoney and TaxiNodeCost(slot) > GetMoney() then return end
+        plan.boarding = leg
+        tv.plan = plan
+        TakeTaxiNode(slot)
+    end
+end
+
+-- Used by the opt-in recorder when the player starts timing a single trip.
+function OpenXPGetTravelEstimate()
+    if not UsesTravelArrow() or (UnitOnTaxi and UnitOnTaxi("player")) then return end
+    tv.PlanFor(addon.arrowFrame and addon.arrowFrame.element)
+    return tv.estimate
+end
+
 -- The plan, while the arrow still uses it
 function tv.Current()
     local plan = tv.plan
@@ -423,16 +506,15 @@ function tv.Current()
     return plan
 end
 
--- Lines for the card: "1. Fly to Menethil Harbor", ...
+-- Lines for the card in travel order.
 function tv.Lines()
     local plan = tv.Current()
     if not plan then return end
     local out = {}
-    for i, leg in ipairs(plan.legs) do
-        out[#out + 1] = fmt("%d. %s", i, leg.text)
+    for _, leg in ipairs(plan.legs) do
+        out[#out + 1] = leg.text
     end
-    -- flight paths learned before OpenXP was installed aren't known until
-    -- you open a flight master's map once
+    -- Opening a flight map also fills in nodes missing from the world map API.
     if OXPCData and not OXPCData.openxpTaxiSeen and not next(OXPCData.flightPaths or {}) then
         out[#out + 1] = L("Tip: open any flight master's map once so OpenXP knows your flight paths")
     end

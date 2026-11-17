@@ -1558,9 +1558,7 @@ function addon:OnInitialize()
     addon.settings.profile.hardcore =
         addon.game == "CLASSIC" and addon.settings.profile.hardcore
     OXPCData.stepSkip = OXPCData.stepSkip or {}
-    if not OXPCData.flightPaths or UnitLevel("player") <= 6 then
-        OXPCData.flightPaths = {}
-    end
+    OXPCData.flightPaths = OXPCData.flightPaths or {}
     if OXPData.trainGenericSpells == nil then
         OXPData.trainGenericSpells = true
     end
@@ -1665,6 +1663,9 @@ function addon:OnEnable()
     -- self:RegisterEvent("SKILL_LINES_CHANGED")
     self:RegisterEvent("TRAINER_CLOSED")
     self:RegisterEvent("TAXIMAP_OPENED")
+    if C_EventUtils and C_EventUtils.IsEventValid("TAXI_NODE_STATUS_CHANGED") then
+        self:RegisterEvent("TAXI_NODE_STATUS_CHANGED")
+    end
     self:RegisterEvent("PLAYER_LEVEL_UP")
     self:RegisterEvent("TRAINER_SHOW")
     self:RegisterEvent("UNIT_PET")
@@ -1826,6 +1827,7 @@ function addon:PLAYER_ENTERING_WORLD(_, isInitialLogin, isReloadingUi)
     -- OpenXP: also after a /reload, since players often drop a new version in
     -- and reload instead of restarting the game.
     if isInitialLogin or isReloadingUi then
+        C_Timer.After(0, addon.travel.SyncFlightPaths)
         -- Load a guide for players who have none yet (fresh install) and put
         -- players who installed mid-leveling on the right step
         C_Timer.After(delay + 1, function()
@@ -1845,6 +1847,12 @@ function addon:PLAYER_ENTERING_WORLD(_, isInitialLogin, isReloadingUi)
 end
 --addon:LoadGuideTable(addon.defaultGroupHC, addon.defaultGuideHC)
 function addon:PLAYER_LEAVING_WORLD() addon.isHidden = true end
+
+function addon:TAXI_NODE_STATUS_CHANGED()
+    addon.flightInfo.reachable = nil
+    addon.travel.Invalidate()
+    C_Timer.After(0, addon.travel.SyncFlightPaths)
+end
 
 -- Sent when the player logs out or the UI is reloaded, just before SavedVariables are saved
 -- Note, this is only for profile sharing, frames are preserved normally with layout.xml
