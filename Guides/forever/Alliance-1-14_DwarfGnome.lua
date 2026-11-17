@@ -1180,16 +1180,15 @@ step
     .turnin 5541 >> Turn in Ammo for Rumbleshot
     .target Hegnar Rumbleshot
 step
-    #optional
-    #completewith next
-    .goto 1426/0,10.96,-5596.04,20,0--c:1426,36.368,52.354
-    .goto 1426/0,31.94,-5585.40,15,0--c:1426,35.942,52.030
-    .goto 1426/0,99.17,-5572.99,20 >> Travel toward |cRXP_FRIENDLY_Tundra MacGrann|r
+    .isQuestAvailable 312
+    .isNotOnQuest 312
+    .goto 1426/0,10.96,-5596.04,20 >>Head to the wooden platform and banner on the east side of the ridge (36.4, 52.4).
 step
+    .accept 312 >>Climb northwest from the wooden platform and banner (36.4, 52.4). Ask |cRXP_FRIENDLY_Tundra MacGrann::1266|r about his stolen stash.
+    .waypoint 1426/0,10.96,-5596.04,20 >>Wooden platform and banner
+    .waypoint 1426/0,31.94,-5585.40,15 >>Follow the snowy trail uphill
     .goto 1426/0,99.17,-5572.99
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Tundra MacGrann|r
-    .accept 312 >> Accept Tundra MacGrann's Stolen Stash
-    .target Tundra MacGrann
+    .target Tundra MacGrann::1266
 step
     #completewith next
     .goto 1426/0,302.27,-5387.58
@@ -1584,10 +1583,11 @@ step << Mage/Warlock
     >>Open |cRXP_PICK_MacGrann's Meat Locker|r. Loot it for |cRXP_LOOT_MacGrann's Dried Meats|r
     .complete 312,1 --Collect MacGrann's Dried Meats (x1)
 step
+    .turnin 312 >>Take the trail from the wooden platform and banner (36.4, 52.4) back up to |cRXP_FRIENDLY_Tundra MacGrann::1266|r. Give him the dried meats.
+    .waypoint 1426/0,10.96,-5596.04,20 >>Wooden platform and banner
+    .waypoint 1426/0,31.94,-5585.40,15 >>Follow the snowy trail uphill
     .goto 1426/0,99.17,-5572.99
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Tundra MacGrann|r
-    .turnin 312 >> Turn in Tundra MacGrann's Stolen Stash
-    .target Tundra MacGrann
+    .target Tundra MacGrann::1266
 step
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Rejold Barleybrew|r and |cRXP_FRIENDLY_Marleth Barleybrew|r
     .turnin 315 >> Turn in The Perfect Stout

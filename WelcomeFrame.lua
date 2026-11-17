@@ -15,6 +15,13 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.73-beta",
+        date = "November 2026",
+        changes = {
+            "Tundra MacGrann's quest leads you to the wooden platform and banner, then up the snowy trail on both visits.",
+        },
+    },
+    {
         version = "1.3.72-beta",
         date = "November 2026",
         changes = {

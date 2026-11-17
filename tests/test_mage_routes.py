@@ -115,6 +115,27 @@ class MageRouteTests(unittest.TestCase):
         shortcut = self.step_for(active[:offer], ".deathskip ")
         self.assertIn(".subzoneskip 131", active[shortcut])
 
+    def test_macgrann_arrow_uses_the_trail_for_pickup_and_turnin(self):
+        _, body = mage_chapters("Gnome")["5-11 Dun Morogh"]
+        active = list(playable_steps(body, {"Alliance", "Mage", "Gnome"}, hardcore=False))
+        pickup = self.step_for(active, ".accept 312 ")
+        trailhead = active[pickup - 1]
+        self.assertIn(".isQuestAvailable 312", trailhead)
+        self.assertIn(".isNotOnQuest 312", trailhead)
+        self.assertIn(".goto 1426/0,10.96,-5596.04,20",
+                      [line.partition(" >>")[0] for line in trailhead])
+        for action in (".accept 312 ", ".turnin 312 "):
+            with self.subTest(action=action):
+                step = active[self.step_for(active, action)]
+                self.assertTrue(step[0].startswith(action), "waypoints belong to the quest objective")
+                self.assertIn("wooden platform and banner (36.4, 52.4)", step[0])
+                pins = [line.partition(" >>")[0] for line in step if line.startswith((".waypoint ", ".goto "))]
+                self.assertEqual(pins, [
+                    ".waypoint 1426/0,10.96,-5596.04,20",
+                    ".waypoint 1426/0,31.94,-5585.40,15",
+                    ".goto 1426/0,99.17,-5572.99",
+                ])
+
     def test_fresh_starters_reach_the_shared_level_cap_chapter(self):
         starts = {
             "Human": ("1-6 Northshire", "6-11 Elwynn Forest", "11-13 Loch Modan"),

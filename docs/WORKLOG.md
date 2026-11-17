@@ -65,3 +65,9 @@
 - A player screenshot showed the Spirit Healer shortcut above Eric's quest pickup, along with a blank hand-in and icon-only objectives. In both modes the Mage route now walks to Kharanos in its own step. For the other normal-mode routes the shortcut clears on arrival.
 - Verified the supply bundle delivery, Eric's quest endpoints, and the campfire pin in the Forever data. The guide shows the bundle hand-in if held, the pickup, the campfire, and the return separately. The campfire step waits for quest credit. Record the time to credit during the next live run.
 - Windows validation passed 59 Python tests, 270 Smart Start checks, all Lua suites, and the coordinate, label, and frozen-route checks. Compared the line-based saved step IDs after Eric against the prior build. The pinned audit found nothing to review for these three quests and kept the overall total at 16 findings.
+
+### 1.3.73-beta
+
+- A player reached the base of Tundra MacGrann's ridge with the pickup active and needed the climb directions. Forever players identify the wooden platform and banner near 36.3, 52.4. The two approach waypoints already in the guide lead northwest from there toward the NPC.
+- Added a trailhead step with a visible landmark and put both approach waypoints on the pickup and hand-in. The trailhead step skips once the quest is in the log or turned in. Check arrow switching and the return climb in the live client.
+- Windows validation passed 60 Python tests, 270 Smart Start checks, all Lua suites, and the coordinate, label, and frozen-route checks. The guide keeps the step count and saved step IDs after the hand-in. The pinned audit kept 16 findings across 5,922 quests and recorded none for quest 312.
