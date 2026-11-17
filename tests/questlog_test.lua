@@ -102,6 +102,46 @@ assert(escort.element.completed, "a turned-in quest stays complete without objec
 ready, turnedIn = nil, nil
 print("whole-quest completion tests passed")
 
+local instruction = "Kill Grik'nir the Cold and loot Grelin's journal."
+local journal = addon.functions.complete(".complete 218,1", instruction, "218", "1")
+journal.tag = "complete"
+journal.step = {active = true, index = 17}
+local widget = {element = journal}
+assert(journal.text == instruction, "show the instruction while fetching objective data")
+
+local objectives
+addon.icons.collect = "[loot]"
+addon.GetQuestName = function() return "The Stolen Journal" end
+addon.GetQuestObjectives = function(_, _, useCache)
+    if useCache then return {{text = "Stale journal count", finished = true}} end
+    return objectives
+end
+addon.UpdateQuestCompletionData(widget)
+assert(not journal.completed and journal.requestFromServer and journal.text == instruction,
+       "missing rows retain the instruction and do not complete from fallback data")
+
+objectives = {{text = "", type = "item", numFulfilled = 0, numRequired = 1, finished = false}}
+addon.UpdateQuestCompletionData(widget)
+assert(journal.text == instruction and journal.requestFromServer and journal.icon == "[loot]",
+       "an empty loot objective still shows the authored instruction")
+
+journal.rawtext = nil
+addon.UpdateQuestCompletionData(widget)
+assert(journal.text == "Retrieving quest data..." and journal.requestFromServer,
+       "an unauthored empty objective has a visible loading state")
+
+journal.rawtext = "Collect the journal (%d/%d)"
+objectives = nil
+addon.UpdateQuestCompletionData(widget)
+assert(journal.text == "Retrieving quest data...", "wait for counts before formatting progress")
+objectives = {{text = "Grelin's journal: 1/1", type = "item",
+               numFulfilled = 1, numRequired = 1, finished = true}}
+journal.step.active = false
+addon.UpdateQuestCompletionData(widget)
+assert(journal.text == "Collect the journal (1/1)" and journal.completed and not journal.requestFromServer,
+       "loaded objectives still show real counts and complete normally")
+print("objective loading text tests passed")
+
 local standing
 C_Reputation = {GetFactionDataByID = function(id)
     assert(id == 93)

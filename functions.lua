@@ -1667,6 +1667,13 @@ local questItem = string.gsub(_G.QUEST_ITEMS_NEEDED, "%%s", "%(%.%*%)"):gsub(
                       "%%d", "%%d%+")
 local retrievingQuestData = L("Retrieving quest data") .. "..."
 
+local function PendingObjectiveText(instruction)
+    if instruction and instruction:find("%S") and not instruction:find("%", 1, true) then
+        return instruction
+    end
+    return retrievingQuestData
+end
+
 function addon.UpdateQuestCompletionData(self)
     -- addon.activeObjectives[self] = addon.UpdateQuestCompletionData
     local element = self.element
@@ -1686,16 +1693,16 @@ function addon.UpdateQuestCompletionData(self)
     end
 
     local wholeQuest = element.obj == 0
-    local objectives, useCache
+    local objectives
     if not wholeQuest then
         objectives = addon.GetQuestObjectives(id, step.index)
 
         if not (objectives and #objectives > 0) then
-            objectives = addon.GetQuestObjectives(id, step.index, true)
-            useCache = true
-
+            addon.GetQuestObjectives(id, step.index, true)
             element.requestFromServer = true
-            element.text = retrievingQuestData
+            if not element.textOnly then
+                element.text = PendingObjectiveText(element.rawtext)
+            end
             element.tooltipText = nil
 
             addon.UpdateStepText(self)
@@ -1705,8 +1712,8 @@ function addon.UpdateQuestCompletionData(self)
     end
 
     local isQuestComplete = IsQuestTurnedIn(id) or IsQuestComplete(id)
-    local objtext = " "
-    local completed
+    local objtext, completed
+    local waitingForObjective = not wholeQuest
 
     if wholeQuest then
         -- Objective zero waits for the quest log's ready-to-turn-in state.
@@ -1727,11 +1734,7 @@ function addon.UpdateQuestCompletionData(self)
 
         local t = obj.text or " "
 
-        if t:find("[%a\194-\234]") then
-            element.requestFromServer = false
-        else
-            element.requestFromServer = true
-        end
+        waitingForObjective = not t:find("%S")
         if obj.type == "item" then
             icon = addon.icons.collect
         elseif obj.type == "monster" and (t:find(questMonster) or obj.questie) then
@@ -1761,6 +1764,10 @@ function addon.UpdateQuestCompletionData(self)
                         (element.objMax and obj.numFulfilled >=
                             obj.numRequired)
         objtext = t
+    end
+
+    if not objtext or not objtext:find("%S") then
+        objtext = PendingObjectiveText(element.rawtext)
     end
 
 
@@ -1838,7 +1845,7 @@ function addon.UpdateQuestCompletionData(self)
         prefix = objtext:sub(1, 1)
     end
 
-    if not quest or prefix == " " or prefix == ":" or useCache then
+    if not quest or waitingForObjective or prefix == " " or prefix == ":" then
         element.requestFromServer = true
     elseif quest then
         element.requestFromServer = nil
@@ -1905,7 +1912,8 @@ function addon.functions.complete(self, ...)
         id = id and GetQuestId(id)
         local element = {questId = id, dynamicText = true, obj = obj,
                          objMax = objMax, requestFromServer = true,
-                         text = " ", flags = flags, textOnly = (flags % 2) == 1,
+                         text = flags % 2 == 0 and PendingObjectiveText(text) or " ",
+                         flags = flags, textOnly = (flags % 2) == 1,
                          rawtext = text
                         }
         if id and id < 0 then

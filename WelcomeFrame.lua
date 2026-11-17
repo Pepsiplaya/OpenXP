@@ -15,6 +15,13 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.71-beta",
+        date = "November 2026",
+        changes = {
+            "Quest steps show their instructions while the game loads objective text. The Stolen Journal tells you who to fight and what to loot.",
+        },
+    },
+    {
         version = "1.3.70-beta",
         date = "November 2026",
         changes = {

@@ -52,3 +52,10 @@
 - A live Gnome Mage reached the Nori pickup before level 4. The game records confirm level 4 and a five-minute timer for Scalding Mornbrew Delivery. The Stolen Journal lists 550 XP at Grelin.
 - Reordered the Mage branch to collect the journal, leave the cave, and hand the quest in before starting the timer. A level-4 checkpoint points to verified whelp spawns only when XP is needed. The guide then takes the brew to Durnan and brings the empty mug back to Nori.
 - Windows validation passed 58 Python tests, 270 Smart Start checks, all Lua suites, and the map, label, and frozen-route checks. The new test verifies both normal and Hardcore Mage guide order. A Lua simulation verified the level-3 redirect and level-4 advance.
+
+### 1.3.71-beta
+
+- A live screenshot showed only an icon on the active journal step. The installed OpenXP files were 1.3.69-beta and both guide addons were present on disk. Which addon supplied the visible window remains unverified.
+- Reproduced the icon-only objective in Lua by supplying an item objective with an empty description. The guide now keeps its own instruction visible until the game provides usable objective text. A missing description without a guide instruction shows a loading message. Progress and completion still use the quest data.
+- Put Grik'nir's name and the journal loot instruction directly on The Stolen Journal objective. The quest log regression covers missing and empty rows, later progress, and stale fallback data.
+- Windows validation passed the Lua suites, 58 Python tests, 270 Smart Start checks, and the coordinate, label, and frozen-route checks.

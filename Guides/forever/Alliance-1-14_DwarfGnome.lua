@@ -443,9 +443,8 @@ step
 step
     #label Grelin
     .goto 1426/0,300.50,-6509.17,0,0--c:1426,30.489,80.165
-    >>Kill |cRXP_ENEMY_Grik'nir the Cold|r inside. Loot him for |cRXP_LOOT_Grelin Whitebeard's Journal|r
-    .complete 218,1 --Collect Grelin Whitebeard's Journal (x1)
-    .mob Grik'nir the Cold
+    .complete 218,1 >>Kill |cRXP_ENEMY_Grik'nir the Cold|r inside Frostmane Cave and loot |cRXP_LOOT_Grelin Whitebeard's Journal|r.
+    .mob Grik'nir the Cold::808
 step << !Paladin !Warlock !Hunter !Shaman !Mage
     #softcore
     #completewith next
