@@ -136,6 +136,15 @@ function addon.settings.ChatCommand(input)
         addon.questDump.Clear()
     elseif input == "path" or input:match("^path%s") then
         if addon.pathHints then addon.pathHints.Command(input:sub(5)) end
+    elseif input == "interact on" and addon.openxpExtras then
+        local extras = addon.openxpExtras
+        extras.SetAutoLoot(true)
+        extras.SetObjectCues(true)
+        if extras.AutoLootEnabled() and extras.ObjectCuesEnabled() then
+            addon.comms.PrettyPrint(L("Auto Loot and ground object cues enabled. Use WoW's Interact key to open the highlighted object."))
+        else
+            addon.comms.PrettyPrint(L("Check Auto Loot and Enable Interact Key in WoW's Controls settings."))
+        end
     elseif input == "perf" then
         addon.perf.Start()
     elseif input == "catchup" then
@@ -236,7 +245,6 @@ local settingsDBDefaults = {
         openxpMobPins = false,
         openxpTravel = true,
         openxpRouteColor = {0.72, 0.42, 1.0},
-        openxpAutoLoot = false,
         openxpMaxCamera = false,
 
         -- Themes
@@ -3302,7 +3310,7 @@ function addon.settings:CreateAceOptionsPanel()
                     },
                     openxpNameplates = {
                         name = L("Quest loot on nameplates"),
-                        desc = L("Enemies that drop an item you still need for a quest get the item's icon and your count beside their nameplate"),
+                        desc = L("Shows quest item icons and counts on enemy nameplates and identified ground objects."),
                         type = "toggle",
                         width = optionsWidth,
                         order = 5.511,
@@ -3370,14 +3378,29 @@ function addon.settings:CreateAceOptionsPanel()
                     },
                     openxpAutoLoot = {
                         name = L("Auto loot"),
-                        desc = L("Turns on the game's Auto Loot option"),
+                        desc = L("Uses WoW's Auto Loot setting for corpses and objects you open."),
                         type = "toggle",
                         width = optionsWidth,
                         order = 5.52,
-                        set = function(info, value)
-                            SetProfileOption(info, value)
-                            if addon.openxpExtras then addon.openxpExtras.Apply() end
+                        get = function()
+                            return addon.openxpExtras and addon.openxpExtras.AutoLootEnabled() or false
+                        end,
+                        set = function(_, value)
+                            if addon.openxpExtras then addon.openxpExtras.SetAutoLoot(value) end
                         end
+                    },
+                    openxpObjectCues = {
+                        name = L("Ground object cues"),
+                        desc = L("Shows an interaction icon and nameplate over the nearby object selected by WoW's Interact key."),
+                        type = "toggle",
+                        width = optionsWidth,
+                        order = 5.521,
+                        get = function()
+                            return addon.openxpExtras and addon.openxpExtras.ObjectCuesEnabled() or false
+                        end,
+                        set = function(_, value)
+                            if addon.openxpExtras then addon.openxpExtras.SetObjectCues(value) end
+                        end,
                     },
                     openxpMaxCamera = {
                         name = L("Max camera distance"),
@@ -3387,7 +3410,7 @@ function addon.settings:CreateAceOptionsPanel()
                         order = 5.53,
                         set = function(info, value)
                             SetProfileOption(info, value)
-                            if addon.openxpExtras then addon.openxpExtras.Apply() end
+                            if addon.openxpExtras then addon.openxpExtras.SetMaxCamera(value) end
                         end
                     },
                     resetArrowPosition = {

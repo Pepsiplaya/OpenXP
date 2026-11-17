@@ -15,6 +15,14 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.76-beta",
+        date = "November 2026",
+        changes = {
+            "Run /oxp interact on for Auto Loot and ground object cues. Use WoW's Interact key to open the highlighted object.",
+            "Identified quest objects can show the item icon and your collection count over the object's nameplate.",
+        },
+    },
+    {
         version = "1.3.75-beta",
         date = "November 2026",
         changes = {

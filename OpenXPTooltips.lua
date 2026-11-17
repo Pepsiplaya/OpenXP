@@ -47,10 +47,15 @@ function tips.QuestieShowsMobLines()
     return not (prof and prof.enableTooltips == false)
 end
 
-function tips.NpcIdOf(guid)
-    if not guid then return end
+local function GuidEntry(guid)
+    if (issecretvalue and issecretvalue(guid)) or type(guid) ~= "string" then return end
     local kind, _, _, _, _, id = strsplit("-", guid)
-    if kind == "Creature" or kind == "Vehicle" then return tonumber(id) end
+    return kind, tonumber(id)
+end
+
+function tips.NpcIdOf(guid)
+    local kind, id = GuidEntry(guid)
+    if kind == "Creature" or kind == "Vehicle" then return id end
 end
 
 local function Strip(text)
@@ -97,6 +102,23 @@ end
 -- Quest log: every quest with its id and objectives
 function tips.LogQuests()
     local quests = {}
+    if C_QuestLog and C_QuestLog.GetNumQuestLogEntries and C_QuestLog.GetInfo and C_QuestLog.GetQuestObjectives then
+        for i = 1, (C_QuestLog.GetNumQuestLogEntries() or 0) do
+            local info = C_QuestLog.GetInfo(i)
+            if info and not info.isHeader and info.questID then
+                local q = {title = info.title, id = info.questID, objectives = {}}
+                for _, o in ipairs(C_QuestLog.GetQuestObjectives(q.id) or {}) do
+                    if o.text and o.numFulfilled and o.numRequired and o.numRequired > 0 then
+                        local name = ParseObjective(o.text) or o.text
+                        tinsert(q.objectives, {kind = o.type, name = name, have = o.numFulfilled,
+                                               need = o.numRequired, done = o.finished})
+                    end
+                end
+                tinsert(quests, q)
+            end
+        end
+        return quests
+    end
     if not (GetNumQuestLogEntries and GetQuestLogLeaderBoard) then return quests end
     for i = 1, (GetNumQuestLogEntries() or 0) do
         local title, _, _, isHeader, _, _, _, questId = GetQuestLogTitle(i)
@@ -528,27 +550,86 @@ end
 
 ---------------------------------------------------------------------------
 -- Nameplates: the needed item's icon and your count above enemies that
--- drop it, centred over the name so it doesn't cover the level or Questie's
--- icon on the left.
+-- drop it or over the ground object the client exposes as an interact target.
 ---------------------------------------------------------------------------
 
 local plates = {}
+local plateUnits = {}
+
+-- Verified starter objects. These cover the quest log without Questie.
+local groundLoot = {
+    [176785] = {quest = 5541, objective = 1, item = 13850}, -- Ammo Crate
+    [272] = {quest = 312, objective = 1, item = 2667},    -- MacGrann's Meat Locker
+    [276] = {quest = 315, objective = 1, item = 2676},    -- Shimmerweed Basket
+}
+
+local function GuideNamesObject(name)
+    if not name or (issecretvalue and issecretvalue(name)) then return end
+    for _, step in ipairs(addon.RXPFrame and addon.RXPFrame.activeSteps or {}) do
+        if not step.completed and not step.hidewindow then
+            for _, e in ipairs(step.elements or {}) do
+                local original = e.textReplaced
+                local text = (original and (original[2] or original[1])) or e.rawtext or e.text
+                if text and not e.completed and not e.skip then
+                    for objectName in text:gmatch("|cRXP_PICK_([^|]+)|r") do
+                        if SameName(objectName, name) then return true end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function tips.ObjectInfo(id, name)
+    local source = groundLoot[id]
+    local complete
+    if source and C_QuestLog and C_QuestLog.GetQuestObjectives and
+        (not C_QuestLog.IsOnQuest or C_QuestLog.IsOnQuest(source.quest)) then
+        local objectives = C_QuestLog.GetQuestObjectives(source.quest)
+        local o = objectives and objectives[source.objective]
+        if o and o.numFulfilled and o.numRequired then
+            complete = o.finished or o.numFulfilled >= o.numRequired
+            if not complete then return {itemId = source.item, have = o.numFulfilled, need = o.numRequired} end
+        end
+    end
+    if id then
+        for _, n in ipairs(tips.NeededItems()) do
+            local item = not n.done and n.itemId and QGet("Item", n.itemId)
+            if item and InList(item.objectDrops, nil, id) then return n end
+        end
+    end
+    if not complete and GuideNamesObject(name) then return {label = L("Quest object")} end
+end
 
 function tips.PlateInfo(unit)
-    if not (unit and UnitExists(unit)) or UnitIsPlayer(unit) or not UnitCanAttack("player", unit) then return end
-    local loot = tips.MobItemLines(UnitName(unit), tips.NpcIdOf(UnitGUID(unit)))
+    if not unit then return end
+    local guid = UnitGUID(unit)
+    local kind, id = GuidEntry(guid)
+    if kind == "GameObject" or (UnitIsGameObject and UnitIsGameObject(unit)) then
+        return tips.ObjectInfo(kind == "GameObject" and id or nil, UnitName(unit)), 1, true
+    end
+    if not UnitExists(unit) or UnitIsPlayer(unit) or not UnitCanAttack("player", unit) then return end
+    local loot = tips.MobItemLines(UnitName(unit), tips.NpcIdOf(guid))
     return loot[1], #loot
 end
 
-local function PlateFrame(plate)
+local function PlateFrame(plate, ground)
     local f = plates[plate]
-    if f then return f end
-    -- centred above the enemy's name, clear of the health bar and level
+    -- Ground objects can have a plate without a visible unit name.
     local uf = plate.UnitFrame
-    local above = uf and uf.name or uf or plate
+    local above = ground and plate or uf and uf.name or uf or plate
+    if f then
+        if f.anchor ~= above then
+            f:ClearAllPoints()
+            f:SetPoint("BOTTOM", above, "TOP", 0, 4)
+            f.anchor = above
+        end
+        return f
+    end
     f = CreateFrame("Frame", nil, plate)
     f:SetSize(60, 24)
     f:SetPoint("BOTTOM", above, "TOP", 0, 4)
+    f.anchor = above
     f:SetFrameStrata("HIGH")
     f.icon = f:CreateTexture(nil, "ARTWORK")
     f.icon:SetSize(24, 24)
@@ -567,27 +648,54 @@ local function PlateFrame(plate)
 end
 
 function tips.UpdatePlate(unit)
+    if not unit then return end
     local plate = C_NamePlate and C_NamePlate.GetNamePlateForUnit and C_NamePlate.GetNamePlateForUnit(unit)
-    if not plate then return end
-    local n, count
-    if tips.NameplatesEnabled() then n, count = tips.PlateInfo(unit) end
+    local previous = plateUnits[unit]
+    if previous and previous ~= plate and plates[previous] then plates[previous]:Hide() end
+    plateUnits[unit] = nil
+    if not plate or (plate.IsForbidden and plate:IsForbidden()) or
+        (plate.CanBeAccessedInContext and not plate:CanBeAccessedInContext()) then return end
+    local n, count, ground
+    if tips.NameplatesEnabled() then n, count, ground = tips.PlateInfo(unit) end
     if not n then
         if plates[plate] then plates[plate]:Hide() end
         return
     end
-    local f = PlateFrame(plate)
-    f.icon:SetTexture(GetItemIcon and GetItemIcon(n.itemId) or QUEST_ICON)
-    f.text:SetText(n.have .. "/" .. n.need .. (count > 1 and " +" or ""))
+    local f = PlateFrame(plate, ground)
+    f.icon:SetTexture(n.itemId and GetItemIcon and GetItemIcon(n.itemId) or QUEST_ICON)
+    f.mark:SetShown(n.itemId ~= nil)
+    f.text:SetText(n.label or (n.have .. "/" .. n.need .. (count > 1 and " +" or "")))
     f:SetWidth(28 + (f.text:GetStringWidth() or 30)) -- keeps icon + count centred
     f:Show()
+    plateUnits[unit] = plate
+end
+
+local function HideUnitPlate(unit)
+    local plate = plateUnits[unit]
+    if plate and plates[plate] then plates[plate]:Hide() end
+    if unit then plateUnits[unit] = nil end
+end
+
+local function RefreshInteractPlate()
+    if UnitIsGameObject and UnitIsGameObject("softinteract") then
+        pcall(tips.UpdatePlate, "softinteract")
+    else
+        HideUnitPlate("softinteract")
+    end
 end
 
 local function RefreshPlates()
-    if not (C_NamePlate and C_NamePlate.GetNamePlates) then return end
-    for _, plate in ipairs(C_NamePlate.GetNamePlates() or {}) do
-        local unit = plate.namePlateUnitToken or (plate.UnitFrame and plate.UnitFrame.unit)
-        if unit then pcall(tips.UpdatePlate, unit) end
+    if not tips.NameplatesEnabled() then
+        for unit in pairs(plateUnits) do HideUnitPlate(unit) end
+        return
     end
+    if C_NamePlate and C_NamePlate.GetNamePlates then
+        for _, plate in ipairs(C_NamePlate.GetNamePlates() or {}) do
+            local unit = plate.namePlateUnitToken or (plate.UnitFrame and plate.UnitFrame.unit)
+            if unit then pcall(tips.UpdatePlate, unit) end
+        end
+    end
+    RefreshInteractPlate()
 end
 tips.RefreshPlates = RefreshPlates
 
@@ -606,50 +714,73 @@ end
 
 local events = CreateFrame("Frame")
 for _, ev in ipairs({"QUEST_LOG_UPDATE", "BAG_UPDATE_DELAYED", "NAME_PLATE_UNIT_ADDED",
-                     "NAME_PLATE_UNIT_REMOVED", "PLAYER_ENTERING_WORLD"}) do
+                     "NAME_PLATE_UNIT_REMOVED", "PLAYER_SOFT_INTERACT_CHANGED", "PLAYER_ENTERING_WORLD"}) do
     pcall(events.RegisterEvent, events, ev)
 end
 events:SetScript("OnEvent", function(_, event, unit)
     if event == "NAME_PLATE_UNIT_ADDED" then
         pcall(tips.UpdatePlate, unit)
     elseif event == "NAME_PLATE_UNIT_REMOVED" then
-        local plate = C_NamePlate and C_NamePlate.GetNamePlateForUnit and C_NamePlate.GetNamePlateForUnit(unit)
-        if plate and plates[plate] then plates[plate]:Hide() end
+        HideUnitPlate(unit)
+    elseif event == "PLAYER_SOFT_INTERACT_CHANGED" then
+        RefreshInteractPlate()
     else
         RefreshSoon()
     end
 end)
 
 ---------------------------------------------------------------------------
--- Extras: auto loot and max camera distance (both off unless you turn them on)
+-- Game settings for auto loot, object interaction cues, and camera distance.
 ---------------------------------------------------------------------------
 
 local extras = {}
 addon.openxpExtras = extras
 
-local function CVarDefault(name, fallback)
-    local ok, v = pcall(GetCVarDefault or function() end, name)
-    return ok and v or fallback
+local GetGameCVar = C_CVar and C_CVar.GetCVar or _G.GetCVar
+local SetGameCVar = C_CVar and C_CVar.SetCVar or _G.SetCVar
+local GetGameCVarDefault = C_CVar and C_CVar.GetCVarDefault or _G.GetCVarDefault
+
+local function SetGameOption(name, value)
+    if GetGameCVar and SetGameCVar and GetGameCVar(name) ~= nil then
+        pcall(SetGameCVar, name, tostring(value))
+    end
 end
 
-function extras.Apply(login)
+function extras.AutoLootEnabled()
+    return GetGameCVar and GetGameCVar("autoLootDefault") == "1"
+end
+
+function extras.SetAutoLoot(enabled)
+    SetGameOption("autoLootDefault", enabled and 1 or 0)
     local p = Profile()
-    if not (p and SetCVar) then return end
-    if p.openxpAutoLoot then
-        SetCVar("autoLootDefault", "1")
-    elseif not login then
-        SetCVar("autoLootDefault", CVarDefault("autoLootDefault", "0"))
+    if p then p.openxpAutoLoot = nil end -- Migrate the old profile setting to the game setting.
+end
+
+function extras.ObjectCuesEnabled()
+    return GetGameCVar and GetGameCVar("SoftTargetIconGameObject") == "1" and
+        GetGameCVar("SoftTargetNameplateInteract") == "1"
+end
+
+function extras.SetObjectCues(enabled)
+    if enabled then
+        local flags = Enum and Enum.SoftTargetEnableFlags
+        if flags then SetGameOption("SoftTargetInteract", flags.Any) end
+        SetGameOption("SoftTargetIconInteract", 1)
     end
-    if p.openxpMaxCamera then
-        SetCVar("cameraDistanceMaxZoomFactor", "2.6")
-    elseif not login then
-        SetCVar("cameraDistanceMaxZoomFactor", CVarDefault("cameraDistanceMaxZoomFactor", "1.9"))
-    end
+    SetGameOption("SoftTargetIconGameObject", enabled and 1 or 0)
+    SetGameOption("SoftTargetNameplateInteract", enabled and 1 or 0)
+end
+
+function extras.SetMaxCamera(enabled)
+    local default = GetGameCVarDefault and GetGameCVarDefault("cameraDistanceMaxZoomFactor")
+    SetGameOption("cameraDistanceMaxZoomFactor", enabled and 2.6 or default or 1.9)
 end
 
 local loginFrame = CreateFrame("Frame")
 loginFrame:RegisterEvent("PLAYER_LOGIN")
 loginFrame:SetScript("OnEvent", function(self)
     self:UnregisterAllEvents()
-    pcall(extras.Apply, true)
+    local p = Profile()
+    if p and p.openxpAutoLoot then pcall(extras.SetAutoLoot, true) end
+    if p and p.openxpMaxCamera then pcall(extras.SetMaxCamera, true) end
 end)

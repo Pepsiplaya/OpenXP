@@ -85,3 +85,9 @@
 - With Flight Path automation enabled, the planned boarding action selects the live, reachable slot when the player opens the recommended flight master. Shift allows manual selection. WoW's Interact key opens NPCs and objects, then the existing quest automation handles matching dialogs.
 - Recorder travel mode captures the starting recommendation and elapsed time through the player's stop command. Tests simulate both the map-driven taxi flow and the recording and analysis, including interrupted sessions. Verify travel estimates and automatic boarding in Forever with a matched manual run.
 - Windows validation passed 61 Python tests, 270 Smart Start assertions, all Lua suites, and the coordinate, label, and frozen-route checks. All seven changed addon Lua files compiled as Lua 5.1. The pinned audit retained 16 findings across 5,922 records and 23 guides.
+
+### 1.3.76-beta
+
+- `/oxp interact on` enables the client's Interact cues for nearby objects and native Auto Loot. The OpenXP loot setting reflects the game setting. Camera changes now apply independently of loot preferences.
+- OpenXP adds quest icons and known collection counts to the exposed object plate. Starter coverage includes the Ammo Crate, MacGrann's Meat Locker, and Shimmerweed Basket. Explicit object names on the active step and Questie item sources extend coverage. The icon clears when the target changes or the objective is fulfilled.
+- Simulated tests covered the current quest API, object plate changes, and native settings. Windows validation passed 61 Python tests, 270 Smart Start assertions, all Lua suites, and the coordinate, label, and frozen-route checks. The pinned audit retained 16 findings across 5,922 quests. Check the actual world-object indicator and loot pickup in the live client.

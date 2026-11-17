@@ -9,8 +9,27 @@ strsplit = function(sep, s)
     for part in (s .. sep):gmatch("(.-)" .. sep:gsub("%-", "%%-")) do tinsert(out, part) end
     return unpack(out)
 end
-local frame = setmetatable({}, {__index = function() return function() end end})
-CreateFrame = function() return frame end
+local function Region()
+    return setmetatable({
+        Show = function(self) self.visible = true end,
+        Hide = function(self) self.visible = false end,
+        SetShown = function(self, visible) self.visible = visible end,
+        SetTexture = function(self, asset) self.asset = asset end,
+        SetText = function(self, label) self.label = label end,
+        SetPoint = function(self, _, relative) self.relative = relative end,
+    }, {__index = function() return function() end end})
+end
+local frames = {}
+CreateFrame = function(_, _, parent)
+    local f = Region()
+    f.parent = parent
+    f.events, f.scripts = {}, {}
+    f.RegisterEvent = function(self, event) self.events[event] = true end
+    f.SetScript = function(self, event, fn) self.scripts[event] = fn end
+    f.CreateTexture, f.CreateFontString = Region, Region
+    frames[#frames + 1] = f
+    return f
+end
 GameTooltip = {HookScript = function() end}
 
 -- One quest in the log: Kill 3/8 Kobold Vermin, and 2/6 Gooey Spider Legs
@@ -27,6 +46,16 @@ GetItemInfo = function(id) return items[id] end
 local bags = {[2251] = 2, [1475] = 0}
 GetItemCount = function(id) return bags[id] or 0 end
 IsQuestFlaggedCompleted = function() return false end
+GetItemIcon = function(id) return id + 1 end
+
+local cvars = {autoLootDefault = "1", SoftTargetInteract = "1", SoftTargetIconInteract = "0",
+               SoftTargetIconGameObject = "0", SoftTargetNameplateInteract = "0", cameraDistanceMaxZoomFactor = "1.9"}
+C_CVar = {
+    GetCVar = function(name) return cvars[name] end,
+    SetCVar = function(name, value) assert(cvars[name]); cvars[name] = value end,
+    GetCVarDefault = function() return "1.9" end,
+}
+Enum = {SoftTargetEnableFlags = {Any = 3}}
 
 local addon = {
     locale = {Get = function(s) return s end},
@@ -95,6 +124,64 @@ try("bag marker only on needed items", function()
 end)
 try("mob that drops nothing you need", function()
     assert(#T.QuestLines("Forest Wolf", 69) == 0)
+end)
+
+try("Auto Loot and ground cues use the game's settings", function()
+    local extras = addon.openxpExtras
+    assert(extras.AutoLootEnabled(), "read the user's existing Auto Loot setting")
+    extras.SetMaxCamera(true)
+    assert(cvars.autoLootDefault == "1", "camera options must not alter loot settings")
+    extras.SetAutoLoot(false)
+    assert(cvars.autoLootDefault == "0")
+    extras.SetAutoLoot(true)
+    extras.SetObjectCues(true)
+    assert(extras.ObjectCuesEnabled() and cvars.SoftTargetInteract == "3" and cvars.SoftTargetIconInteract == "1")
+    extras.SetObjectCues(false)
+    assert(not extras.ObjectCuesEnabled() and cvars.autoLootDefault == "1" and cvars.SoftTargetInteract == "3")
+end)
+
+try("Forever quest progress marks the Ammo Crate and clears it after looting", function()
+    local objective = {text = "Rumbleshot's Ammo: 0/1", type = "item", numFulfilled = 0, numRequired = 1}
+    C_QuestLog = {
+        GetNumQuestLogEntries = function() return 1 end,
+        GetInfo = function() return {questID = 5541, title = "Ammo for Rumbleshot"} end,
+        IsOnQuest = function(qid) return qid == 5541 end,
+        GetQuestObjectives = function(qid) if qid == 5541 then return {objective} end end,
+    }
+    local read = T.LogQuests()[1]
+    assert(read.id == 5541 and read.objectives[1].name == "Rumbleshot's Ammo")
+    local plate = {}
+    local guid = "GameObject-0-100-200-300-176785-1234"
+    UnitIsGameObject = function(unit) return unit == "softinteract" end
+    UnitGUID = function() return guid end
+    UnitName = function() return "Ammo Crate" end
+    C_NamePlate = {GetNamePlateForUnit = function() return plate end}
+    local watcher = frames[1]
+    assert(watcher.events.PLAYER_SOFT_INTERACT_CHANGED)
+    watcher.scripts.OnEvent(watcher, "PLAYER_SOFT_INTERACT_CHANGED")
+    local marker = frames[#frames]
+    assert(marker.parent == plate and marker.relative == plate and marker.visible)
+    assert(marker.icon.asset == 13851 and marker.text.label == "0/1")
+    guid = "GameObject-0-100-200-300-9999-1234"
+    watcher.scripts.OnEvent(watcher, "PLAYER_SOFT_INTERACT_CHANGED")
+    assert(not marker.visible, "an unrelated object must not inherit a quest icon")
+    guid = "GameObject-0-100-200-300-176785-1234"
+    watcher.scripts.OnEvent(watcher, "PLAYER_SOFT_INTERACT_CHANGED")
+    assert(marker.visible)
+    objective.numFulfilled, objective.finished = 1, true
+    watcher.scripts.OnEvent(watcher, "QUEST_LOG_UPDATE")
+    assert(not marker.visible)
+    C_QuestLog = nil
+end)
+
+try("the active guide can name a ground quest object without Questie", function()
+    addon.RXPFrame = {activeSteps = {{elements = {{
+        textReplaced = {"Click the |cRXP_PICK_Unguarded Thunder Ale Barrel|r"},
+    }}}}}
+    assert(T.ObjectInfo(270, "Unguarded Thunder Ale Barrel").label == "Quest object")
+    assert(T.ObjectInfo(999, "Ordinary Barrel") == nil)
+    addon.RXPFrame.activeSteps[1].completed = true
+    assert(T.ObjectInfo(270, "Unguarded Thunder Ale Barrel") == nil)
 end)
 print(fails == 0 and "tooltip tests passed" or (fails .. " failed"))
 return fails

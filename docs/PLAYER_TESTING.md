@@ -1,11 +1,11 @@
-# Player testing for OpenXP Ultimate 1.3.75-beta
+# Player testing for OpenXP Ultimate 1.3.76-beta
 
 ## Install the test build
 
 1. Close WoW Forever. Use a separate Forever installation or test profile if available.
 2. For a swap in your existing installation, move your existing `OpenXP` addon folder outside `Interface\AddOns`. Back up its `OpenXP.lua` and `OpenXP.lua.bak` files from the account and character `SavedVariables` directories, where present.
 3. Extract the test ZIP. Copy the extracted `OpenXP` folder into `World of Warcraft\_forever_\Interface\AddOns`. The file should be at `AddOns\OpenXP\OpenXP.toc`. Disable RestedXP Guides in the character selection AddOns menu while testing OpenXP.
-4. Log in and run `/oxp news`. Confirm the version is `1.3.75-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
+4. Log in and run `/oxp news`. Confirm the version is `1.3.76-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
 
 ## Fresh Alliance Mage
 
@@ -31,7 +31,8 @@ For an optional timed sample, use the separate [Recorder beta](RECORDER.md) with
 | Test | Starting conditions | Expected result |
 | --- | --- | --- |
 | Learned flight paths and travel | Use a character that already knows a pair of connected flight paths. Reload, then select a nearby quest and a longer trip with taxi service. | The short trip keeps its walking arrow. The longer trip shows the first action and approximate total time. Open the planned flight master's map to board with Flight Path automation enabled. Open a different master, or hold Shift at the correct master, to choose manually. Check the walking directions after landing. |
-| Quest and object interactions | Enable WoW's Interact key (Options → Gameplay → Controls) and OpenXP's quest automation. | Interact with the active quest NPC or object. An opened guided quest dialog can pick up or hand in the matching quest. Check that the expected quest is selected when a giver has several. |
+| Quest objects and Auto Loot | Run `/oxp interact on`. With Ammo for Rumbleshot active, face the Ammo Crate in Dun Morogh and move into interact range. | WoW puts an interaction icon and nameplate on the selected object. OpenXP shows the ammo icon and `0/1` when the object plate is available. Press your Interact key once to open it. Auto Loot takes the ammo from the opened crate and the quest progress cue clears. Check the same behavior on a corpse and turn both features off independently in OpenXP's settings. |
+| Quest NPC interactions | Enable WoW's Interact key and OpenXP's quest automation. | Interact with a quest NPC. An opened guided quest dialog picks up or hands in the matching quest. Check that the expected quest is selected when a giver has several. |
 | Personal bank | Manually put some Ice Cold Milk or another item needed by a collection step in the bank before loading this build. Start that step with fewer than it asks for in your bags. | Open the personal bank and check the withdrawal quantity. Close it and reload to confirm the count persists. Withdraw the requested quantity and confirm the prompt clears or shows what you still need. Check the same step on another character with its own bank items. |
 | Guide card and welcome | Open `/oxp news`. Open the guide card at its normal size, then resize to 200 pixels and try the 20-point font and one-line mode. | The header and step counter remain usable, the counter opens the step list, and the XP line shows the correct level and percentage. Confirm max-level hides the XP line. Expand the card, then check both waypoint directions and the green arrival check. |
 | Mage's Wand | Mage at level 30 or higher. Select OpenXP Extras → Class Quests → Mage's Wand. Try a fresh chain and one with a prior quest in the log. | `/beckon` and speak to Plucky. Gather Jade and the bramble, collect the book in Scarlet Monastery Library, hand in both quests, and wait for Tabetha's ritual. Record dungeon entry and objective tracking if you load the chapter inside. |
