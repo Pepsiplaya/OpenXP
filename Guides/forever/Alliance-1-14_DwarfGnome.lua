@@ -416,14 +416,14 @@ step
     .turnin 182 >> Turn in The Troll Cave
     .accept 218 >> Accept The Stolen Journal
     .target Grelin Whitebeard
-step << !Paladin !Warlock !Hunter !Shaman
+step << !Paladin !Warlock !Hunter !Shaman !Mage
     #softcore
     .goto 1426/0,571.82,-6371.20--c:Dun Morogh,24.980,75.963
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Nori Pridedrift|r
     >>|cRXP_WARN_This will start a 5 minute timer for the quest. Do NOT go AFK or log out for the next 5 minutes|r
     .accept 3364 >> Accept Scalding Mornbrew Delivery
     .target Nori Pridedrift
-step << !Paladin !Warlock !Hunter !Shaman
+step << !Paladin !Warlock !Hunter !Shaman !Mage
     #softcore
     #completewith next
     +|cRXP_WARN_You have 5 minutes to get |cRXP_LOOT_Grelin Whitebeard's Journal|r and return to Anvilmar before|r |T132791:0|t[Durnan's Scalding Mornbrew] |cRXP_WARN_expires|r
@@ -446,56 +446,73 @@ step
     >>Kill |cRXP_ENEMY_Grik'nir the Cold|r inside. Loot him for |cRXP_LOOT_Grelin Whitebeard's Journal|r
     .complete 218,1 --Collect Grelin Whitebeard's Journal (x1)
     .mob Grik'nir the Cold
-step << !Paladin !Warlock !Hunter !Shaman
+step << !Paladin !Warlock !Hunter !Shaman !Mage
     #softcore
     #completewith next
     .deathskip >> Die and respawn at the |cRXP_FRIENDLY_Spirit Healer|r
     .target Spirit Healer
 step
-    #hardcore << !Paladin !Warlock !Hunter !Shaman
+    #hardcore << !Paladin !Warlock !Hunter !Shaman !Mage
     #optional
     #completewith Stolen
     .goto 1426/0,361.42,-6472.33,15,0--c:1426,29.252,79.043
     .goto 1426/0,408.41,-6498.37,15,0--c:1426,28.298,79.836
     .goto 1426/0,467.51,-6526.96,20 >> Exit the Frostmane Cave--c:1426,27.098,80.707
     .subzoneskip 132
-step << !Paladin !Warlock !Hunter !Shaman
+step << !Paladin !Warlock !Hunter !Shaman !Mage
     #hardcore
     .goto 1426/0,571.82,-6371.20--c:Dun Morogh,24.980,75.963
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Nori Pridedrift|r
     .accept 3364 >> Accept Scalding Mornbrew Delivery
     .target Nori Pridedrift
 step
-    #hardcore << !Paladin !Warlock !Hunter !Shaman
+    #hardcore << !Paladin !Warlock !Hunter !Shaman !Mage
     #label Stolen
     .goto 1426/0,567.14,-6363.06
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Grelin Whitebeard|r
     .turnin 218 >> Turn in The Stolen Journal
     .accept 282 >> Accept Senir's Observations
     .target Grelin Whitebeard
+step << Mage
+    #label ColdridgeMornbrewLevel
+    .goto Dun Morogh,25.86,78.26,45,0
+    .xp 4 >>If Grelin's hand-in leaves you short of level 4, kill |cRXP_ENEMY_Frostmane Troll Whelps|r near the cave until you reach it.
+    .mob Frostmane Troll Whelp::706
+step << Mage
+    .isQuestTurnedIn 218
+    .xp <4,1,ColdridgeMornbrewLevel
+    .goto 1426/0,571.82,-6371.20--c:Dun Morogh,24.980,75.963
+    .accept 3364 >>Accept Scalding Mornbrew Delivery from |cRXP_FRIENDLY_Nori Pridedrift::12738|r. Go straight to Durnan in Anvilmar. You have five minutes.
+    .target Nori Pridedrift::12738
+step << Mage
+    #completewith next
+    .isOnQuest 3364
+    .goto 1426/0,384.08,-6136.15,12,0
+    .goto 1426/0,376.84,-6122.46,12 >>Enter Anvilmar to deliver the Mornbrew.
 step << !Paladin !Warlock !Hunter !Shaman
-    #softcore
+    #softcore << !Mage
     .goto 1426/0,385.21,-6056.46
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Durnan Furcutter|r
-    >>|cRXP_WARN_If you failed the quest, skip this step|r
+    >>|cRXP_WARN_If you failed the quest, skip this step|r << !Mage
+    >>If the brew has gone cold, return to Nori and retry the failed delivery. << Mage
     .turnin 3364 >> Turn in Scalding Mornbrew Delivery
     .accept 3365 >> Accept Bring Back the Mug
     .target Durnan Furcutter
     .isOnQuest 3364
 step << !Paladin !Warlock !Hunter !Shaman
     #optional
-    #softcore
+    #softcore << !Mage
     .goto 1426/0,385.21,-6056.46
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Durnan Furcutter|r
     .accept 3365 >> Accept Bring Back the Mug
     .target Durnan Furcutter
     .isQuestTurnedIn 3364
     .isQuestAvailable 317
-step << !Paladin !Warlock !Hunter !Shaman
+step << !Paladin !Warlock !Hunter !Shaman !Mage
     #softcore
     #requires Grelin << Rogue
     .abandon 3364 >> Abandon Scalding Mornbrew Delivery. You'll pick it up again
-step << !Paladin !Warlock !Hunter !Shaman
+step << !Paladin !Warlock !Hunter !Shaman !Mage
     #softcore
     #optional
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Nori Pridedrift|r and |cRXP_FRIENDLY_Grelin Whitebeard|r
@@ -507,7 +524,7 @@ step << !Paladin !Warlock !Hunter !Shaman
     .goto 1426/0,567.14,-6363.06
     .target +Grelin Whitebeard
     .isQuestAvailable 3364
-step << !Paladin !Warlock !Hunter !Shaman
+step << !Paladin !Warlock !Hunter !Shaman !Mage
     #softcore
     #optional
     .goto 1426/0,385.21,-6056.46
@@ -515,7 +532,7 @@ step << !Paladin !Warlock !Hunter !Shaman
     .turnin 3364 >> Turn in Scalding Mornbrew Delivery
     .accept 3365 >> Accept Bring Back the Mug
     .target Durnan Furcutter
-step << !Paladin !Warlock !Hunter !Shaman
+step << !Paladin !Warlock !Hunter !Shaman !Mage
     #hardcore
     .goto 1426/0,385.21,-6056.46
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Durnan Furcutter|r
@@ -611,7 +628,7 @@ step << Shaman
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Teo Hammerstorm::257446|r
     .target Teo Hammerstorm::257446
     .turnin 94375 >>Turn in Call of Earth
-step << !Paladin !Warlock !Hunter !Shaman
+step << !Paladin !Warlock !Hunter !Shaman !Mage
     #softcore
     #label Stolen
     .goto 1426/0,567.14,-6363.06

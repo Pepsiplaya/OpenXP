@@ -46,3 +46,9 @@
 - Added Manaweave Robe for Human and Gnome Mages. The guide tracks the two quest tools, three filled coffers, the Silver Stream Mine approach and gem objectives, and Wynne's final reward. All three additions stay in OpenXP Extras.
 - The 5,922-quest audit still has 16 findings and none for these three chapters. Added strict tests for the early weapon alternatives and the robe's objective and hand-in order.
 - Windows validation passed 57 Python tests, 270 Smart Start assertions, all Lua suites, and the coordinate, label, and frozen-route checks. Live quest offers, alley and mine navigation, and the ritual sequence remain on the player test list.
+
+### 1.3.70-beta
+
+- A live Gnome Mage reached the Nori pickup before level 4. The game records confirm level 4 and a five-minute timer for Scalding Mornbrew Delivery. The Stolen Journal lists 550 XP at Grelin.
+- Reordered the Mage branch to collect the journal, leave the cave, and hand the quest in before starting the timer. A level-4 checkpoint points to verified whelp spawns only when XP is needed. The guide then takes the brew to Durnan and brings the empty mug back to Nori.
+- Windows validation passed 58 Python tests, 270 Smart Start checks, all Lua suites, and the map, label, and frozen-route checks. The new test verifies both normal and Hardcore Mage guide order. A Lua simulation verified the level-3 redirect and level-4 advance.

@@ -15,6 +15,13 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.70-beta",
+        date = "November 2026",
+        changes = {
+            "Coldridge Valley Mages turn in The Stolen Journal before starting Nori's timed delivery. If you still need level 4, the guide shows a nearby Frostmane Troll Whelp camp.",
+        },
+    },
+    {
         version = "1.3.69-beta",
         date = "November 2026",
         changes = {
