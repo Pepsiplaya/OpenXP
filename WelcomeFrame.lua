@@ -15,6 +15,13 @@ local function L(s) return addon.locale and addon.locale.Get and addon.locale.Ge
 -- Newest first. Each entry: version, date, list of changes.
 local CHANGELOG = {
     {
+        version = "1.3.74-beta",
+        date = "November 2026",
+        changes = {
+            "Open your personal bank once to let OpenXP remember what you stored. Collection steps show how many to withdraw and how many you still need.",
+        },
+    },
+    {
         version = "1.3.73-beta",
         date = "November 2026",
         changes = {

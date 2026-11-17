@@ -1,11 +1,11 @@
-# Player testing for OpenXP Ultimate 1.3.73-beta
+# Player testing for OpenXP Ultimate 1.3.74-beta
 
 ## Install the test build
 
 1. Close WoW Forever. Use a separate Forever installation or test profile if available.
 2. For a swap in your existing installation, move your existing `OpenXP` addon folder outside `Interface\AddOns`. Back up its `OpenXP.lua` and `OpenXP.lua.bak` files from the account and character `SavedVariables` directories, where present.
 3. Extract the test ZIP. Copy the extracted `OpenXP` folder into `World of Warcraft\_forever_\Interface\AddOns`. The file should be at `AddOns\OpenXP\OpenXP.toc`. Disable RestedXP Guides in the character selection AddOns menu while testing OpenXP.
-4. Log in and run `/oxp news`. Confirm the version is `1.3.73-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
+4. Log in and run `/oxp news`. Confirm the version is `1.3.74-beta`. To restore the original build, exit the game, move the test folder out, and restore the original folder and backed-up OpenXP SavedVariables.
 
 ## Fresh Alliance Mage
 
@@ -30,6 +30,7 @@ For an optional timed sample, use the separate [Recorder beta](RECORDER.md) with
 
 | Test | Starting conditions | Expected result |
 | --- | --- | --- |
+| Personal bank | Manually put some Ice Cold Milk or another item needed by a collection step in the bank before loading this build. Start that step with fewer than it asks for in your bags. | Open the personal bank and check the withdrawal quantity. Close it and reload to confirm the count persists. Withdraw the requested quantity and confirm the prompt clears or shows what you still need. Check the same step on another character with its own bank items. |
 | Guide card and welcome | Open `/oxp news`. Open the guide card at its normal size, then resize to 200 pixels and try the 20-point font and one-line mode. | The header and step counter remain usable, the counter opens the step list, and the XP line shows the correct level and percentage. Confirm max-level hides the XP line. Expand the card, then check both waypoint directions and the green arrival check. |
 | Mage's Wand | Mage at level 30 or higher. Select OpenXP Extras → Class Quests → Mage's Wand. Try a fresh chain and one with a prior quest in the log. | `/beckon` and speak to Plucky. Gather Jade and the bramble, collect the book in Scarlet Monastery Library, hand in both quests, and wait for Tabetha's ritual. Record dungeon entry and objective tracking if you load the chapter inside. |
 | Verigan's Fist | Alliance Paladin, level 20 or higher, with The Tome of Valor (1652) turned in. Select Verigan's Fist under OpenXP Extras → Class Quests. | Jordan offers 1654. Bailor and Thundris's hand-ins supply the refined ore and gem, the dungeon steps track lumber and hammer, and the last quest rewards the mace after the forge event. Check the stables and whether the gem drops around the Blackfathom entrance. |

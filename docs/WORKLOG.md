@@ -71,3 +71,9 @@
 - A player reached the base of Tundra MacGrann's ridge with the pickup active and needed the climb directions. Forever players identify the wooden platform and banner near 36.3, 52.4. The two approach waypoints already in the guide lead northwest from there toward the NPC.
 - Added a trailhead step with a visible landmark and put both approach waypoints on the pickup and hand-in. The trailhead step skips once the quest is in the log or turned in. Check arrow switching and the return climb in the live client.
 - Windows validation passed 60 Python tests, 270 Smart Start checks, all Lua suites, and the coordinate, label, and frozen-route checks. The guide keeps the step count and saved step IDs after the hand-in. The pinned audit kept 16 findings across 5,922 quests and recorded none for quest 312.
+
+### 1.3.74-beta
+
+- Added personal bank detection for guide collection steps. Going to the bank reads stacks already stored there, including manual deposits made before installing OpenXP. The count is saved for that character and refreshes during banking.
+- Collection steps show how many to withdraw and how many remain after using the banked stock. Standard collection still needs the items on hand. Depositing them while a collection step is active can reopen that objective.
+- Lua tests simulated the Forever tabbed bank and the Classic Era bank. They covered pre-existing deposits, partial reads, quantity changes, per-character counts, and reloads. The full run passed 60 Python tests, 270 Smart Start checks, all Lua suites, and the coordinate, label, and frozen-route checks. The pinned 5,922-quest audit kept 16 findings. Verify the prompt during a live bank visit.

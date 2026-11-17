@@ -3352,15 +3352,19 @@ if objFlags is omitted or set to 0, element will complete if you have the quest 
     element.numRequired = numRequired
     --
 
-    local count = 0
-    local bankCount = 0
+    local count, bankCount, ownedCount = 0, 0, 0
     for itemId in string.gmatch(element.ids,"%d+") do
         local id = tonumber(itemId)
         count = count + GetCount(id)
-        bankCount = bankCount + GetItemCount(id,true)
+        if addon.GetBankItemCount and not element.includeBank and not element.ignoreBank then
+            bankCount = bankCount + addon.GetBankItemCount(id)
+        end
+        if element.ignoreIfNone and not element.ignoreBank then
+            ownedCount = ownedCount + GetItemCount(id, true)
+        end
     end
     if count == 0 and element.ignoreIfNone then
-        if element.ignoreBank or bankCount == 0 then
+        if element.ignoreBank or (ownedCount == 0 and bankCount == 0) then
             numRequired = 0
         end
     end
@@ -3372,12 +3376,10 @@ if objFlags is omitted or set to 0, element will complete if you have the quest 
         element.numRequired = count
     end
 
+    local previousText = element.text
     if numRequired <= 0 or element.hideText then
         element.textOnly = true
-        if element.text then
-            element.text = nil
-            addon.UpdateStepText(self)
-        end
+        element.text = nil
     elseif gameVersion and gameVersion > 90000 then
         if element.rawtext then
             element.tooltipText = addon.icons.collect .. element.rawtext
@@ -3400,7 +3402,20 @@ if objFlags is omitted or set to 0, element will complete if you have the quest 
         end
     end
 
-    if element.lastCount ~= count then addon.UpdateStepText(self) end
+    if element.text and bankCount > 0 and count < numRequired then
+        local withdraw = math.min(bankCount, numRequired - count)
+        local remaining = numRequired - count - withdraw
+        local note
+        if remaining > 0 then
+            note = fmt(L("Withdraw %d from your bank, then get %d more."), withdraw, remaining)
+        else
+            note = fmt(L("Withdraw %d from your bank."), withdraw)
+        end
+        element.text = element.text .. "\n" .. note
+        element.tooltipText = addon.icons.collect .. element.text
+    end
+
+    if element.text ~= previousText or element.lastCount ~= count then addon.UpdateStepText(self) end
     element.lastCount = count
     element.count = count
     if numRequired > 0 and count >= numRequired then
@@ -3416,6 +3431,7 @@ if objFlags is omitted or set to 0, element will complete if you have the quest 
     elseif numRequired == count then
         addon.SetElementComplete(self, true, true)
     elseif not element.textOnly then
+        if element.completed then element.skip = nil end
         addon.SetElementIncomplete(self)
     end
     addon.IsOnTurnInGuide(self)
